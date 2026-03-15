@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/sportify_background"
+    android:fillViewport="true"
+    android:clipToPadding="false"
+    android:paddingBottom="@dimen/spacing_xl">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/showcase_title"
+            style="@style/Sportify.Text.Title"
+            android:layout_marginBottom="@dimen/spacing_xs" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/showcase_desc"
+            style="@style/Sportify.Text.Caption"
+            android:layout_marginBottom="@dimen/spacing_lg" />
+
+        <!-- ——————————————————————————————————————————————————————————
+                                     TEXT STYLES
+             —————————————————————————————————————————————————————————— -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Text Styles"
+            android:textSize="13sp"
+            android:textColor="@color/sportify_green_dark"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="@dimen/spacing_sm" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            app:cardCornerRadius="@dimen/card_corner"
+            app:cardElevation="@dimen/card_elevation"
+            app:cardBackgroundColor="@color/sportify_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <!-- style="@style/Sportify.Text.Title" -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Title – 24sp medium"
+                    style="@style/Sportify.Text.Title"
+                    android:layout_marginBottom="@dimen/spacing_sm" />
+
+                <!-- style="@style/Sportify.Text.Subtitle" -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Subtitle – 18sp medium"
+                    style="@style/Sportify.Text.Subtitle"
+                    android:layout_marginBottom="@dimen/spacing_sm" />
+
+                <!-- style="@style/Sportify.Text.Body" -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Body – 16sp regular. Main text style for descriptions and content."
+                    style="@style/Sportify.Text.Body"
+                    android:layout_marginBottom="@dimen/spacing_sm" />
+
+                <!-- style="@style/Sportify.Text.Caption" -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Caption – 13sp secondary."
+                    style="@style/Sportify.Text.Caption"
+                    android:layout_marginBottom="@dimen/spacing_sm" />
+
+                <!-- style="@style/Sportify.Text.BigNumber" -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="123456"
+                    style="@style/Sportify.Text.BigNumber" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ——————————————————————————————————————————————————————————
+                                       BUTTONS
+             —————————————————————————————————————————————————————————— -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buttons"
+            android:textSize="13sp"
+            android:textColor="@color/sportify_green_dark"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="@dimen/spacing_sm" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            app:cardCornerRadius="@dimen/card_corner"
+            app:cardElevation="@dimen/card_elevation"
+            app:cardBackgroundColor="@color/sportify_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <!-- style="@style/Sportify.Button.Primary" -->
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Primary button"
+                    style="@style/Sportify.Button.Primary"
+                    android:layout_marginBottom="@dimen/spacing_sm" />
+
+                <!-- style="@style/Sportify.Button.Secondary" -->
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Secondary button"
+                    style="@style/Sportify.Button.Secondary"
+                    android:layout_marginBottom="@dimen/spacing_sm" />
+
+                <!-- style="@style/Sportify.Button.Text" -->
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Text button"
+                    style="@style/Sportify.Button.Text" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ——————————————————————————————————————————————————————————
+                                    TEXT FIELDS
+             —————————————————————————————————————————————————————————— -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Text Fields"
+            android:textSize="13sp"
+            android:textColor="@color/sportify_green_dark"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="@dimen/spacing_sm" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            app:cardCornerRadius="@dimen/card_corner"
+            app:cardElevation="@dimen/card_elevation"
+            app:cardBackgroundColor="@color/sportify_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <!-- style="@style/Sportify.TextInput" -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/Sportify.TextInput"
+                    android:hint="Text field example">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Sportify.TextInput"
+                    android:hint="Number text field (number input type)">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ——————————————————————————————————————————————————————————
+                                    PROGRESS BARS
+             —————————————————————————————————————————————————————————— -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Progress Bars"
+            android:textSize="13sp"
+            android:textColor="@color/sportify_green_dark"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="@dimen/spacing_sm" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            app:cardCornerRadius="@dimen/card_corner"
+            app:cardElevation="@dimen/card_elevation"
+            app:cardBackgroundColor="@color/sportify_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Steps (progressDrawable=progress_steps)"
+                    style="@style/Sportify.Text.Caption"
+                    android:layout_marginBottom="@dimen/spacing_xs" />
+
+                <!-- android:progressDrawable="@drawable/progress_steps" -->
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_height"
+                    android:max="100"
+                    android:progress="65"
+                    android:progressDrawable="@drawable/progress_steps"
+                    android:layout_marginBottom="@dimen/spacing_md" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sleep (progressDrawable=progress_sleep)"
+                    style="@style/Sportify.Text.Caption"
+                    android:layout_marginBottom="@dimen/spacing_xs" />
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_height"
+                    android:max="100"
+                    android:progress="80"
+                    android:progressDrawable="@drawable/progress_sleep"
+                    android:layout_marginBottom="@dimen/spacing_md" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Calories (progressDrawable=progress_calories)"
+                    style="@style/Sportify.Text.Caption"
+                    android:layout_marginBottom="@dimen/spacing_xs" />
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_height"
+                    android:max="100"
+                    android:progress="45"
+                    android:progressDrawable="@drawable/progress_calories"
+                    android:layout_marginBottom="@dimen/spacing_md" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Water (progressDrawable=progress_water)"
+                    style="@style/Sportify.Text.Caption"
+                    android:layout_marginBottom="@dimen/spacing_xs" />
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_height"
+                    android:max="100"
+                    android:progress="55"
+                    android:progressDrawable="@drawable/progress_water" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ——————————————————————————————————————————————————————————
+                                   ACCENT ELEMENTS
+             —————————————————————————————————————————————————————————— -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accent Elements"
+            android:textSize="13sp"
+            android:textColor="@color/sportify_green_dark"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="@dimen/spacing_sm" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            app:cardCornerRadius="@dimen/card_corner"
+            app:cardElevation="@dimen/card_elevation"
+            app:cardBackgroundColor="@color/sportify_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="bg_green_pill"
+                    style="@style/Sportify.Text.Caption"
+                    android:layout_marginBottom="@dimen/spacing_sm" />
+
+                <!-- android:background="@drawable/bg_green_pill" -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:background="@drawable/bg_green_pill"
+                    android:paddingVertical="12dp"
+                    android:layout_marginBottom="@dimen/spacing_md">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="123456"
+                        style="@style/Sportify.Text.BigNumber"
+                        android:textColor="@color/sportify_text_on_green" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="bg_assessment"
+                    style="@style/Sportify.Text.Caption"
+                    android:layout_marginBottom="@dimen/spacing_sm" />
+
+                <!-- android:background="@drawable/bg_assessment" -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_assessment"
+                    android:padding="@dimen/spacing_md"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Great day!"
+                        style="@style/Sportify.Text.Subtitle"
+                        android:textColor="@color/sportify_text_primary" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ——————————————————————————————————————————————————————————
+                                        MOOD
+             —————————————————————————————————————————————————————————— -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mood"
+            android:textSize="13sp"
+            android:textColor="@color/sportify_green_dark"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="@dimen/spacing_sm" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            app:cardCornerRadius="@dimen/card_corner"
+            app:cardElevation="@dimen/card_elevation"
+            app:cardBackgroundColor="@color/sportify_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Not selected: bg_mood_circle\nSelected: bg_mood_selected"
+                    style="@style/Sportify.Text.Caption"
+                    android:layout_marginBottom="@dimen/spacing_sm" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="12dp">
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center">
+                        <TextView
+                            android:id="@+id/btnMood1"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="😞"
+                            android:textSize="24sp"
+                            android:textColor="@color/sportify_text_primary"
+                            android:background="@drawable/bg_mood_circle" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/btnMood2"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="😕"
+                            android:textSize="24sp"
+                            android:textColor="@color/sportify_text_primary"
+                            android:background="@drawable/bg_mood_circle" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/btnMood3"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="😐"
+                            android:textSize="24sp"
+                            android:textColor="@color/sportify_text_primary"
+                            android:background="@drawable/bg_mood_selected" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/btnMood4"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="🙂"
+                            android:textSize="24sp"
+                            android:textColor="@color/sportify_text_primary"
+                            android:background="@drawable/bg_mood_circle" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/btnMood5"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="😄"
+                            android:textSize="24sp"
+                            android:textColor="@color/sportify_text_primary"
+                            android:background="@drawable/bg_mood_circle" />
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ——————————————————————————————————————————————————————————
+                          COLOR PALETTE (visual reference)
+             —————————————————————————————————————————————————————————— -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Color Palette (visual reference)"
+            android:textSize="13sp"
+            android:textColor="@color/sportify_green_dark"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="@dimen/spacing_sm" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            app:cardCornerRadius="@dimen/card_corner"
+            app:cardElevation="@dimen/card_elevation"
+            app:cardBackgroundColor="@color/sportify_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <!-- Kiekviena spalva: spalvotas kvadratas + pavadinimas -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/spacing_sm">
+                    <View android:layout_width="32dp" android:layout_height="32dp"
+                        android:background="@color/sportify_green" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="  sportify_green  #B8FF00" style="@style/Sportify.Text.Caption" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/spacing_sm">
+                    <View android:layout_width="32dp" android:layout_height="32dp"
+                        android:background="@color/sportify_background" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="  sportify_background  #F0EAFF" style="@style/Sportify.Text.Caption" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/spacing_sm">
+                    <View android:layout_width="32dp" android:layout_height="32dp"
+                        android:background="@color/sportify_progress_sleep" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="  progress_sleep  #7C6BFF" style="@style/Sportify.Text.Caption" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/spacing_sm">
+                    <View android:layout_width="32dp" android:layout_height="32dp"
+                        android:background="@color/sportify_progress_calories" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="  progress_calories  #FF7043" style="@style/Sportify.Text.Caption" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <View android:layout_width="32dp" android:layout_height="32dp"
+                        android:background="@color/sportify_progress_water" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="  progress_water  #42A5F5" style="@style/Sportify.Text.Caption" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/sportify_background"
+    android:padding="@dimen/spacing_xl">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@android:drawable/ic_menu_help"
+        android:alpha="0.4"
+        android:contentDescription="Kuriama" />
+
+    <TextView
+        android:id="@+id/tvPlaceholderTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ši sekcija kuriama..."
+        style="@style/Sportify.Text.Subtitle"
+        android:layout_marginTop="@dimen/spacing_md" />
+
+    <TextView
+        android:id="@+id/tvPlaceholderDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Turinys bus rodomas, kai sekcija bus pabaigta."
+        style="@style/Sportify.Text.Caption"
+        android:textAlignment="center"
+        android:layout_marginTop="@dimen/spacing_sm" />
+
+</LinearLayout>

@@ -1,5 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Main -->
+    <color name="sportify_green">#FFB8FF00</color>
+    <color name="sportify_green_dark">#FF8FCC00</color>
+    <color name="sportify_green_light">#FFDCFF80</color>
+    <color name="sportify_background">#FFF0EAFF</color>
+    <color name="sportify_surface">#FFFFFFFF</color>
+    <color name="sportify_surface_variant">#FFF7F4FF</color>
+
+    <!-- Text -->
+    <color name="sportify_text_primary">#FF1A1A2E</color>
+    <color name="sportify_text_secondary">#FF6B6B8A</color>
+    <color name="sportify_text_hint">#FFA0A0B8</color>
+    <color name="sportify_text_on_green">#FF1A1A2E</color>
+
+    <!-- Bottom Navigation -->
+    <color name="sportify_nav_background">#FFFFFFFF</color>
+    <color name="sportify_nav_icon_active">#FF1A1A2E</color>
+    <color name="sportify_nav_icon_inactive">#FFA0A0B8</color>
+
+    <!-- Progress bars -->
+    <color name="sportify_progress_track">#FFE8E4F0</color>
+    <color name="sportify_progress_steps">#FFB8FF00</color>
+    <color name="sportify_progress_sleep">#FF7C6BFF</color>
+    <color name="sportify_progress_calories">#FFFF7043</color>
+    <color name="sportify_progress_water">#FF42A5F5</color>
+
+    <!-- Mood -->
+    <color name="sportify_mood_1">#FFEF5350</color>
+    <color name="sportify_mood_2">#FFFF7043</color>
+    <color name="sportify_mood_3">#FFFFCA28</color>
+    <color name="sportify_mood_4">#FF66BB6A</color>
+    <color name="sportify_mood_5">#FF42A5F5</color>
+
+    <!-- Status -->
+    <color name="sportify_success">#FF4CAF50</color>
+    <color name="sportify_warning">#FFFFC107</color>
+    <color name="sportify_error">#FFF44336</color>
+
+    <!-- Other -->
+    <color name="sportify_divider">#FFE0DCE8</color>
+    <color name="sportify_shadow">#1A000000</color>
 </resources>

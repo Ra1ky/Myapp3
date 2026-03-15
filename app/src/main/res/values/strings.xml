@@ -1,3 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Myapp3</string>
+    <string name="app_name">Sportify</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_dashboard">Home</string>
+    <string name="nav_food">Food</string>
+    <string name="nav_add">Add</string>
+    <string name="nav_stats">Statistics</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_steps">Steps</string>
+    <string name="dashboard_sleep">Sleep</string>
+    <string name="dashboard_calories">Calories</string>
+    <string name="dashboard_water">Water</string>
+    <string name="dashboard_mood">Mood</string>
+    <string name="dashboard_assessment">Day Assessment</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_profile">Personal Data</string>
+    <string name="settings_age">Age</string>
+    <string name="settings_weight">Weight (kg)</string>
+    <string name="settings_height">Height (cm)</string>
+    <string name="settings_goals">Daily Goals</string>
+    <string name="settings_step_goal">Steps</string>
+    <string name="settings_calorie_goal">Calories (kcal)</string>
+    <string name="settings_water_goal">Water (ml)</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_saved">Settings saved!</string>
+    <string name="settings_water_auto">Recommended: %1$d ml</string>
+
+    <!-- Mood -->
+    <string name="mood_1">Horrible</string>
+    <string name="mood_2">Bad</string>
+    <string name="mood_3">Meh</string>
+    <string name="mood_4">Good</string>
+    <string name="mood_5">Amazing</string>
+
+    <!-- Day assessment -->
+    <string name="assess_excellent">Great day! All goals achieved — keep it up!</string>
+    <string name="assess_good">Good day — most goals achieved!</string>
+    <string name="assess_average">Average day. Tomorrow could be even better!</string>
+    <string name="assess_below">It could have been better — but every day is a new beginning.</string>
+    <string name="assess_no_data">Start logging data and you will receive a daily assessment!</string>
+
+    <!-- SHOWCASE -->
+    <string name="showcase_title">Komponentų pavyzdžiai</string>
+    <string name="showcase_desc">Kopijuokite komponentus iš čia į savo ekranus, kad dizainas būtų vientisas!</string>
 </resources>

@@ -1,9 +1,97 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Myapp3" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Main Theme -->
+    <style name="Theme.Sportify" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/sportify_green</item>
+        <item name="colorPrimaryVariant">@color/sportify_green_dark</item>
+        <item name="colorOnPrimary">@color/sportify_text_on_green</item>
+        <item name="colorSecondary">@color/sportify_green</item>
+        <item name="colorSecondaryVariant">@color/sportify_green_dark</item>
+        <item name="colorOnSecondary">@color/sportify_text_on_green</item>
+        <item name="android:colorBackground">@color/sportify_background</item>
+        <item name="colorSurface">@color/sportify_surface</item>
+        <item name="colorOnSurface">@color/sportify_text_primary</item>
+        <item name="android:textColorPrimary">@color/sportify_text_primary</item>
+        <item name="android:textColorSecondary">@color/sportify_text_secondary</item>
+        <item name="android:statusBarColor">@color/sportify_background</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="Theme.Myapp3" parent="Base.Theme.Myapp3" />
+    <!-- Text Styles -->
+    <style name="Sportify.Text" parent="">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/sportify_text_primary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="Sportify.Text.Title">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/sportify_text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Sportify.Text.Subtitle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/sportify_text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Sportify.Text.Body">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/sportify_text_primary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="Sportify.Text.Caption">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/sportify_text_secondary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="Sportify.Text.BigNumber">
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">@color/sportify_text_primary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Card -->
+    <style name="Sportify.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/sportify_surface</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="contentPadding">16dp</item>
+    </style>
+
+    <!-- Buttons -->
+    <style name="Sportify.Button.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/sportify_green</item>
+        <item name="android:textColor">@color/sportify_text_on_green</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Sportify.Button.Secondary" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/sportify_green</item>
+        <item name="android:textColor">@color/sportify_text_primary</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
+
+    <style name="Sportify.Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/sportify_green_dark</item>
+    </style>
+
+    <!-- Text field -->
+    <style name="Sportify.TextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxStrokeColor">@color/sportify_green</item>
+        <item name="hintTextColor">@color/sportify_green_dark</item>
+    </style>
+
 </resources>
