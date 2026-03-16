@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.example.sportify.CaloriesDetailActivity;
 import com.example.sportify.R;
 import com.example.sportify.CardDetailActivity;
 import com.example.sportify.SportifyApp;
@@ -103,8 +104,12 @@ public class DashboardFragment extends Fragment {
 
         cardSteps.setOnClickListener(click ->
                 openDetail("Steps", "Step tracking details screen – coming soon."));
-        cardCalories.setOnClickListener(click ->
-                openDetail("Food", "Calorie and food tracking details screen – coming soon."));
+        
+        cardCalories.setOnClickListener(click -> {
+            Intent intent = new Intent(requireContext(), CaloriesDetailActivity.class);
+            startActivity(intent);
+        });
+
         cardWater.setOnClickListener(click ->
                 openDetail("Water", "Water intake details screen – coming soon."));
         cardSleep.setOnClickListener(click ->

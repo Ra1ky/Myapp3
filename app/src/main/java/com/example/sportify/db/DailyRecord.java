@@ -33,6 +33,15 @@ public class DailyRecord {
     @ColumnInfo(name = "calories_goal")
     private int caloriesGoal;
 
+    @ColumnInfo(name = "protein_goal")
+    private int proteinGoal;
+
+    @ColumnInfo(name = "carbs_goal")
+    private int carbsGoal;
+
+    @ColumnInfo(name = "fat_goal")
+    private int fatGoal;
+
     @ColumnInfo(name = "water_ml")
     private int waterMl;
 
@@ -67,6 +76,15 @@ public class DailyRecord {
 
     public int getCaloriesGoal() { return caloriesGoal; }
     public void setCaloriesGoal(int caloriesGoal) { this.caloriesGoal = caloriesGoal; }
+
+    public int getProteinGoal() { return proteinGoal; }
+    public void setProteinGoal(int proteinGoal) { this.proteinGoal = proteinGoal; }
+
+    public int getCarbsGoal() { return carbsGoal; }
+    public void setCarbsGoal(int carbsGoal) { this.carbsGoal = carbsGoal; }
+
+    public int getFatGoal() { return fatGoal; }
+    public void setFatGoal(int fatGoal) { this.fatGoal = fatGoal; }
 
     public int getWaterMl() { return waterMl; }
     public void setWaterMl(int waterMl) { this.waterMl = waterMl; }
