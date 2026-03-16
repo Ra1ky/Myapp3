@@ -2,6 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/showcase"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,7 +37,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Text Styles"
+            android:text="@string/showcase_text_styles"
             android:textSize="13sp"
             android:textColor="@color/sportify_green_dark"
             android:fontFamily="sans-serif-medium"
@@ -62,7 +63,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Title – 24sp medium"
+                    android:text="@string/showcase_title_24"
                     style="@style/Sportify.Text.Title"
                     android:layout_marginBottom="@dimen/spacing_sm" />
 
@@ -70,7 +71,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Subtitle – 18sp medium"
+                    android:text="@string/showcase_subtitle"
                     style="@style/Sportify.Text.Subtitle"
                     android:layout_marginBottom="@dimen/spacing_sm" />
 
@@ -78,7 +79,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Body – 16sp regular. Main text style for descriptions and content."
+                    android:text="@string/showcase_body"
                     style="@style/Sportify.Text.Body"
                     android:layout_marginBottom="@dimen/spacing_sm" />
 
@@ -86,7 +87,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Caption – 13sp secondary."
+                    android:text="@string/showcase_caption"
                     style="@style/Sportify.Text.Caption"
                     android:layout_marginBottom="@dimen/spacing_sm" />
 
@@ -94,7 +95,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="123456"
+                    android:text="@string/showcase_123"
                     style="@style/Sportify.Text.BigNumber" />
 
             </LinearLayout>
@@ -106,13 +107,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Buttons"
-            android:textSize="13sp"
-            android:textColor="@color/sportify_green_dark"
+            android:layout_marginBottom="@dimen/spacing_sm"
             android:fontFamily="sans-serif-medium"
-            android:textAllCaps="true"
             android:letterSpacing="0.1"
-            android:layout_marginBottom="@dimen/spacing_sm" />
+            android:text="@string/showcase_buttons"
+            android:textAllCaps="true"
+            android:textColor="@color/sportify_green_dark"
+            android:textSize="13sp"
+            tools:ignore="TextContrastCheck" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -130,26 +132,30 @@
 
                 <!-- style="@style/Sportify.Button.Primary" -->
                 <com.google.android.material.button.MaterialButton
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Primary button"
+                    android:minWidth="320dp"
+                    android:text="@string/showcase_primary_button"
                     style="@style/Sportify.Button.Primary"
                     android:layout_marginBottom="@dimen/spacing_sm" />
 
                 <!-- style="@style/Sportify.Button.Secondary" -->
                 <com.google.android.material.button.MaterialButton
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Secondary button"
+                    android:minWidth="320dp"
+                    android:text="@string/showcase_secondary_button"
                     style="@style/Sportify.Button.Secondary"
                     android:layout_marginBottom="@dimen/spacing_sm" />
 
                 <!-- style="@style/Sportify.Button.Text" -->
                 <com.google.android.material.button.MaterialButton
+                    style="@style/Sportify.Button.Text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Text button"
-                    style="@style/Sportify.Button.Text" />
+                    android:minWidth="320dp"
+                    android:text="@string/showcase_text_button"
+                    tools:ignore="TextContrastCheck" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -160,13 +166,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Text Fields"
-            android:textSize="13sp"
-            android:textColor="@color/sportify_green_dark"
+            android:layout_marginBottom="@dimen/spacing_sm"
             android:fontFamily="sans-serif-medium"
-            android:textAllCaps="true"
             android:letterSpacing="0.1"
-            android:layout_marginBottom="@dimen/spacing_sm" />
+            android:text="@string/showcase_text_fields"
+            android:textAllCaps="true"
+            android:textColor="@color/sportify_green_dark"
+            android:textSize="13sp"
+            tools:ignore="TextContrastCheck" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -188,22 +195,28 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     style="@style/Sportify.TextInput"
-                    android:hint="Text field example">
+                    android:hint="@string/showcase_text_field_example">
+
                     <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:inputType="text" />
+                        android:inputType="text"
+                        android:minWidth="320dp"
+                        tools:ignore="TextContrastCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/Sportify.TextInput"
-                    android:hint="Number text field (number input type)">
+                    android:hint="@string/showcase_number_text_field">
+
                     <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:inputType="numberDecimal" />
+                        android:inputType="numberDecimal"
+                        android:minWidth="320dp"
+                        tools:ignore="TextContrastCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
@@ -215,13 +228,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Progress Bars"
-            android:textSize="13sp"
-            android:textColor="@color/sportify_green_dark"
+            android:layout_marginBottom="@dimen/spacing_sm"
             android:fontFamily="sans-serif-medium"
-            android:textAllCaps="true"
             android:letterSpacing="0.1"
-            android:layout_marginBottom="@dimen/spacing_sm" />
+            android:text="@string/showcase_progress_bars"
+            android:textAllCaps="true"
+            android:textColor="@color/sportify_green_dark"
+            android:textSize="13sp"
+            tools:ignore="TextContrastCheck" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -240,7 +254,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Steps (progressDrawable=progress_steps)"
+                    android:text="@string/showcase_steps"
                     style="@style/Sportify.Text.Caption"
                     android:layout_marginBottom="@dimen/spacing_xs" />
 
@@ -257,23 +271,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sleep (progressDrawable=progress_sleep)"
-                    style="@style/Sportify.Text.Caption"
-                    android:layout_marginBottom="@dimen/spacing_xs" />
-
-                <ProgressBar
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/progress_height"
-                    android:max="100"
-                    android:progress="80"
-                    android:progressDrawable="@drawable/progress_sleep"
-                    android:layout_marginBottom="@dimen/spacing_md" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Calories (progressDrawable=progress_calories)"
+                    android:text="@string/showcase_calories"
                     style="@style/Sportify.Text.Caption"
                     android:layout_marginBottom="@dimen/spacing_xs" />
 
@@ -289,7 +287,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Water (progressDrawable=progress_water)"
+                    android:text="@string/showcase_water"
                     style="@style/Sportify.Text.Caption"
                     android:layout_marginBottom="@dimen/spacing_xs" />
 
@@ -299,7 +297,23 @@
                     android:layout_height="@dimen/progress_height"
                     android:max="100"
                     android:progress="55"
-                    android:progressDrawable="@drawable/progress_water" />
+                    android:progressDrawable="@drawable/progress_water"
+                    android:layout_marginBottom="@dimen/spacing_md"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/showcase_sleep"
+                    style="@style/Sportify.Text.Caption"
+                    android:layout_marginBottom="@dimen/spacing_xs" />
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_height"
+                    android:max="100"
+                    android:progress="80"
+                    android:progressDrawable="@drawable/progress_sleep" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -310,13 +324,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Accent Elements"
-            android:textSize="13sp"
-            android:textColor="@color/sportify_green_dark"
+            android:layout_marginBottom="@dimen/spacing_sm"
             android:fontFamily="sans-serif-medium"
-            android:textAllCaps="true"
             android:letterSpacing="0.1"
-            android:layout_marginBottom="@dimen/spacing_sm" />
+            android:text="@string/showcase_accent_elements"
+            android:textAllCaps="true"
+            android:textColor="@color/sportify_green_dark"
+            android:textSize="13sp"
+            tools:ignore="TextContrastCheck" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -335,7 +350,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="bg_green_pill"
+                    android:text="@string/showcase_bg_green_pill"
                     style="@style/Sportify.Text.Caption"
                     android:layout_marginBottom="@dimen/spacing_sm" />
 
@@ -351,7 +366,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="123456"
+                        android:text="@string/showcase_123"
                         style="@style/Sportify.Text.BigNumber"
                         android:textColor="@color/sportify_text_on_green" />
                 </LinearLayout>
@@ -359,7 +374,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="bg_assessment"
+                    android:text="@string/showcase_bg_assessment"
                     style="@style/Sportify.Text.Caption"
                     android:layout_marginBottom="@dimen/spacing_sm" />
 
@@ -374,7 +389,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Great day!"
+                        android:text="@string/showcase_assessment"
                         style="@style/Sportify.Text.Subtitle"
                         android:textColor="@color/sportify_text_primary" />
                 </LinearLayout>
@@ -388,7 +403,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mood"
+            android:text="@string/showcase_mood"
             android:textSize="13sp"
             android:textColor="@color/sportify_green_dark"
             android:fontFamily="sans-serif-medium"
@@ -413,13 +428,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Not selected: bg_mood_circle\nSelected: bg_mood_selected"
+                    android:text="@string/showcase_not_selected"
                     style="@style/Sportify.Text.Caption"
                     android:layout_marginBottom="@dimen/spacing_sm" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal"
                     android:gravity="center"
                     android:layout_marginTop="12dp">
@@ -435,7 +451,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="😞"
+                            android:text="@string/showcase_mood1"
                             android:textSize="24sp"
                             android:textColor="@color/sportify_text_primary"
                             android:background="@drawable/bg_mood_circle" />
@@ -451,7 +467,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="😕"
+                            android:text="@string/showcase_mood2"
                             android:textSize="24sp"
                             android:textColor="@color/sportify_text_primary"
                             android:background="@drawable/bg_mood_circle" />
@@ -467,7 +483,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="😐"
+                            android:text="@string/showcase_mood3"
                             android:textSize="24sp"
                             android:textColor="@color/sportify_text_primary"
                             android:background="@drawable/bg_mood_selected" />
@@ -483,7 +499,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="🙂"
+                            android:text="@string/showcase_mood4"
                             android:textSize="24sp"
                             android:textColor="@color/sportify_text_primary"
                             android:background="@drawable/bg_mood_circle" />
@@ -499,7 +515,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="😄"
+                            android:text="@string/showcase_mood5"
                             android:textSize="24sp"
                             android:textColor="@color/sportify_text_primary"
                             android:background="@drawable/bg_mood_circle" />
@@ -516,7 +532,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Color Palette (visual reference)"
+            android:text="@string/showcase_color_palette"
             android:textSize="13sp"
             android:textColor="@color/sportify_green_dark"
             android:fontFamily="sans-serif-medium"
@@ -538,7 +554,6 @@
                 android:orientation="vertical"
                 android:padding="@dimen/card_padding">
 
-                <!-- Kiekviena spalva: spalvotas kvadratas + pavadinimas -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -548,7 +563,7 @@
                     <View android:layout_width="32dp" android:layout_height="32dp"
                         android:background="@color/sportify_green" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="  sportify_green  #B8FF00" style="@style/Sportify.Text.Caption" />
+                        android:text="@string/showcase_sportify_green" style="@style/Sportify.Text.Caption" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -560,19 +575,7 @@
                     <View android:layout_width="32dp" android:layout_height="32dp"
                         android:background="@color/sportify_background" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="  sportify_background  #F0EAFF" style="@style/Sportify.Text.Caption" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="@dimen/spacing_sm">
-                    <View android:layout_width="32dp" android:layout_height="32dp"
-                        android:background="@color/sportify_progress_sleep" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="  progress_sleep  #7C6BFF" style="@style/Sportify.Text.Caption" />
+                        android:text="@string/showcase_sportify_background" style="@style/Sportify.Text.Caption" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -584,7 +587,19 @@
                     <View android:layout_width="32dp" android:layout_height="32dp"
                         android:background="@color/sportify_progress_calories" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="  progress_calories  #FF7043" style="@style/Sportify.Text.Caption" />
+                        android:text="@string/showcase_progress_calories" style="@style/Sportify.Text.Caption" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/spacing_sm">
+                    <View android:layout_width="32dp" android:layout_height="32dp"
+                        android:background="@color/sportify_progress_water" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/showcase_progress_water" style="@style/Sportify.Text.Caption" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -593,9 +608,9 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
                     <View android:layout_width="32dp" android:layout_height="32dp"
-                        android:background="@color/sportify_progress_water" />
+                        android:background="@color/sportify_progress_sleep" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="  progress_water  #42A5F5" style="@style/Sportify.Text.Caption" />
+                        android:text="@string/showcase_progress_sleep" style="@style/Sportify.Text.Caption" />
                 </LinearLayout>
 
             </LinearLayout>

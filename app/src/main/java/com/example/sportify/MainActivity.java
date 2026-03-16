@@ -34,6 +34,20 @@ public class MainActivity extends AppCompatActivity {
 
         // Bottom Navigation switching
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        int[][] states = {
+                new int[]{android.R.attr.state_checked},
+                new int[]{-android.R.attr.state_checked}
+        };
+        int[] colors = {
+                getColor(R.color.sportify_nav_icon_active),
+                getColor(R.color.sportify_nav_icon_inactive)
+        };
+        android.content.res.ColorStateList navColors =
+                new android.content.res.ColorStateList(states, colors);
+
+        bottomNav.setItemIconTintList(navColors);
+        bottomNav.setItemTextColor(navColors);
+
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment fragment;
             int id = item.getItemId();

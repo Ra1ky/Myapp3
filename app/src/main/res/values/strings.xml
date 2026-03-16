@@ -14,20 +14,37 @@
     <string name="dashboard_water">Water</string>
     <string name="dashboard_mood">Mood</string>
     <string name="dashboard_assessment">Day Assessment</string>
+    <string name="date_example">March 9</string>
+    <string name="_0">0</string>
+    <string name="_0_10000">0 / 10000</string>
+    <string name="_0_kcal">0 kcal</string>
+    <string name="_2000_kcal">/ 2000 kcal</string>
+    <string name="_0_ml">0 ml</string>
+    <string name="_2500_ml">/ 2500 ml</string>
+    <string name="h">-- h</string>
+    <string name="mood_default">😐</string>
+    <string name="mood1">😞</string>
+    <string name="mood2">😕</string>
+    <string name="mood3">😐</string>
+    <string name="mood4">🙂</string>
+    <string name="mood5">😄</string>
 
-    <!-- Settings -->
-    <string name="settings_title">Settings</string>
-    <string name="settings_profile">Personal Data</string>
-    <string name="settings_age">Age</string>
-    <string name="settings_weight">Weight (kg)</string>
-    <string name="settings_height">Height (cm)</string>
-    <string name="settings_goals">Daily Goals</string>
-    <string name="settings_step_goal">Steps</string>
-    <string name="settings_calorie_goal">Calories (kcal)</string>
-    <string name="settings_water_goal">Water (ml)</string>
-    <string name="settings_save">Save</string>
-    <string name="settings_saved">Settings saved!</string>
-    <string name="settings_water_auto">Recommended: %1$d ml</string>
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_data">Personal Data</string>
+    <string name="profile_age">Age</string>
+    <string name="profile_weight">Weight (kg)</string>
+    <string name="profile_height">Height (cm)</string>
+    <string name="profile_goals">Daily Goals</string>
+    <string name="profile_step_goal">Steps</string>
+    <string name="profile_calorie_goal">Calories (kcal)</string>
+    <string name="profile_water_goal">Water (ml)</string>
+    <string name="profile_save">Save</string>
+    <string name="profile_updated">Profile updated!</string>
+    <string name="profile_no_recommendation">Not enough data to provide a recommendation</string>
+    <string name="profile_steps_auto">Recommended: %1$d steps</string>
+    <string name="profile_calorie_auto">Recommended for maintaining weight: %1$d kcal</string>
+    <string name="profile_water_auto">Recommended: %1$d ml</string>
 
     <!-- Day assessment -->
     <string name="assess_excellent">Great day! All goals achieved — keep it up!</string>
@@ -36,7 +53,49 @@
     <string name="assess_below">It could have been better — but every day is a new beginning.</string>
     <string name="assess_no_data">Start logging data and you will receive a daily assessment!</string>
 
-    <!-- Showcase -->
+    <!-- Showcase/Placeholder -->
     <string name="showcase_title">Komponentų pavyzdžiai</string>
     <string name="showcase_desc">Kopijuokite komponentus iš čia į savo ekranus, kad dizainas būtų vientisas!</string>
+    <string name="showcase_text_styles">Text Styles</string>
+    <string name="showcase_title_24">Title – 24sp medium</string>
+    <string name="showcase_subtitle">Subtitle – 18sp medium</string>
+    <string name="showcase_body">Body – 16sp regular. Main text style for descriptions and content.</string>
+    <string name="showcase_caption">Caption – 13sp secondary.</string>
+    <string name="showcase_123">123456</string>
+    <string name="showcase_buttons">Buttons</string>
+    <string name="showcase_primary_button">Primary button</string>
+    <string name="showcase_secondary_button">Secondary button</string>
+    <string name="showcase_text_button">Text button</string>
+    <string name="showcase_text_fields">Text Fields</string>
+    <string name="showcase_text_field_example">Text field example</string>
+    <string name="showcase_number_text_field">Number text field (number input type)</string>
+    <string name="showcase_progress_bars">Progress Bars</string>
+    <string name="showcase_steps">Steps (progressDrawable=progress_steps)</string>
+    <string name="showcase_sleep">Sleep (progressDrawable=progress_sleep)</string>
+    <string name="showcase_calories">Calories (progressDrawable=progress_calories)</string>
+    <string name="showcase_water">Water (progressDrawable=progress_water)</string>
+    <string name="showcase_accent_elements">Accent Elements</string>
+    <string name="showcase_bg_green_pill">bg_green_pill</string>
+    <string name="showcase_bg_assessment">bg_assessment</string>
+    <string name="showcase_assessment">Great day!</string>
+    <string name="showcase_mood">Mood</string>
+    <string name="showcase_not_selected">Not selected: bg_mood_circle\nSelected: bg_mood_selected</string>
+    <string name="showcase_mood1">😞</string>
+    <string name="showcase_mood2">😕</string>
+    <string name="showcase_mood3">😐</string>
+    <string name="showcase_mood4">🙂</string>
+    <string name="showcase_mood5">😄</string>
+    <string name="showcase_color_palette">Color Palette (visual reference)</string>
+    <string name="showcase_sportify_green">"  sportify_green #B8FF00"</string>
+    <string name="showcase_sportify_background">"  sportify_background #F0EAFF"</string>
+    <string name="showcase_progress_sleep">"  progress_sleep #7C6BFF"</string>
+    <string name="showcase_progress_calories">"  progress_calories #FF7043"</string>
+    <string name="showcase_progress_water">"  progress_water #42A5F5"</string>
+    <string name="placeholder">Placeholder</string>
+    <string name="placeholder_back">Back</string>
+    <string name="placeholder_detail">Detail</string>
+    <string name="placeholder_under_construction">This screen is under construction.</string>
+    <string name="placeholder_in_progress">In progress</string>
+    <string name="placeholder_fragment_in_progress">Fragment in progress…</string>
+    <string name="placeholder_content_will_be_shown">Content will be shown once this fragment is complete.</string>
 </resources>

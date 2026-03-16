@@ -17,7 +17,7 @@
     <!-- Bottom Navigation -->
     <color name="sportify_nav_background">#FFFFFFFF</color>
     <color name="sportify_nav_icon_active">#FF1A1A2E</color>
-    <color name="sportify_nav_icon_inactive">#FFA0A0B8</color>
+    <color name="sportify_nav_icon_inactive">#FF6B6B8A</color>
 
     <!-- Progress bars -->
     <color name="sportify_progress_track">#FFE8E4F0</color>

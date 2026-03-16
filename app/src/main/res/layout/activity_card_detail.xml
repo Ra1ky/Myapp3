@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/detailRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,7 +9,7 @@
     android:background="@color/sportify_background"
     android:padding="20dp">
 
-    <!-- Back + Title -->
+    <!-- Back -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,17 +19,17 @@
 
         <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/ic_menu_revert"
-            android:contentDescription="Back" />
+            android:contentDescription="@string/placeholder_back" />
 
         <TextView
             android:id="@+id/tvDetailTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Detail"
+            android:text="@string/placeholder_detail"
             style="@style/Sportify.Text.Title"
             android:layout_marginStart="12dp" />
     </LinearLayout>
@@ -39,23 +40,26 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@android:drawable/ic_menu_help"
             android:alpha="0.4"
-            android:contentDescription="Placeholder" />
+            android:contentDescription="@string/placeholder"
+            android:src="@android:drawable/ic_menu_help"
+            tools:ignore="ImageContrastCheck" />
 
         <TextView
             android:id="@+id/tvDetailDesc"
+            style="@style/Sportify.Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="This screen is under construction."
-            style="@style/Sportify.Text.Caption"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:text="@string/placeholder_under_construction"
             android:textAlignment="center"
-            android:layout_marginTop="@dimen/spacing_md" />
+            tools:ignore="TextContrastCheck" />
     </LinearLayout>
 
 </LinearLayout>

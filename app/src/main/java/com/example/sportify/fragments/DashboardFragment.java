@@ -24,6 +24,7 @@ import com.example.sportify.db.UserProfile;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.stream.IntStream;
 
 public class DashboardFragment extends Fragment {
 
@@ -101,13 +102,13 @@ public class DashboardFragment extends Fragment {
         CardView cardSleep = v.findViewById(R.id.cardSleep);
 
         cardSteps.setOnClickListener(click ->
-                openDetail("Steps", "Step tracking detail screen – coming soon."));
+                openDetail("Steps", "Step tracking details screen – coming soon."));
         cardCalories.setOnClickListener(click ->
-                openDetail("Food", "Calorie and food tracking detail screen – coming soon."));
+                openDetail("Food", "Calorie and food tracking details screen – coming soon."));
         cardWater.setOnClickListener(click ->
-                openDetail("Water", "Water intake detail screen – coming soon."));
+                openDetail("Water", "Water intake details screen – coming soon."));
         cardSleep.setOnClickListener(click ->
-                openDetail("Sleep", "Sleep tracking detail screen – coming soon."));
+                openDetail("Sleep", "Sleep tracking details screen – coming soon."));
     }
 
     private void openDetail(String title, String description) {
@@ -118,20 +119,20 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setupMoodButtons() {
-        for (int i = 0; i < moodButtons.length; i++) {
-            final int score = i + 1;  // 1–5
-            moodButtons[i].setOnClickListener(v -> selectMood(score));
-        }
+        IntStream.range(0, moodButtons.length)
+                .forEach(i -> {
+                    final int score = i + 1;
+                    moodButtons[i].setOnClickListener(v -> selectMood(score));
+                });
     }
 
     private void selectMood(int score) {
-        for (int i = 0; i < moodButtons.length; i++) {
-            if (i + 1 == score) {
-                moodButtons[i].setBackgroundResource(R.drawable.bg_mood_selected);
-            } else {
-                moodButtons[i].setBackgroundResource(R.drawable.bg_mood_circle);
-            }
-        }
+        IntStream.range(0, moodButtons.length)
+                .forEach(i -> moodButtons[i].setBackgroundResource(
+                        i + 1 == score
+                                ? R.drawable.bg_mood_selected
+                                : R.drawable.bg_mood_circle
+                ));
 
         ensureTodayRecord();
         todayRecord.setMoodScore(score);
@@ -167,11 +168,26 @@ public class DashboardFragment extends Fragment {
 
     private void applyGoalsFromProfile(DailyRecord record) {
         if (profile != null) {
+            // If the profile has biometric data, prefer calculated recommendations
+            if (profile.getWeightKg() > 0 && profile.getHeightCm() > 0) {
+                record.setCaloriesGoal(profile.getCaloriesGoal() > 0
+                        ? profile.getCaloriesGoal()
+                        : profile.getRecommendedCalories());
+            } else {
+                record.setCaloriesGoal(profile.getCaloriesGoal());
+            }
+
+            if (profile.getWeightKg() > 0) {
+                record.setWaterGoalMl(profile.getWaterGoalMl() > 0
+                        ? profile.getWaterGoalMl()
+                        : profile.getRecommendedWaterMl());
+            } else {
+                record.setWaterGoalMl(profile.getWaterGoalMl());
+            }
+
             record.setStepGoal(profile.getStepGoal());
-            record.setCaloriesGoal(profile.getCaloriesGoal());
-            record.setWaterGoalMl(profile.getWaterGoalMl());
         } else {
-            // Defaults
+            // Universal defaults
             record.setStepGoal(10000);
             record.setCaloriesGoal(2000);
             record.setWaterGoalMl(2500);

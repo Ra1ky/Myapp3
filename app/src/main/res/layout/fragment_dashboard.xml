@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="March 9"
+            android:text="@string/date_example"
             style="@style/Sportify.Text.Subtitle"
             android:paddingBottom="@dimen/spacing_md" />
 
@@ -82,7 +82,7 @@
                         android:id="@+id/tvStepsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="@string/_0"
                         style="@style/Sportify.Text.BigNumber"
                         android:textColor="@color/sportify_text_on_green" />
                 </LinearLayout>
@@ -101,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:text="0 / 10000"
+                    android:text="@string/_0_10000"
                     style="@style/Sportify.Text.Caption"
                     android:layout_marginTop="@dimen/spacing_xs" />
 
@@ -145,7 +145,7 @@
                         android:id="@+id/tvCaloriesCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0 kcal"
+                        android:text="@string/_0_kcal"
                         style="@style/Sportify.Text.Subtitle" />
 
                     <View
@@ -157,7 +157,7 @@
                         android:id="@+id/tvCaloriesGoal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="/ 2000 kcal"
+                        android:text="@string/_2000_kcal"
                         style="@style/Sportify.Text.Caption" />
                 </LinearLayout>
 
@@ -211,7 +211,7 @@
                         android:id="@+id/tvWaterCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0 ml"
+                        android:text="@string/_0_ml"
                         style="@style/Sportify.Text.Subtitle" />
 
                     <View
@@ -223,7 +223,7 @@
                         android:id="@+id/tvWaterGoal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="/ 2500 ml"
+                        android:text="@string/_2500_ml"
                         style="@style/Sportify.Text.Caption" />
                 </LinearLayout>
 
@@ -278,14 +278,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="-- h"
+                        android:text="@string/h"
                         style="@style/Sportify.Text.Subtitle" />
 
                     <TextView
                         android:id="@+id/tvSleepMood"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="😐"
+                        android:text="@string/mood_default"
                         android:textSize="28sp"
                         android:textColor="@color/sportify_text_primary" />
                 </LinearLayout>
@@ -344,7 +344,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="😞"
+                            android:text="@string/mood1"
                             android:textSize="24sp"
                             android:textColor="@color/sportify_text_primary"
                             android:background="@drawable/bg_mood_circle" />
@@ -360,7 +360,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="😕"
+                            android:text="@string/mood2"
                             android:textSize="24sp"
                             android:textColor="@color/sportify_text_primary"
                             android:background="@drawable/bg_mood_circle" />
@@ -376,7 +376,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="😐"
+                            android:text="@string/mood3"
                             android:textSize="24sp"
                             android:textColor="@color/sportify_text_primary"
                             android:background="@drawable/bg_mood_selected" />
@@ -392,7 +392,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="🙂"
+                            android:text="@string/mood4"
                             android:textSize="24sp"
                             android:textColor="@color/sportify_text_primary"
                             android:background="@drawable/bg_mood_circle" />
@@ -408,7 +408,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="😄"
+                            android:text="@string/mood5"
                             android:textSize="24sp"
                             android:textColor="@color/sportify_text_primary"
                             android:background="@drawable/bg_mood_circle" />
@@ -451,7 +451,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="12dp"
                     android:src="@android:drawable/ic_menu_info_details"
-                    android:contentDescription="Day Assessment" />
+                    android:contentDescription="@string/dashboard_assessment" />
 
                 <TextView
                     android:id="@+id/tvAssessmentText"

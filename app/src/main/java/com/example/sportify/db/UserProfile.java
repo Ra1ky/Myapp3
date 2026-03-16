@@ -49,6 +49,30 @@ public class UserProfile {
     public int getWaterGoalMl() { return waterGoalMl; }
     public void setWaterGoalMl(int waterGoalMl) { this.waterGoalMl = waterGoalMl; }
 
+    // Recommends daily steps based on age (10000 for most adults, adjusted with age)
+    public int getRecommendedSteps() {
+        if (age <= 0) return 10000;
+        if (age < 18) return 12000;
+        if (age < 40) return 10000;
+        if (age < 60) return 8000;
+        return 6000;
+    }
+
+    // Estimates weight maintenance calories using an averaged Mifflin-St Jeor equation
+    // (averages male and female estimates) with a sedentary activity multiplier of 1.2
+    public int getRecommendedCalories() {
+        if (weightKg <= 0 || heightCm <= 0) return 2000; // default
+
+        //   Male:   10 * weight + 6.25 * height - 5 * age + 5
+        //   Female: 10 * weight + 6.25 * height - 5 * age - 161
+        // Gender-neutral estimate:
+        //   10 * weight + 6.25 * height - 5 * age - 78
+        int ageVal = age > 0 ? age : 25; // default assumption
+        double bmr = 10 * weightKg + 6.25 * heightCm - 5 * ageVal - 78;
+        double tdee = bmr * 1.2; // sedentary multiplier
+        return Math.max(1200, (int) Math.round(tdee)); // floor is at 1200 for safety
+    }
+
     // Calculates the recommended daily water intake based on weight: ~35 ml per 1 kg of weight
     public int getRecommendedWaterMl() {
         return Math.round(weightKg * 35);
