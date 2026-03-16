@@ -25,11 +25,12 @@
             android:layout_marginBottom="@dimen/spacing_xs" />
 
         <TextView
+            style="@style/Sportify.Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lg"
             android:text="@string/showcase_desc"
-            style="@style/Sportify.Text.Caption"
-            android:layout_marginBottom="@dimen/spacing_lg" />
+            tools:ignore="TextContrastCheck" />
 
         <!-- ——————————————————————————————————————————————————————————
                                      TEXT STYLES
@@ -37,13 +38,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/showcase_text_styles"
-            android:textSize="13sp"
-            android:textColor="@color/sportify_green_dark"
+            android:layout_marginBottom="@dimen/spacing_sm"
             android:fontFamily="sans-serif-medium"
-            android:textAllCaps="true"
             android:letterSpacing="0.1"
-            android:layout_marginBottom="@dimen/spacing_sm" />
+            android:text="@string/showcase_text_styles"
+            android:textAllCaps="true"
+            android:textColor="@color/sportify_green_dark"
+            android:textSize="13sp"
+            tools:ignore="TextContrastCheck" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"

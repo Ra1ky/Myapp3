@@ -16,6 +16,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private int currentNavId = R.id.nav_dashboard;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,9 +51,12 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setItemTextColor(navColors);
 
         bottomNav.setOnItemSelectedListener(item -> {
-            Fragment fragment;
             int id = item.getItemId();
 
+            if (id == currentNavId) return true; // already on this tab
+            currentNavId = id;
+
+            Fragment fragment;
             if (id == R.id.nav_dashboard) {
                 fragment = new DashboardFragment();
             } else if (id == R.id.nav_add) {
