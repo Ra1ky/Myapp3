@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:name=".SportifyApp"
@@ -13,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Sportify">
         <activity
-            android:name=".ComponentShowcaseActivity"
+            android:name=".CardDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".ComponentShowcaseActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

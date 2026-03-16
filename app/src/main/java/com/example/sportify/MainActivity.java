@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.sportify.fragments.DashboardFragment;
 import com.example.sportify.fragments.PlaceholderFragment;
+import com.example.sportify.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Setting up the initial fragment – Dashboard
+        // Setting up the initial fragment — Dashboard
         if (savedInstanceState == null) {
             loadFragment(new DashboardFragment());
         }
@@ -39,18 +40,11 @@ public class MainActivity extends AppCompatActivity {
 
             if (id == R.id.nav_dashboard) {
                 fragment = new DashboardFragment();
-            } else if (id == R.id.nav_food) {
-                // TODO: change to FoodFragment
-                fragment = PlaceholderFragment.newInstance("Food", "This will include food and calorie tracking.");
             } else if (id == R.id.nav_add) {
-                // TODO: change to AddFragment
-                fragment = PlaceholderFragment.newInstance("Add", "This will include quick data entry.");
-            } else if (id == R.id.nav_stats) {
-                // TODO: change to StatsFragment
-                fragment = PlaceholderFragment.newInstance("Statistics", "This will include diagrams and history.");
+                // TODO: change to CameraFragment
+                fragment = PlaceholderFragment.newInstance("Camera", "This will include quick food data entry via the camera.");
             } else if (id == R.id.nav_profile) {
-                // TODO: change to ProfileFragment
-                fragment = PlaceholderFragment.newInstance("Profile", "This will show the user's profile info.");
+                fragment = new ProfileFragment();
             } else {
                 fragment = new DashboardFragment();
             }

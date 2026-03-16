@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.sportify.R;
 
-// UNIVERSAL PLACEHOLDER FRAGMENT
+// Universal placeholder fragment
 public class PlaceholderFragment extends Fragment {
 
     private static final String ARG_TITLE = "title";

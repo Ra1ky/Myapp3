@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Header: Logo + Title + Settings -->
+        <!-- Header -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +22,6 @@
             android:paddingTop="@dimen/spacing_md"
             android:paddingBottom="@dimen/spacing_sm">
 
-            <!-- Logo -->
             <TextView
                 android:id="@+id/tvAppTitle"
                 android:layout_width="wrap_content"
@@ -31,19 +30,6 @@
                 android:layout_centerVertical="true"
                 android:text="@string/app_name"
                 style="@style/Sportify.Text.Title" />
-
-            <!-- Settings -->
-            <ImageButton
-                android:id="@+id/btnSettings"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_settings"
-                android:tint="@color/sportify_text_primary"
-                android:contentDescription="Settings"
-                android:scaleType="centerInside" />
 
         </RelativeLayout>
 
@@ -59,10 +45,14 @@
 
         <!-- Steps -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardSteps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/card_margin_h"
             android:layout_marginBottom="12dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
             app:cardCornerRadius="@dimen/card_corner"
             app:cardElevation="@dimen/card_elevation"
             app:cardBackgroundColor="@color/sportify_surface">
@@ -118,71 +108,16 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Sleep -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/card_margin_h"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="@dimen/card_corner"
-            app:cardElevation="@dimen/card_elevation"
-            app:cardBackgroundColor="@color/sportify_surface">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/card_padding">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_sleep"
-                    style="@style/Sportify.Text.Caption" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="@dimen/spacing_sm">
-
-                    <TextView
-                        android:id="@+id/tvSleepHours"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="-- h"
-                        style="@style/Sportify.Text.Subtitle" />
-
-                    <TextView
-                        android:id="@+id/tvSleepMood"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="😐"
-                        android:textSize="28sp"
-                        android:textColor="@color/sportify_text_primary" />
-                </LinearLayout>
-
-                <ProgressBar
-                    android:id="@+id/progressSleep"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/progress_height"
-                    android:max="100"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/progress_sleep"
-                    android:layout_marginTop="@dimen/spacing_sm" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
         <!-- Calories -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardCalories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/card_margin_h"
             android:layout_marginBottom="12dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
             app:cardCornerRadius="@dimen/card_corner"
             app:cardElevation="@dimen/card_elevation"
             app:cardBackgroundColor="@color/sportify_surface">
@@ -241,10 +176,14 @@
 
         <!-- Water -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardWater"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/card_margin_h"
             android:layout_marginBottom="12dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
             app:cardCornerRadius="@dimen/card_corner"
             app:cardElevation="@dimen/card_elevation"
             app:cardBackgroundColor="@color/sportify_surface">
@@ -301,6 +240,69 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Sleep -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardSleep"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/card_margin_h"
+            android:layout_marginBottom="12dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="@dimen/card_corner"
+            app:cardElevation="@dimen/card_elevation"
+            app:cardBackgroundColor="@color/sportify_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dashboard_sleep"
+                    style="@style/Sportify.Text.Caption" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="@dimen/spacing_sm">
+
+                    <TextView
+                        android:id="@+id/tvSleepHours"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="-- h"
+                        style="@style/Sportify.Text.Subtitle" />
+
+                    <TextView
+                        android:id="@+id/tvSleepMood"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="😐"
+                        android:textSize="28sp"
+                        android:textColor="@color/sportify_text_primary" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progressSleep"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_height"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/progress_sleep"
+                    android:layout_marginTop="@dimen/spacing_sm" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
         <!-- Mood -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -326,6 +328,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal"
                     android:gravity="center"
                     android:layout_marginTop="12dp">

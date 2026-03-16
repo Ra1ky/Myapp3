@@ -1,57 +1,63 @@
-package com.example.sportify;
+package com.example.sportify.fragments;
 
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.ImageButton;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
+import com.example.sportify.R;
+import com.example.sportify.SportifyApp;
 import com.example.sportify.db.AppDatabase;
 import com.example.sportify.db.UserProfile;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class SettingsActivity extends AppCompatActivity {
+public class ProfileFragment extends Fragment {
 
     private TextInputEditText etAge, etWeight, etHeight;
     private TextInputEditText etStepGoal, etCalorieGoal, etWaterGoal;
     private TextView tvWaterAutoHint;
     private AppDatabase db;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_profile, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         db = SportifyApp.getDatabase();
 
-        bindViews();
-        setupBackButton();
+        bindViews(view);
         setupWeightWatcher();
-        setupSaveButton();
+        setupSaveButton(view);
         loadProfile();
     }
 
-    private void bindViews() {
-        etAge = findViewById(R.id.etAge);
-        etWeight = findViewById(R.id.etWeight);
-        etHeight = findViewById(R.id.etHeight);
-        etStepGoal = findViewById(R.id.etStepGoal);
-        etCalorieGoal = findViewById(R.id.etCalorieGoal);
-        etWaterGoal = findViewById(R.id.etWaterGoal);
-        tvWaterAutoHint = findViewById(R.id.tvWaterAutoHint);
+    private void bindViews(View v) {
+        etAge = v.findViewById(R.id.etAge);
+        etWeight = v.findViewById(R.id.etWeight);
+        etHeight = v.findViewById(R.id.etHeight);
+        etStepGoal = v.findViewById(R.id.etStepGoal);
+        etCalorieGoal = v.findViewById(R.id.etCalorieGoal);
+        etWaterGoal = v.findViewById(R.id.etWaterGoal);
+        tvWaterAutoHint = v.findViewById(R.id.tvWaterAutoHint);
     }
 
-    private void setupBackButton() {
-        ImageButton btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
-    }
-
-    // When the user changes their weight – automatically update recommended amount of water
-    // (35 ml/kg)
+    // When the user changes their weight – automatically update recommended amount of water (35 ml/kg)
     private void setupWeightWatcher() {
         etWeight.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -72,9 +78,9 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    private void setupSaveButton() {
-        MaterialButton btnSave = findViewById(R.id.btnSave);
-        btnSave.setOnClickListener(v -> saveProfile());
+    private void setupSaveButton(View v) {
+        MaterialButton btnSave = v.findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(click -> saveProfile());
     }
 
     private void loadProfile() {
@@ -105,10 +111,10 @@ public class SettingsActivity extends AppCompatActivity {
         profile.setCaloriesGoal(parseIntSafe(etCalorieGoal, 2000));
         profile.setWaterGoalMl(parseIntSafe(etWaterGoal, 2500));
 
-        // REPLACE strategy – always id = 1
+        // "REPLACE" strategy – always id = 1
         db.userProfileDAO().insertOrUpdate(profile);
 
-        Toast.makeText(this, R.string.settings_saved, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), R.string.settings_saved, Toast.LENGTH_SHORT).show();
     }
 
     private int parseIntSafe(TextInputEditText field, int defaultVal) {

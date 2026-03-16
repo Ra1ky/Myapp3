@@ -3,13 +3,11 @@ package com.example.sportify.db;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
-/**
- * Sportify Room duomenų bazė
- *
- * Kai pridėsite naują Entity (pvz. FoodProduct), reikia:
- * 1. Pridėti ją į entities = {...} masyvą
- * 2. Pridėti abstract DAO metodą
- */
+// ROOM DATABASE
+
+// When you add a new Entity (e.g. FoodProduct) you need:
+// 1. Add it to entities = {...} array
+// 2. Add an abstract DAO method
 @Database(
     entities = {
         UserProfile.class,
@@ -25,5 +23,5 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract DailyRecordDAO dailyRecordDAO();
 
-    // TODO: public abstract FoodProductDAO foodProductDAO();
+    // TODO: public abstract FoodProductDAO foodProductDAO();...
 }

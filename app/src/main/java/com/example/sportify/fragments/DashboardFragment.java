@@ -5,17 +5,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.sportify.R;
-import com.example.sportify.SettingsActivity;
+import com.example.sportify.CardDetailActivity;
 import com.example.sportify.SportifyApp;
 import com.example.sportify.db.AppDatabase;
 import com.example.sportify.db.DailyRecord;
@@ -59,7 +59,7 @@ public class DashboardFragment extends Fragment {
         todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         bindViews(view);
-        setupSettingsButton(view);
+        setupCardClickListeners(view);
         setupMoodButtons();
         loadData();
     }
@@ -94,12 +94,27 @@ public class DashboardFragment extends Fragment {
         moodButtons = new TextView[]{btnMood1, btnMood2, btnMood3, btnMood4, btnMood5};
     }
 
-    private void setupSettingsButton(View v) {
-        ImageButton btnSettings = v.findViewById(R.id.btnSettings);
-        btnSettings.setOnClickListener(click -> {
-            Intent intent = new Intent(requireContext(), SettingsActivity.class);
-            startActivity(intent);
-        });
+    private void setupCardClickListeners(View v) {
+        CardView cardSteps = v.findViewById(R.id.cardSteps);
+        CardView cardCalories = v.findViewById(R.id.cardCalories);
+        CardView cardWater = v.findViewById(R.id.cardWater);
+        CardView cardSleep = v.findViewById(R.id.cardSleep);
+
+        cardSteps.setOnClickListener(click ->
+                openDetail("Steps", "Step tracking detail screen – coming soon."));
+        cardCalories.setOnClickListener(click ->
+                openDetail("Food", "Calorie and food tracking detail screen – coming soon."));
+        cardWater.setOnClickListener(click ->
+                openDetail("Water", "Water intake detail screen – coming soon."));
+        cardSleep.setOnClickListener(click ->
+                openDetail("Sleep", "Sleep tracking detail screen – coming soon."));
+    }
+
+    private void openDetail(String title, String description) {
+        Intent intent = new Intent(requireContext(), CardDetailActivity.class);
+        intent.putExtra(CardDetailActivity.EXTRA_TITLE, title);
+        intent.putExtra(CardDetailActivity.EXTRA_DESC, description);
+        startActivity(intent);
     }
 
     private void setupMoodButtons() {
@@ -176,7 +191,7 @@ public class DashboardFragment extends Fragment {
         int goal = todayRecord.getStepGoal();
 
         tvStepsCount.setText(String.valueOf(steps));
-        tvStepsGoal.setText(steps + " / " + goal);
+        tvStepsGoal.setText(String.format(Locale.getDefault(), "%d / %d", steps, goal));
         progressSteps.setMax(goal > 0 ? goal : 10000);
         progressSteps.setProgress(steps);
     }
@@ -188,7 +203,7 @@ public class DashboardFragment extends Fragment {
         int mins = minutes % 60;
 
         if (minutes > 0) {
-            tvSleepHours.setText(hours + " h " + mins + " min");
+            tvSleepHours.setText(String.format(Locale.getDefault(), "%d h %d min", hours, mins));
         } else {
             tvSleepHours.setText("-- h");
         }
@@ -208,7 +223,7 @@ public class DashboardFragment extends Fragment {
         int goal = todayRecord.getCaloriesGoal();
 
         tvCaloriesCount.setText(String.valueOf(consumed));
-        tvCaloriesGoal.setText("/ " + goal + " kcal");
+        tvCaloriesGoal.setText(String.format(Locale.getDefault(), "/ %d kcal", goal));
         progressCalories.setMax(goal > 0 ? goal : 2000);
         progressCalories.setProgress(consumed);
     }
@@ -218,8 +233,8 @@ public class DashboardFragment extends Fragment {
         int ml = todayRecord.getWaterMl();
         int goal = todayRecord.getWaterGoalMl();
 
-        tvWaterCount.setText(ml + " ml");
-        tvWaterGoal.setText("/ " + goal + " ml");
+        tvWaterCount.setText(String.format(Locale.getDefault(), "%d ml", ml));
+        tvWaterGoal.setText(String.format(Locale.getDefault(), "/ %d ml", goal));
         progressWater.setMax(goal > 0 ? goal : 2500);
         progressWater.setProgress(ml);
     }

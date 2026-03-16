@@ -7,19 +7,9 @@
         android:title="@string/nav_dashboard" />
 
     <item
-        android:id="@+id/nav_food"
-        android:icon="@android:drawable/ic_menu_edit"
-        android:title="@string/nav_food" />
-
-    <item
         android:id="@+id/nav_add"
         android:icon="@android:drawable/ic_input_add"
         android:title="@string/nav_add" />
-
-    <item
-        android:id="@+id/nav_stats"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:title="@string/nav_stats" />
 
     <item
         android:id="@+id/nav_profile"

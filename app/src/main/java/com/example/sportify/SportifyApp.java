@@ -17,7 +17,7 @@ public class SportifyApp extends Application {
                 AppDatabase.class,
                 "sportify_db"
         )
-        .allowMainThreadQueries() // should use AsyncTask/Executor later?
+        .allowMainThreadQueries() // should use AsyncTask/Executor later?..
         .fallbackToDestructiveMigration(true) // if schema changes, delete and recreate
         .build();
     }

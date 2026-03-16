@@ -4,9 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-// User profile – age, weight, height and daily goals
-// (only one record is always stored (id = 1))
-
+// User profile – age, weight, height and daily goals (only one record is always stored (id = 1))
 @Entity(tableName = "user_profile")
 public class UserProfile {
 

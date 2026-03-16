@@ -12,29 +12,13 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- Back + Title -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/spacing_lg">
-
-            <ImageButton
-                android:id="@+id/btnBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_revert"
-                android:contentDescription="Grįžti" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_title"
-                style="@style/Sportify.Text.Title"
-                android:layout_marginStart="12dp" />
-        </LinearLayout>
+            android:text="@string/settings_title"
+            style="@style/Sportify.Text.Title"
+            android:layout_marginBottom="@dimen/spacing_lg" />
 
         <!-- Personal Data -->
         <TextView

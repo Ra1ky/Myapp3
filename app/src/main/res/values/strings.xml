@@ -4,9 +4,7 @@
 
     <!-- Bottom Navigation -->
     <string name="nav_dashboard">Home</string>
-    <string name="nav_food">Food</string>
     <string name="nav_add">Add</string>
-    <string name="nav_stats">Statistics</string>
     <string name="nav_profile">Profile</string>
 
     <!-- Dashboard -->
@@ -31,13 +29,6 @@
     <string name="settings_saved">Settings saved!</string>
     <string name="settings_water_auto">Recommended: %1$d ml</string>
 
-    <!-- Mood -->
-    <string name="mood_1">Horrible</string>
-    <string name="mood_2">Bad</string>
-    <string name="mood_3">Meh</string>
-    <string name="mood_4">Good</string>
-    <string name="mood_5">Amazing</string>
-
     <!-- Day assessment -->
     <string name="assess_excellent">Great day! All goals achieved — keep it up!</string>
     <string name="assess_good">Good day — most goals achieved!</string>
@@ -45,7 +36,7 @@
     <string name="assess_below">It could have been better — but every day is a new beginning.</string>
     <string name="assess_no_data">Start logging data and you will receive a daily assessment!</string>
 
-    <!-- SHOWCASE -->
+    <!-- Showcase -->
     <string name="showcase_title">Komponentų pavyzdžiai</string>
     <string name="showcase_desc">Kopijuokite komponentus iš čia į savo ekranus, kad dizainas būtų vientisas!</string>
 </resources>

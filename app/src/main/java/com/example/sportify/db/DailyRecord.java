@@ -5,8 +5,10 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-// Record of a day's health data
+import java.util.ArrayList;
+import java.util.List;
 
+// Record of a day's health
 @Entity(tableName = "daily_record")
 public class DailyRecord {
 
@@ -14,27 +16,23 @@ public class DailyRecord {
     @NonNull
     private String date;  // format: "yyyy-MM-dd"
 
-    // TODO: steps
     private int steps;
 
     @ColumnInfo(name = "step_goal")
     private int stepGoal;
 
-    // TODO: sleep
     @ColumnInfo(name = "sleep_minutes")
     private int sleepMinutes;
 
     @ColumnInfo(name = "sleep_mood")
     private int sleepMood;  // 1-5
 
-    // TODO: calories
     @ColumnInfo(name = "calories_consumed")
     private int caloriesConsumed;
 
     @ColumnInfo(name = "calories_goal")
     private int caloriesGoal;
 
-    // TODO: water
     @ColumnInfo(name = "water_ml")
     private int waterMl;
 
@@ -81,42 +79,41 @@ public class DailyRecord {
 
     // Calculates a daily health score (0-100)
     public int calculateHealthScore() {
-        int score = 0;
-        int factors = 0;
+        final List<Integer> scores = new ArrayList<>();
 
         // Steps: % of goal
         if (stepGoal > 0) {
-            score += Math.min(100, (steps * 100) / stepGoal);
-            factors++;
+            scores.add(Math.min(100, (steps * 100) / stepGoal));
         }
 
         // Sleep: 7–9h = 100, proportional otherwise
         if (sleepMinutes > 0) {
             int optimal = 480; // 8h
             int diff = Math.abs(sleepMinutes - optimal);
-            score += Math.max(0, 100 - diff);
-            factors++;
+            scores.add(Math.max(0, 100 - diff));
         }
 
         // Calories: proximity to goal
         if (caloriesGoal > 0 && caloriesConsumed > 0) {
             int diff = Math.abs(caloriesConsumed - caloriesGoal);
-            score += Math.max(0, 100 - (diff * 100 / caloriesGoal));
-            factors++;
+            scores.add(Math.max(0, 100 - (diff * 100 / caloriesGoal)));
         }
 
         // Water: % of goal
         if (waterGoalMl > 0) {
-            score += Math.min(100, (waterMl * 100) / waterGoalMl);
-            factors++;
+            scores.add(Math.min(100, (waterMl * 100) / waterGoalMl));
         }
 
         // Mood: 1 star = 20, 5 stars = 100
         if (moodScore > 0) {
-            score += moodScore * 20;
-            factors++;
+            scores.add(moodScore * 20);
         }
 
-        return factors > 0 ? score / factors : 0;
+        if (scores.isEmpty()) {
+            return 0;
+        }
+
+        final int sum = scores.stream().mapToInt(Integer::intValue).sum();
+        return sum / scores.size();
     }
 }
