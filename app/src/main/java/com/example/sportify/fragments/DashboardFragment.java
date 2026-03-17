@@ -17,7 +17,9 @@ import androidx.fragment.app.Fragment;
 import com.example.sportify.CaloriesDetailActivity;
 import com.example.sportify.R;
 import com.example.sportify.CardDetailActivity;
+import com.example.sportify.SleepDetailActivity;
 import com.example.sportify.SportifyApp;
+import com.example.sportify.StepsDetailActivity;
 import com.example.sportify.db.AppDatabase;
 import com.example.sportify.db.DailyRecord;
 import com.example.sportify.db.UserProfile;
@@ -102,8 +104,10 @@ public class DashboardFragment extends Fragment {
         CardView cardWater = v.findViewById(R.id.cardWater);
         CardView cardSleep = v.findViewById(R.id.cardSleep);
 
-        cardSteps.setOnClickListener(click ->
-                openDetail("Steps", "Step tracking details screen – coming soon."));
+        cardSteps.setOnClickListener(click ->{
+            Intent intent = new Intent(requireContext(), StepsDetailActivity.class);
+            startActivity(intent);
+        });
         
         cardCalories.setOnClickListener(click -> {
             Intent intent = new Intent(requireContext(), CaloriesDetailActivity.class);
@@ -112,8 +116,10 @@ public class DashboardFragment extends Fragment {
 
         cardWater.setOnClickListener(click ->
                 openDetail("Water", "Water intake details screen – coming soon."));
-        cardSleep.setOnClickListener(click ->
-                openDetail("Sleep", "Sleep tracking details screen – coming soon."));
+        cardSleep.setOnClickListener(click -> {
+            Intent intent = new Intent(requireContext(), SleepDetailActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void openDetail(String title, String description) {

@@ -98,4 +98,9 @@
     <string name="placeholder_in_progress">In progress</string>
     <string name="placeholder_fragment_in_progress">Fragment in progress…</string>
     <string name="placeholder_content_will_be_shown">Content will be shown once this fragment is complete.</string>
+
+    <string name="step_screen_title">Steps</string>
+    <string name="step_screen_desc">Steps</string>
+
+    "
 </resources>
