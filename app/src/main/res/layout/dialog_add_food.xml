@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="20dp">
 
         <Spinner
             android:id="@+id/spinnerMealType"
@@ -30,67 +30,108 @@
             android:contentDescription="Scan Barcode" />
     </LinearLayout>
 
-    <AutoCompleteTextView
-        android:id="@+id/etFoodName"
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search product (e.g. Banana)"
-        android:inputType="textCapSentences"
-        android:completionThreshold="1"
-        android:minHeight="48dp" />
+        android:hint="Product Name"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="12dp">
 
-    <EditText
-        android:id="@+id/etFoodGrams"
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/etFoodName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences"
+            android:completionThreshold="1"
+            android:padding="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Portion (grams)"
-        android:inputType="number"
-        android:minHeight="48dp" />
+        android:hint="Portion"
+        app:suffixText="g"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="12dp">
 
-    <EditText
-        android:id="@+id/etFoodCalories"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etFoodGrams"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Calories (kcal)"
-        android:inputType="number"
-        android:minHeight="48dp" />
+        android:hint="Energy"
+        app:suffixText="kcal"
+        app:helperText="(auto-calculated from macros)"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="12dp"
+        app:expandedHintEnabled="false">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etFoodCalories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:padding="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- БЖУ в один ряд с отступами между ними -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/etFoodProtein"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Prot (g)"
-            android:inputType="number"
-            android:minHeight="48dp" />
+            android:hint="Prot"
+            app:suffixText="g"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <EditText
-            android:id="@+id/etFoodCarbs"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFoodProtein"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:hint="Carb (g)"
-            android:inputType="number"
-            android:minHeight="48dp" />
+            android:hint="Carb"
+            app:suffixText="g"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <EditText
-            android:id="@+id/etFoodFat"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFoodCarbs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:hint="Fat (g)"
-            android:inputType="number"
-            android:minHeight="48dp" />
+            android:hint="Fat"
+            app:suffixText="g"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFoodFat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
 </LinearLayout>
