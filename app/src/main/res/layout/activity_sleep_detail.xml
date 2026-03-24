@@ -45,6 +45,39 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Total Sleep Today Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/card_corner"
+                app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/sportify_surface">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_padding"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Sleep Today"
+                        style="@style/Sportify.Text.Subtitle"
+                        android:layout_marginBottom="@dimen/spacing_sm" />
+
+                    <TextView
+                        android:id="@+id/tvTotalSleepDisplay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 h 0 min"
+                        style="@style/Sportify.Text.BigNumber" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <!-- Sleep Tracking Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

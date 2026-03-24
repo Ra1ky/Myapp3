@@ -36,7 +36,7 @@
     <string name="profile_weight">Weight (kg)</string>
     <string name="profile_height">Height (cm)</string>
     <string name="profile_goals">Daily Goals</string>
-    <string name="profile_step_goal">Steps</string>
+    <string name="profile_step_goal">Insert step goal</string>
     <string name="profile_calorie_goal">Calories (kcal)</string>
     <string name="profile_water_goal">Water (ml)</string>
     <string name="profile_save">Save</string>

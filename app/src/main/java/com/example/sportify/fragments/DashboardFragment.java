@@ -20,6 +20,7 @@ import com.example.sportify.CardDetailActivity;
 import com.example.sportify.SleepDetailActivity;
 import com.example.sportify.SportifyApp;
 import com.example.sportify.StepsDetailActivity;
+import com.example.sportify.WaterDetailActivity;
 import com.example.sportify.db.AppDatabase;
 import com.example.sportify.db.DailyRecord;
 import com.example.sportify.db.UserProfile;
@@ -114,8 +115,11 @@ public class DashboardFragment extends Fragment {
             startActivity(intent);
         });
 
-        cardWater.setOnClickListener(click ->
-                openDetail("Water", "Water intake details screen – coming soon."));
+        cardWater.setOnClickListener(click -> {
+            Intent intent = new Intent(requireContext(), WaterDetailActivity.class);
+            startActivity(intent);
+        });
+
         cardSleep.setOnClickListener(click -> {
             Intent intent = new Intent(requireContext(), SleepDetailActivity.class);
             startActivity(intent);

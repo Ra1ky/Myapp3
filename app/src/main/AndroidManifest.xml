@@ -20,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Sportify">
         <activity
+            android:name=".WaterDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".SleepDetailActivity"
             android:exported="false" />
         <activity

@@ -25,7 +25,7 @@ import java.util.Locale;
 
 public class SleepDetailActivity extends AppCompatActivity {
 
-    private TextView tvSleepDurationDisplay;
+    private TextView tvSleepDurationDisplay, tvTotalSleepDisplay;
     private MaterialButton btnToggleSleep;
     private TextInputEditText etSleepHours, etSleepMinutes;
     private MaterialButton btnSaveManualSleep;
@@ -69,6 +69,7 @@ public class SleepDetailActivity extends AppCompatActivity {
         // UI Initialization
         ImageButton btnBack = findViewById(R.id.btnBack);
         tvSleepDurationDisplay = findViewById(R.id.tvSleepDurationDisplay);
+        tvTotalSleepDisplay = findViewById(R.id.tvTotalSleepDisplay);
         btnToggleSleep = findViewById(R.id.btnToggleSleep);
         etSleepHours = findViewById(R.id.etSleepHours);
         etSleepMinutes = findViewById(R.id.etSleepMinutes);
@@ -106,7 +107,17 @@ public class SleepDetailActivity extends AppCompatActivity {
             todayRecord = new DailyRecord(todayDate);
             recordDao.insertOrUpdate(todayRecord);
         }
+        updateTotalSleepUI();
         updateMoodUI();
+    }
+
+    private void updateTotalSleepUI() {
+        int totalMinutes = todayRecord.getSleepMinutes();
+        int h = totalMinutes / 60;
+        int m = totalMinutes % 60;
+        if (tvTotalSleepDisplay != null) {
+            tvTotalSleepDisplay.setText(String.format(Locale.getDefault(), "%d h %d min", h, m));
+        }
     }
 
     private void toggleSleepTracking() {
@@ -131,6 +142,7 @@ public class SleepDetailActivity extends AppCompatActivity {
             btnToggleSleep.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.sportify_green)));
             tvSleepDurationDisplay.setText("00:00:00");
             
+            updateTotalSleepUI();
             Toast.makeText(this, "Sleep record updated!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -153,6 +165,7 @@ public class SleepDetailActivity extends AppCompatActivity {
 
         etSleepHours.setText("");
         etSleepMinutes.setText("");
+        updateTotalSleepUI();
         Toast.makeText(this, "Manual entry saved!", Toast.LENGTH_SHORT).show();
     }
 
