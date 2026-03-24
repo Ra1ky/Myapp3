@@ -133,9 +133,9 @@ public class SleepDetailActivity extends AppCompatActivity {
             isTracking = false;
             timerHandler.removeCallbacks(timerRunnable);
             long millis = System.currentTimeMillis() - startTime;
-            int totalMinutes = (int) (millis / (1000 * 60));
+            int sessionMinutes = (int) (millis / (1000 * 60));
 
-            todayRecord.setSleepMinutes(todayRecord.getSleepMinutes() + totalMinutes);
+            todayRecord.setSleepMinutes(todayRecord.getSleepMinutes() + sessionMinutes);
             recordDao.insertOrUpdate(todayRecord);
 
             btnToggleSleep.setText("Start Sleep");
@@ -160,7 +160,8 @@ public class SleepDetailActivity extends AppCompatActivity {
         int m = mStr.isEmpty() ? 0 : Integer.parseInt(mStr);
         int totalMinutes = (h * 60) + m;
 
-        todayRecord.setSleepMinutes(todayRecord.getSleepMinutes() + totalMinutes);
+        // Set total sleep instead of adding to it
+        todayRecord.setSleepMinutes(totalMinutes);
         recordDao.insertOrUpdate(todayRecord);
 
         etSleepHours.setText("");

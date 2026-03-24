@@ -216,23 +216,24 @@ public class StepsDetailActivity extends AppCompatActivity implements SensorEven
     private void addManualSteps() {
         String manualStr = etManualSteps.getText().toString();
         if (manualStr.isEmpty()) {
-            Toast.makeText(this, "Please enter steps to add", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter steps", Toast.LENGTH_SHORT).show();
             return;
         }
 
         try {
-            int stepsToAdd = Integer.parseInt(manualStr);
-            if (stepsToAdd <= 0) {
-                Toast.makeText(this, "Steps must be greater than 0", Toast.LENGTH_SHORT).show();
+            int totalSteps = Integer.parseInt(manualStr);
+            if (totalSteps < 0) {
+                Toast.makeText(this, "Steps cannot be negative", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            todayRecord.setSteps(todayRecord.getSteps() + stepsToAdd);
+            // Set total steps instead of adding
+            todayRecord.setSteps(totalSteps);
             recordDao.insertOrUpdate(todayRecord);
 
             updateUI();
             etManualSteps.setText(""); // Clear input
-            Toast.makeText(this, "Steps added!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Steps updated!", Toast.LENGTH_SHORT).show();
 
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid number", Toast.LENGTH_SHORT).show();
