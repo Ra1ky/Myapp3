@@ -26,6 +26,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.sportify.db.AppDatabase;
 import com.example.sportify.db.DailyRecord;
 import com.example.sportify.db.DailyRecordDAO;
+import com.example.sportify.db.UserProfile;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -204,6 +205,13 @@ public class StepsDetailActivity extends AppCompatActivity implements SensorEven
 
             todayRecord.setStepGoal(newGoal);
             recordDao.insertOrUpdate(todayRecord);
+
+            // Sync to profile
+            UserProfile profile = db.userProfileDAO().getProfile();
+            if (profile != null) {
+                profile.setStepGoal(newGoal);
+                db.userProfileDAO().insertOrUpdate(profile);
+            }
 
             updateUI();
             Toast.makeText(this, R.string.profile_updated, Toast.LENGTH_SHORT).show();

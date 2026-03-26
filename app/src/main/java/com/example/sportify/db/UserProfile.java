@@ -22,6 +22,12 @@ public class UserProfile {
     @ColumnInfo(name = "step_goal")
     private int stepGoal = 10000;
 
+    @ColumnInfo(name = "diet_mode")
+    private int dietMode = 0; // 0 = Maintain, 1 = Lose, 2 = Gain
+
+    @ColumnInfo(name = "diet_multiplier")
+    private float dietMultiplier = 1.0f;
+
     @ColumnInfo(name = "calories_goal")
     private int caloriesGoal = 2000;
 
@@ -43,6 +49,12 @@ public class UserProfile {
     public int getStepGoal() { return stepGoal; }
     public void setStepGoal(int stepGoal) { this.stepGoal = stepGoal; }
 
+    public int getDietMode() { return dietMode; }
+    public void setDietMode(int dietMode) { this.dietMode = dietMode; }
+
+    public float getDietMultiplier() { return dietMultiplier; }
+    public void setDietMultiplier(float dietMultiplier) { this.dietMultiplier = dietMultiplier; }
+
     public int getCaloriesGoal() { return caloriesGoal; }
     public void setCaloriesGoal(int caloriesGoal) { this.caloriesGoal = caloriesGoal; }
 
@@ -56,6 +68,11 @@ public class UserProfile {
         if (age < 40) return 10000;
         if (age < 60) return 8000;
         return 6000;
+    }
+
+    public int getRecommendedCaloriesForDiet() {
+        int base = getRecommendedCalories();
+        return (int)(base * dietMultiplier);
     }
 
     // Estimates weight maintenance calories using an averaged Mifflin-St Jeor equation

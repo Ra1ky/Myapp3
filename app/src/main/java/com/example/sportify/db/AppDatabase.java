@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase;
         FoodItem.class,
         Product.class
     },
-    version = 6,
+    version = 8,
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {

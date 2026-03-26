@@ -45,6 +45,18 @@
     <string name="profile_steps_auto">Recommended: %1$d steps</string>
     <string name="profile_calorie_auto">Recommended for maintaining weight: %1$d kcal</string>
     <string name="profile_water_auto">Recommended: %1$d ml</string>
+    <string name="profile_diet_maintain">Maintain weight</string>
+    <string name="profile_diet_lose">Lose weight</string>
+    <string name="profile_diet_gain">Gain weight</string>
+    <string name="profile_diet_mode">Diet mode</string>
+    <string name="profile_calorie_adjustment">Calorie adjustment</string>
+    <string name="_1_00">×1.00</string>
+    <string name="_0_75">×0.75</string>
+    <string name="_0_95">×0.95</string>
+    <string name="_0_80">×0.80</string>
+    <string name="_1_05">×1.05</string>
+    <string name="_1_30">×1.30</string>
+    <string name="_1_20">×1.20</string>
 
     <!-- Day assessment -->
     <string name="assess_excellent">Great day! All goals achieved — keep it up!</string>
