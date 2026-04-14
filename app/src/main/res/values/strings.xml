@@ -8,7 +8,7 @@
     <string name="nav_profile">Profile</string>
 
     <!-- Dashboard -->
-    <string name="dashboard_steps">Steps</string>
+    <string name="dashboard_steps">Total steps walked today</string>
     <string name="dashboard_sleep">Sleep</string>
     <string name="dashboard_calories">Calories</string>
     <string name="dashboard_water">Water</string>
@@ -39,7 +39,7 @@
     <string name="profile_step_goal">Insert step goal</string>
     <string name="profile_calorie_goal">Calories (kcal)</string>
     <string name="profile_water_goal">Water (ml)</string>
-    <string name="profile_save">Save</string>
+    <string name="profile_save">Save Goal</string>
     <string name="profile_updated">Profile updated!</string>
     <string name="profile_no_recommendation">Not enough data to provide a recommendation</string>
     <string name="profile_steps_auto">Recommended: %1$d steps</string>

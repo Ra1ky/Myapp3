@@ -135,6 +135,7 @@ public class SleepDetailActivity extends AppCompatActivity {
             long millis = System.currentTimeMillis() - startTime;
             int sessionMinutes = (int) (millis / (1000 * 60));
 
+            // ADD session duration to total
             todayRecord.setSleepMinutes(todayRecord.getSleepMinutes() + sessionMinutes);
             recordDao.insertOrUpdate(todayRecord);
 
@@ -160,7 +161,7 @@ public class SleepDetailActivity extends AppCompatActivity {
         int m = mStr.isEmpty() ? 0 : Integer.parseInt(mStr);
         int totalMinutes = (h * 60) + m;
 
-        // Set total sleep instead of adding to it
+        // SET total sleep from manual entry
         todayRecord.setSleepMinutes(totalMinutes);
         recordDao.insertOrUpdate(todayRecord);
 
