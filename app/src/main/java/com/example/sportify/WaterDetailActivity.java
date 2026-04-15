@@ -66,7 +66,7 @@ public class WaterDetailActivity extends AppCompatActivity {
 
         loadData();
 
-        btnSaveWater.setOnClickListener(v -> addWater());
+        btnSaveWater.setOnClickListener(v -> saveWaterTotal());
         btnSaveWaterGoal.setOnClickListener(v -> saveGoal());
     }
 
@@ -96,7 +96,7 @@ public class WaterDetailActivity extends AppCompatActivity {
         etWaterGoal.setText(String.valueOf(goalMl));
     }
 
-    private void addWater() {
+    private void saveWaterTotal() {
         String amountStr = etWaterAmount.getText().toString();
         if (amountStr.isEmpty()) {
             Toast.makeText(this, "Please enter amount", Toast.LENGTH_SHORT).show();
@@ -105,17 +105,18 @@ public class WaterDetailActivity extends AppCompatActivity {
 
         try {
             int amount = Integer.parseInt(amountStr);
-            if (amount <= 0) {
-                Toast.makeText(this, "Amount must be greater than 0", Toast.LENGTH_SHORT).show();
+            if (amount < 0) {
+                Toast.makeText(this, "Amount cannot be negative", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            todayRecord.setWaterMl(todayRecord.getWaterMl() + amount);
+            // Sets the total instead of adding
+            todayRecord.setWaterMl(amount);
             recordDao.insertOrUpdate(todayRecord);
             
             updateUI();
             etWaterAmount.setText(""); // Clear input
-            Toast.makeText(this, "Water added!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Total water updated!", Toast.LENGTH_SHORT).show();
             
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid number", Toast.LENGTH_SHORT).show();
