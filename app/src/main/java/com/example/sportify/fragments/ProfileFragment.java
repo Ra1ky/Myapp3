@@ -90,7 +90,7 @@ public class ProfileFragment extends Fragment {
         };
     }
 
-    // When the user changes their weight or weight – automatically update recommended calorie/water daily intake
+    // When the user changes their data, automatically update the recommended steps, calorie, and water hints
     private void setupAutoHints() {
         TextWatcher recalcWatcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -189,6 +189,7 @@ public class ProfileFragment extends Fragment {
                 android.R.layout.simple_dropdown_item_1line, dietModes);
         spinnerDietMode.setAdapter(adapter);
         dietModeListener = createDietModeListener();
+        spinnerDietMode.setOnItemClickListener(dietModeListener);
     }
 
     private void configureMultiplierSlider(int dietMode) {
@@ -224,19 +225,17 @@ public class ProfileFragment extends Fragment {
         float height = parseFloatSafe(etHeight);
         int age = parseIntSafe(etAge, 0);
 
-        if (weight > 0 && height > 0) {
-            UserProfile temp = new UserProfile();
-            temp.setWeightKg(weight);
-            temp.setHeightCm(height);
-            temp.setAge(age > 0 ? age : 25);
+        UserProfile temp = new UserProfile();
+        temp.setWeightKg(weight > 0 ? weight : 70f);
+        temp.setHeightCm(height > 0 ? height : 170f);
+        temp.setAge(age > 0 ? age : 25);
 
-            float multiplier = (dietMode == 0) ? 1.0f : sliderMultiplier.getValue();
-            int recommended = (int)(temp.getRecommendedCalories() * multiplier);
+        float multiplier = (dietMode == 0) ? 1.0f : sliderMultiplier.getValue();
+        int recommended = (int)(temp.getRecommendedCalories() * multiplier);
 
-            suppressCalorieWatcher = true;
-            etCalorieGoal.setText(String.valueOf(recommended));
-            suppressCalorieWatcher = false;
-        }
+        suppressCalorieWatcher = true;
+        etCalorieGoal.setText(String.valueOf(recommended));
+        suppressCalorieWatcher = false;
     }
 
     private void setupMultiplierSlider() {
@@ -252,18 +251,14 @@ public class ProfileFragment extends Fragment {
         float height = parseFloatSafe(etHeight);
         int age = parseIntSafe(etAge, 0);
 
-        if (weight > 0 && height > 0) {
-            UserProfile temp = new UserProfile();
-            temp.setWeightKg(weight);
-            temp.setHeightCm(height);
-            temp.setAge(age > 0 ? age : 25);
-            int base = temp.getRecommendedCalories();
-            int adjusted = (int)(base * multiplier);
+        UserProfile temp = new UserProfile();
+        temp.setWeightKg(weight > 0 ? weight : 70f);
+        temp.setHeightCm(height > 0 ? height : 170f);
+        temp.setAge(age > 0 ? age : 25);
 
-            suppressCalorieWatcher = true;
-            etCalorieGoal.setText(String.valueOf(adjusted));
-            suppressCalorieWatcher = false;
-        }
+        suppressCalorieWatcher = true;
+        etCalorieGoal.setText(String.valueOf((int)(temp.getRecommendedCalories() * multiplier)));
+        suppressCalorieWatcher = false;
     }
 
     private void setupSaveButton(View v) {
@@ -330,7 +325,7 @@ public class ProfileFragment extends Fragment {
 
         profile.setStepGoal(parseIntSafe(etStepGoal, defaultSteps));
 
-        // Save exactly what the user typed — never recalculate this
+        // Save exactly what the user typed
         int savedCalories = parseIntSafe(etCalorieGoal, defaultCalories);
         profile.setCaloriesGoal(savedCalories);
 
