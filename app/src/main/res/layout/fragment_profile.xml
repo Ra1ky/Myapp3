@@ -38,52 +38,111 @@
                 style="@style/Sportify.Text.Subtitle"
                 android:layout_marginBottom="12dp" />
 
-            <com.google.android.material.textfield.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                style="@style/Sportify.TextInput"
-                android:hint="@string/profile_age">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etAge"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Sportify.TextInput"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
-                    tools:ignore="TextContrastCheck" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:hint="@string/profile_age">
 
-            <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etAge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        tools:ignore="TextContrastCheck" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/arrowAge"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:contentDescription="@string/onboarding_arrow_desc"
+                    android:scaleX="-1"
+                    android:src="@drawable/ic_arrow_right"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                style="@style/Sportify.TextInput"
-                android:hint="@string/profile_weight">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etWeight"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Sportify.TextInput"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    tools:ignore="TextContrastCheck" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:hint="@string/profile_weight">
 
-            <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        tools:ignore="TextContrastCheck" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/arrowWeight"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:contentDescription="@string/onboarding_arrow_desc"
+                    android:scaleX="-1"
+                    android:src="@drawable/ic_arrow_right"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_lg"
-                style="@style/Sportify.TextInput"
-                android:hint="@string/profile_height">
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etHeight"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Sportify.TextInput"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:textColor="@color/sportify_text_primary"
-                    android:textColorHint="@color/sportify_text_hint"
-                    tools:ignore="TextContrastCheck" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:hint="@string/profile_height">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etHeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        tools:ignore="TextContrastCheck" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/arrowHeight"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:contentDescription="@string/onboarding_arrow_desc"
+                    android:scaleX="-1"
+                    android:src="@drawable/ic_arrow_right"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+        <!-- Wrapped so we can hide the whole goals block during onboarding -->
+        <LinearLayout
+            android:id="@+id/layoutDailyGoalsSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <!-- Daily Goals -->
             <TextView
@@ -257,15 +316,39 @@
                 android:paddingStart="4dp"
                 android:paddingEnd="4dp" />
 
+        </LinearLayout>
+
+            <!-- Onboarding-only "Done" button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDone"
+                style="@style/Sportify.Button.Primary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:minWidth="320dp"
+                android:text="@string/onboarding_done"
+                android:visibility="gone" />
+
             <!-- Save -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSave"
+                style="@style/Sportify.Button.Primary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="320dp"
                 android:layout_gravity="center"
-                android:text="@string/profile_save"
-                style="@style/Sportify.Button.Primary" />
+                android:minWidth="320dp"
+                android:text="@string/profile_save" />
+
+            <!-- Shown only while the 7-day edit lock is active -->
+            <TextView
+                android:id="@+id/tvLockNotice"
+                style="@style/Sportify.Text.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/spacing_sm"
+                android:textAlignment="center"
+                android:visibility="gone" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

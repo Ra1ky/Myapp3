@@ -1,5 +1,7 @@
 package com.example.sportify.fragments;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.text.Editable;
@@ -7,17 +9,22 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.example.sportify.MainActivity;
+import com.example.sportify.Prefs;
 import com.example.sportify.R;
 import com.example.sportify.SportifyApp;
 import com.example.sportify.db.AppDatabase;
@@ -30,7 +37,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class ProfileFragment extends Fragment {
-
+    private static final String ARG_ONBOARDING = "onboarding_mode";
+    private boolean onboardingMode = false;
     private TextInputEditText etAge, etWeight, etHeight;
     private TextInputEditText etStepGoal, etCalorieGoal, etWaterGoal;
     private TextView tvStepsAutoHint, tvCalorieAutoHint, tvWaterAutoHint;
@@ -39,9 +47,16 @@ public class ProfileFragment extends Fragment {
     private LinearLayout layoutMultiplier;
     private com.google.android.material.slider.Slider sliderMultiplier;
     private TextView tvMultiplierValue, tvMultiplierMin, tvMultiplierMax;
+    private ImageView arrowAge, arrowWeight, arrowHeight;
+    private View dailyGoalsSection;
+    private MaterialButton btnDone;
+    private MaterialButton btnSave;
+    private TextView tvLockNotice;
+    private ObjectAnimator arrowAnimator;
     private boolean suppressSliderListener = false;
     private AdapterView.OnItemClickListener dietModeListener;
     private AppDatabase db;
+    private UserProfile loadedProfile;
 
     @Nullable
     @Override
@@ -57,12 +72,22 @@ public class ProfileFragment extends Fragment {
 
         db = SportifyApp.getDatabase();
 
+        if (getArguments() != null) {
+            onboardingMode = getArguments().getBoolean(ARG_ONBOARDING, false);
+        }
+
         bindViews(view);
-        setupDietSpinner();
-        setupMultiplierSlider();
-        setupAutoHints();
-        setupSaveButton(view);
-        loadProfile();
+
+        if (onboardingMode) {
+            enterOnboardingMode();
+        } else {
+            setupDietSpinner();
+            setupMultiplierSlider();
+            setupAutoHints();
+            setupSaveButton();
+            loadProfile();
+            refreshSaveButtonState();
+        }
     }
 
     private void bindViews(View v) {
@@ -81,6 +106,21 @@ public class ProfileFragment extends Fragment {
         tvStepsAutoHint = v.findViewById(R.id.tvStepsAutoHint);
         tvCalorieAutoHint = v.findViewById(R.id.tvCalorieAutoHint);
         tvWaterAutoHint = v.findViewById(R.id.tvWaterAutoHint);
+        arrowAge = v.findViewById(R.id.arrowAge);
+        arrowWeight = v.findViewById(R.id.arrowWeight);
+        arrowHeight = v.findViewById(R.id.arrowHeight);
+        dailyGoalsSection = v.findViewById(R.id.layoutDailyGoalsSection);
+        btnSave = v.findViewById(R.id.btnSave);
+        btnDone = v.findViewById(R.id.btnDone);
+        tvLockNotice = v.findViewById(R.id.tvLockNotice);
+    }
+
+    public static ProfileFragment newOnboardingInstance() {
+        ProfileFragment f = new ProfileFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_ONBOARDING, true);
+        f.setArguments(args);
+        return f;
     }
 
     private AdapterView.OnItemClickListener createDietModeListener() {
@@ -261,13 +301,13 @@ public class ProfileFragment extends Fragment {
         suppressCalorieWatcher = false;
     }
 
-    private void setupSaveButton(View v) {
-        MaterialButton btnSave = v.findViewById(R.id.btnSave);
+    private void setupSaveButton() {
         btnSave.setOnClickListener(click -> saveProfile());
     }
 
     private void loadProfile() {
         UserProfile profile = db.userProfileDAO().getProfile();
+        loadedProfile = profile; // snapshot for change detection on save
         if (profile == null) {
             updateRecommendations();
             return;
@@ -310,8 +350,26 @@ public class ProfileFragment extends Fragment {
     }
 
     private void saveProfile() {
-        UserProfile profile = new UserProfile();
+        UserProfile candidate = buildProfileFromInputs();
 
+        if (!hasChanges(candidate)) {
+            Toast.makeText(requireContext(), R.string.profile_no_changes, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Real changes — confirm before persisting and locking for 7 days.
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.profile_save_warning_title)
+                .setMessage(R.string.profile_save_warning_message)
+                .setPositiveButton(R.string.profile_save_warning_yes, (d, w) -> persistProfile(candidate))
+                .setNegativeButton(R.string.profile_save_warning_no, null)
+                .show();
+    }
+
+    // Builds a UserProfile reflecting whatever is currently in the inputs, falling
+    // back to recommended/default values when fields are blank.
+    private UserProfile buildProfileFromInputs() {
+        UserProfile profile = new UserProfile();
         profile.setAge(parseIntSafe(etAge, 0));
         profile.setWeightKg(parseFloatSafe(etWeight));
         profile.setHeightCm(parseFloatSafe(etHeight));
@@ -324,12 +382,31 @@ public class ProfileFragment extends Fragment {
                 ? profile.getRecommendedWaterMl() : 2500;
 
         profile.setStepGoal(parseIntSafe(etStepGoal, defaultSteps));
-
-        // Save exactly what the user typed
-        int savedCalories = parseIntSafe(etCalorieGoal, defaultCalories);
-        profile.setCaloriesGoal(savedCalories);
-
+        profile.setCaloriesGoal(parseIntSafe(etCalorieGoal, defaultCalories));
         profile.setWaterGoalMl(parseIntSafe(etWaterGoal, defaultWater));
+
+        int dietMode = getDietModePosition();
+        profile.setDietMode(dietMode);
+        profile.setDietMultiplier(dietMode == 0 ? 1.0f : sliderMultiplier.getValue());
+        return profile;
+    }
+
+    // Compares a candidate profile to the snapshot loaded from the DB.
+    private boolean hasChanges(UserProfile newProfile) {
+        if (loadedProfile == null) return true; // never saved before — counts as a change
+        return loadedProfile.getAge()           != newProfile.getAge()
+                || loadedProfile.getWeightKg()      != newProfile.getWeightKg()
+                || loadedProfile.getHeightCm()      != newProfile.getHeightCm()
+                || loadedProfile.getStepGoal()      != newProfile.getStepGoal()
+                || loadedProfile.getCaloriesGoal()  != newProfile.getCaloriesGoal()
+                || loadedProfile.getWaterGoalMl()   != newProfile.getWaterGoalMl()
+                || loadedProfile.getDietMode()      != newProfile.getDietMode()
+                || Math.abs(loadedProfile.getDietMultiplier() - newProfile.getDietMultiplier()) > 0.001f;
+    }
+
+    // Confirmed save: do the DB writes, mirror to today's DailyRecord, start the 7-day lock, and refresh the UI.
+    private void persistProfile(UserProfile profile) {
+        int savedCalories = profile.getCaloriesGoal();
 
         spinnerDietMode.setOnItemSelectedListener(null);
         suppressSliderListener = true;
@@ -365,7 +442,26 @@ public class ProfileFragment extends Fragment {
             suppressCalorieWatcher = false;
         });
 
+        // Start the 7-day lock and refresh the snapshot so subsequent identical saves don't re-trigger the warning popup.
+        Prefs.markSavedNow(requireContext());
+        loadedProfile = profile;
+        refreshSaveButtonState();
+
         Toast.makeText(requireContext(), R.string.profile_updated, Toast.LENGTH_SHORT).show();
+    }
+
+    // Disables the Save button while the lock is active and surfaces the unlock date.
+    private void refreshSaveButtonState() {
+        if (Prefs.isProfileLocked(requireContext())) {
+            btnSave.setEnabled(false);
+            long unlockMs = Prefs.getUnlockMillis(requireContext());
+            String dateStr = new SimpleDateFormat("MMMM d", Locale.getDefault()).format(new Date(unlockMs));
+            tvLockNotice.setText(getString(R.string.profile_locked_until, dateStr));
+            tvLockNotice.setVisibility(View.VISIBLE);
+        } else {
+            btnSave.setEnabled(true);
+            tvLockNotice.setVisibility(View.GONE);
+        }
     }
 
     private int getDietModePosition() {
@@ -441,5 +537,111 @@ public class ProfileFragment extends Fragment {
             return String.valueOf((int) value);
         }
         return String.valueOf(value);
+    }
+
+    // Switches the screen into a guided sequence. Hides the daily-goals section
+    // and the regular Save button; the arrow follows whichever input has focus
+    // and "Done" finalizes the profile.
+    private void enterOnboardingMode() {
+        dailyGoalsSection.setVisibility(View.GONE);
+        btnSave.setVisibility(View.GONE);
+        tvLockNotice.setVisibility(View.GONE);
+
+        btnDone.setVisibility(View.VISIBLE);
+        btnDone.setOnClickListener(v -> completeOnboarding());
+
+        setupOnboardingFocusListeners();
+
+        // Default to the age field. requestFocus() will fire the focus listener
+        // and showArrowFor will be triggered through that path.
+        etAge.requestFocus();
+        showArrowFor(arrowAge);
+    }
+
+    private void setupOnboardingFocusListeners() {
+        etAge.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) showArrowFor(arrowAge);
+        });
+        etWeight.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) showArrowFor(arrowWeight);
+        });
+        etHeight.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) showArrowFor(arrowHeight);
+        });
+    }
+
+    // Hides the other two arrows, shows + animates the active one.
+    private void showArrowFor(ImageView activeArrow) {
+        arrowAge.setVisibility(View.INVISIBLE);
+        arrowWeight.setVisibility(View.INVISIBLE);
+        arrowHeight.setVisibility(View.INVISIBLE);
+        stopArrowAnimation();
+
+        activeArrow.setVisibility(View.VISIBLE);
+        startArrowAnimation(activeArrow);
+    }
+
+    // Builds the initial profile, fills in recommended goals, persists, and shows the wrap-up popup.
+    private void completeOnboarding() {
+        stopArrowAnimation();
+
+        UserProfile profile = new UserProfile();
+        profile.setAge(parseIntSafe(etAge, 0));
+        profile.setWeightKg(parseFloatSafe(etWeight));
+        profile.setHeightCm(parseFloatSafe(etHeight));
+
+        // Recommended methods on UserProfile already fall back to sensible
+        // defaults when their inputs are missing, except water (returns 0
+        // when weight is unknown), so guarding that one explicitly.
+        profile.setStepGoal(profile.getRecommendedSteps());
+        profile.setCaloriesGoal(profile.getRecommendedCalories());
+        int recommendedWater = profile.getRecommendedWaterMl();
+        profile.setWaterGoalMl(recommendedWater > 0 ? recommendedWater : 2500);
+        profile.setDietMode(0);
+        profile.setDietMultiplier(1.0f);
+
+        db.userProfileDAO().insertOrUpdate(profile);
+
+        String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        DailyRecord existing = db.dailyRecordDAO().getByDate(todayDate);
+        DailyRecord record = getDailyRecord(existing, todayDate, profile);
+        db.dailyRecordDAO().insertOrUpdate(record);
+
+        Prefs.setOnboardingDone(requireContext(), true);
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.onboarding_done_title)
+                .setMessage(R.string.onboarding_done_message)
+                .setCancelable(false)
+                .setPositiveButton(R.string.onboarding_done_button, (d, w) -> {
+                    if (getActivity() instanceof MainActivity) {
+                        ((MainActivity) getActivity()).navigateToDashboard();
+                    }
+                })
+                .show();
+    }
+
+    // Subtle lunge toward the active input — repeats forever until canceled.
+    private void startArrowAnimation(View arrow) {
+        stopArrowAnimation();
+        arrowAnimator = ObjectAnimator.ofFloat(arrow, "translationX", 0f, -16f);
+        arrowAnimator.setDuration(500);
+        arrowAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        arrowAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        arrowAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        arrowAnimator.start();
+    }
+
+    private void stopArrowAnimation() {
+        if (arrowAnimator != null) {
+            arrowAnimator.cancel();
+            arrowAnimator = null;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        stopArrowAnimation();
     }
 }

@@ -20,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Sportify">
         <activity
+            android:name=".WelcomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".WaterDetailActivity"
             android:exported="false" />
         <activity
@@ -30,8 +33,7 @@
             android:exported="false" />
         <activity
             android:name=".ScannerActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".CaloriesDetailActivity"
             android:exported="false" />

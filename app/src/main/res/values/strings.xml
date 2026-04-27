@@ -7,6 +7,16 @@
     <string name="nav_add">Add</string>
     <string name="nav_profile">Profile</string>
 
+    <!-- Welcome / onboarding -->
+    <string name="welcome_title">Welcome to Sportify!</string>
+    <string name="welcome_subtitle">Track your steps, sleep, water, and meals — all in one place.</string>
+    <string name="welcome_get_started">Get started</string>
+    <string name="onboarding_done">Done</string>
+    <string name="onboarding_arrow_desc">Active field indicator</string>
+    <string name="onboarding_done_title">You\'re all set!</string>
+    <string name="onboarding_done_message">Your daily goals have been calculated from what you entered. You can fine-tune them anytime — just tap a field and hit Save.</string>
+    <string name="onboarding_done_button">Got it!</string>
+
     <!-- Dashboard -->
     <string name="dashboard_steps">Total steps walked today</string>
     <string name="dashboard_sleep">Sleep</string>
@@ -57,6 +67,14 @@
     <string name="_1_05">×1.05</string>
     <string name="_1_30">×1.30</string>
     <string name="_1_20">×1.20</string>
+
+    <!-- Save warning / weekly lock -->
+    <string name="profile_save_warning_title">Heads up!</string>
+    <string name="profile_save_warning_message">Saving will lock your profile and goals for the next 7 days. This keeps your stats meaningful by encouraging you to stick to consistent goals. Continue?</string>
+    <string name="profile_save_warning_yes">Yes!</string>
+    <string name="profile_save_warning_no">Never mind…</string>
+    <string name="profile_locked_until">Profile locked. You can edit again on %1$s.</string>
+    <string name="profile_no_changes">No changes to save.</string>
 
     <!-- Day assessment -->
     <string name="assess_excellent">Great day! All goals achieved — keep it up!</string>
@@ -114,5 +132,4 @@
     <string name="step_screen_title">Steps</string>
     <string name="step_screen_desc">Steps</string>
 
-    "
 </resources>

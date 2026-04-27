@@ -39,7 +39,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static final String EXTRA_START_ONBOARDING = "start_onboarding";
     private int currentNavId = R.id.nav_dashboard;
     private ActivityResultLauncher<Intent> scannerLauncher;
     private OpenFoodFactsService apiService;
@@ -48,6 +48,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Send the user to the welcome screen if they haven't finished onboarding.
+        if (!Prefs.isOnboardingDone(this) &&
+                !getIntent().getBooleanExtra(EXTRA_START_ONBOARDING, false)) {
+            startActivity(new Intent(this, WelcomeActivity.class));
+            finish();
+            return;
+        }
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         
@@ -75,11 +84,19 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        if (savedInstanceState == null) {
-            loadFragment(new DashboardFragment());
-        }
-
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+
+        if (savedInstanceState == null) {
+            if (getIntent().getBooleanExtra(EXTRA_START_ONBOARDING, false)) {
+                // Coming from WelcomeActivity — open profile in onboarding mode and
+                // hide the bottom nav so the user can't escape mid-flow.
+                currentNavId = R.id.nav_profile;
+                bottomNav.setVisibility(View.GONE);
+                loadFragment(ProfileFragment.newOnboardingInstance());
+            } else {
+                loadFragment(new DashboardFragment());
+            }
+        }
         
         // Color state list for navigation
         int[][] states = {{android.R.attr.state_checked}, {-android.R.attr.state_checked}};
@@ -120,6 +137,13 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
+    }
+
+    // Restores the bottom nav (hidden during onboarding) and switches to the dashboard.
+    public void navigateToDashboard() {
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setVisibility(View.VISIBLE);
+        bottomNav.setSelectedItemId(R.id.nav_dashboard);
     }
 
     private void fetchAndShowProductDialog(String barcode) {
