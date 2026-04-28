@@ -7,7 +7,96 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/sportify_background"
+    android:clipToPadding="false"
     android:padding="32dp">
+
+    <!-- Decorative health-themed icons that wobble in the background.
+     Listed first so they sit beneath the pulse layer + content.
+     Each is constrained to all four parent edges so the bias values
+     control its scattered position. Low alpha keeps them subtle. -->
+    <ImageView
+        android:id="@+id/iconDumbbell"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:alpha="0.4"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_dumbbell"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.08" />
+
+    <ImageView
+        android:id="@+id/iconApple"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:alpha="0.4"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_apple"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.92"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.13" />
+
+    <ImageView
+        android:id="@+id/iconHeart"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:alpha="0.4"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_heart_pulse"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.55" />
+
+    <ImageView
+        android:id="@+id/iconWaterGlass"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:alpha="0.4"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_water_glass"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.47" />
+
+    <ImageView
+        android:id="@+id/iconSleep"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:alpha="0.4"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_sleep"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.90" />
+
+    <ImageView
+        android:id="@+id/iconMeasureTape"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:alpha="0.4"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_measure_tape"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.90"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.86" />
 
     <!-- Pulse rings sit behind the Get Started button. Anchored to the button's
      bounds so the rectangles match its size; clipChildren=false (also on the

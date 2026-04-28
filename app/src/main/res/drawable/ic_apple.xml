@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Apple body with dimple at top -->
+    <path
+        android:fillColor="@color/sportify_green_light"
+        android:strokeColor="@color/sportify_green_dark"
+        android:strokeWidth="1.4"
+        android:strokeLineJoin="round"
+        android:pathData="M12,8 C10,6.5 7.5,6.5 6,8 C4,10 4,15 6,18 C8,20.5 10.5,20.5 12,19.5 C13.5,20.5 16,20.5 18,18 C20,15 20,10 18,8 C16.5,6.5 14,6.5 12,8 Z" />
+    <!-- Highlight on body -->
+    <path
+        android:fillColor="@color/sportify_surface"
+        android:fillAlpha="0.45"
+        android:pathData="M8,10 C7,11 6.8,12.5 7.2,13.5 C8,12.5 8.5,11.5 8.8,10.8 C9,10.2 8.5,9.5 8,10 Z" />
+    <!-- Stem -->
+    <path
+        android:strokeColor="@color/sportify_green_dark"
+        android:strokeWidth="1.6"
+        android:strokeLineCap="round"
+        android:pathData="M12.2,8 L12.5,5.2" />
+    <!-- Leaf -->
+    <path
+        android:fillColor="@color/sportify_green"
+        android:strokeColor="@color/sportify_green_dark"
+        android:strokeWidth="1.2"
+        android:strokeLineJoin="round"
+        android:pathData="M12.5,6.5 C14,4.5 16.5,4 17,5.5 C16.5,7 14,7.5 12.5,6.5 Z" />
+</vector>

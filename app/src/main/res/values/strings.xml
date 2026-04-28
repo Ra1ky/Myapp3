@@ -14,8 +14,11 @@
     <string name="onboarding_done">Done</string>
     <string name="onboarding_arrow_desc">Active field indicator</string>
     <string name="onboarding_done_title">You\'re all set!</string>
-    <string name="onboarding_done_message">Your daily goals have been calculated from what you entered. You can fine-tune them anytime — just tap a field and hit Save.</string>
+    <string name="onboarding_done_message">You can fine-tune your daily goals anytime — just edit the fields and hit Save.</string>
     <string name="onboarding_done_button">Got it!</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_goals_hint">These daily goals are recommended based on what you entered. Tweak anything that doesn\'t suit you.</string>
+    <string name="onboarding_back">Back</string>
 
     <!-- Dashboard -->
     <string name="dashboard_steps">Total steps walked today</string>

@@ -1,10 +1,12 @@
 package com.example.sportify.fragments;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -137,7 +139,10 @@ public class DashboardFragment extends Fragment {
         IntStream.range(0, moodButtons.length)
                 .forEach(i -> {
                     final int score = i + 1;
-                    moodButtons[i].setOnClickListener(v -> selectMood(score));
+                    moodButtons[i].setOnClickListener(v -> {
+                        animateMoodPress(v);
+                        selectMood(score);
+                    });
                 });
     }
 
@@ -154,6 +159,30 @@ public class DashboardFragment extends Fragment {
         db.dailyRecordDAO().insertOrUpdate(todayRecord);
 
         updateAssessment();
+    }
+
+    // Tactile press feedback for mood emojis: a quick scale-up, then scale-down
+    // with overshoot bounce, while a rotation wobble runs concurrently.
+    private void animateMoodPress(View v) {
+        v.animate().cancel();
+        v.setRotation(0f);
+
+        // Scale: pop up fast, settle back with an overshoot
+        v.animate()
+                .scaleX(1.3f).scaleY(1.3f)
+                .setDuration(120)
+                .withEndAction(() -> v.animate()
+                        .scaleX(1f).scaleY(1f)
+                        .setDuration(280)
+                        .setInterpolator(new OvershootInterpolator(3f))
+                        .start())
+                .start();
+
+        // Wobble: independent rotation animator running over the full duration
+        ObjectAnimator wobble = ObjectAnimator.ofFloat(v, "rotation",
+                0f, -18f, 14f, -10f, 6f, 0f);
+        wobble.setDuration(400);
+        wobble.start();
     }
 
     private void loadData() {
@@ -293,16 +322,16 @@ public class DashboardFragment extends Fragment {
 
         if (score >= 80) {
             tvAssessmentText.setText(R.string.assess_excellent);
-            imgAssessment.setImageResource(android.R.drawable.btn_star_big_on);
+            imgAssessment.setImageResource(R.drawable.ic_star_shiny);
         } else if (score >= 60) {
             tvAssessmentText.setText(R.string.assess_good);
-            imgAssessment.setImageResource(android.R.drawable.btn_star_big_on);
+            imgAssessment.setImageResource(R.drawable.ic_star_filled);
         } else if (score >= 40) {
             tvAssessmentText.setText(R.string.assess_average);
-            imgAssessment.setImageResource(android.R.drawable.ic_menu_info_details);
+            imgAssessment.setImageResource(R.drawable.ic_star_half);
         } else {
             tvAssessmentText.setText(R.string.assess_below);
-            imgAssessment.setImageResource(android.R.drawable.ic_menu_info_details);
+            imgAssessment.setImageResource(R.drawable.ic_star_outline);
         }
     }
 }

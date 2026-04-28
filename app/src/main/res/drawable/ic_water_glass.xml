@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Glass outline (slightly tapered, rounded bottom) -->
+    <path
+        android:fillColor="@color/sportify_surface"
+        android:strokeColor="@color/sportify_green_dark"
+        android:strokeWidth="1.4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M6,4 L18,4 L16.6,20.2 C16.55,20.7 16.15,21 15.65,21 L8.35,21 C7.85,21 7.45,20.7 7.4,20.2 Z" />
+    <!-- Water fill with wavy top -->
+    <path
+        android:fillColor="@color/sportify_progress_water"
+        android:fillAlpha="0.55"
+        android:pathData="M7.7,9 C9,8.6 10.5,9.4 12,9 C13.5,8.6 15,9.4 16.3,9 L15.5,20.1 C15.47,20.4 15.22,20.6 14.92,20.6 L9.08,20.6 C8.78,20.6 8.53,20.4 8.5,20.1 Z" />
+    <!-- Glass highlight -->
+    <path
+        android:strokeColor="@color/sportify_green_dark"
+        android:strokeWidth="1"
+        android:strokeAlpha="0.4"
+        android:strokeLineCap="round"
+        android:pathData="M9,6 L8.6,15" />
+    <!-- Rim -->
+    <path
+        android:strokeColor="@color/sportify_green_dark"
+        android:strokeWidth="1.2"
+        android:strokeLineCap="round"
+        android:pathData="M6,4 L18,4" />
+</vector>

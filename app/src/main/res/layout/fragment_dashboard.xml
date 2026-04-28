@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/sportify_background"
     android:fillViewport="true"
+    android:clipChildren="false"
     android:clipToPadding="false"
     android:paddingBottom="@dimen/spacing_md">
 
@@ -309,14 +310,19 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/card_margin_h"
             android:layout_marginBottom="12dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             app:cardCornerRadius="@dimen/card_corner"
             app:cardElevation="@dimen/card_elevation"
+            app:cardPreventCornerOverlap="false"
             app:cardBackgroundColor="@color/sportify_surface">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:padding="@dimen/card_padding">
 
                 <TextView
@@ -331,13 +337,16 @@
                     android:baselineAligned="false"
                     android:orientation="horizontal"
                     android:gravity="center"
-                    android:layout_marginTop="12dp">
+                    android:layout_marginTop="12dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false">
 
                     <FrameLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center">
+                        android:layout_gravity="center"
+                        android:clipChildren="false">
                         <TextView
                             android:id="@+id/btnMood1"
                             android:layout_width="48dp"
@@ -353,7 +362,8 @@
                     <FrameLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false">
                         <TextView
                             android:id="@+id/btnMood2"
                             android:layout_width="48dp"
@@ -369,7 +379,8 @@
                     <FrameLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false">
                         <TextView
                             android:id="@+id/btnMood3"
                             android:layout_width="48dp"
@@ -385,7 +396,8 @@
                     <FrameLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false">
                         <TextView
                             android:id="@+id/btnMood4"
                             android:layout_width="48dp"
@@ -401,7 +413,8 @@
                     <FrameLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false">
                         <TextView
                             android:id="@+id/btnMood5"
                             android:layout_width="48dp"

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Heart body -->
+    <path
+        android:fillColor="@color/sportify_green_light"
+        android:strokeColor="@color/sportify_green_dark"
+        android:strokeWidth="1.4"
+        android:strokeLineJoin="round"
+        android:pathData="M12,20.5 C4.5,15 4,9.5 7.5,7.5 C10.2,6 12,8.2 12,9.5 C12,8.2 13.8,6 16.5,7.5 C20,9.5 19.5,15 12,20.5 Z" />
+    <!-- Pulse line crossing the middle -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="@color/sportify_green_dark"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M5,13 L8.5,13 L10,10.5 L12,15.5 L14,11.5 L15.5,13 L19,13" />
+</vector>

@@ -37,24 +37,45 @@ import java.util.Date;
 import java.util.Locale;
 
 public class ProfileFragment extends Fragment {
+    // Onboarding
     private static final String ARG_ONBOARDING = "onboarding_mode";
     private boolean onboardingMode = false;
+    private int onboardingStep = 1;
+
+    // Personal data inputs
     private TextInputEditText etAge, etWeight, etHeight;
+    private ImageView arrowAge, arrowWeight, arrowHeight;
+    private View layoutPersonalDataSection;
+
+    // Daily goals inputs
     private TextInputEditText etStepGoal, etCalorieGoal, etWaterGoal;
+    private ImageView arrowStepGoal, arrowCalorieGoal, arrowWaterGoal;
     private TextView tvStepsAutoHint, tvCalorieAutoHint, tvWaterAutoHint;
+    private TextView tvOnboardingGoalsHint;
+    private View dailyGoalsSection;
+
+    // Diet mode + multiplier slider
     private AutoCompleteTextView spinnerDietMode;
-    private boolean suppressCalorieWatcher = false;
+    private AdapterView.OnItemClickListener dietModeListener;
     private LinearLayout layoutMultiplier;
     private com.google.android.material.slider.Slider sliderMultiplier;
     private TextView tvMultiplierValue, tvMultiplierMin, tvMultiplierMax;
-    private ImageView arrowAge, arrowWeight, arrowHeight;
-    private View dailyGoalsSection;
-    private MaterialButton btnDone;
-    private MaterialButton btnSave;
-    private TextView tvLockNotice;
-    private ObjectAnimator arrowAnimator;
+
+    // Re-entrancy guards (avoid feedback loops between watchers/listeners)
+    private boolean suppressCalorieWatcher = false;
     private boolean suppressSliderListener = false;
-    private AdapterView.OnItemClickListener dietModeListener;
+
+    // Save / lock UI
+    private MaterialButton btnDone;
+    private MaterialButton btnBack;
+    private MaterialButton btnSave;
+    private View layoutOnboardingNav;
+    private TextView tvLockNotice;
+
+    // Animation
+    private ObjectAnimator arrowAnimator;
+
+    // Data
     private AppDatabase db;
     private UserProfile loadedProfile;
 
@@ -91,27 +112,41 @@ public class ProfileFragment extends Fragment {
     }
 
     private void bindViews(View v) {
+        // Personal data inputs
         etAge = v.findViewById(R.id.etAge);
         etWeight = v.findViewById(R.id.etWeight);
         etHeight = v.findViewById(R.id.etHeight);
+        arrowAge = v.findViewById(R.id.arrowAge);
+        arrowWeight = v.findViewById(R.id.arrowWeight);
+        arrowHeight = v.findViewById(R.id.arrowHeight);
+        layoutPersonalDataSection = v.findViewById(R.id.layoutPersonalDataSection);
+
+        // Daily goals inputs
         etStepGoal = v.findViewById(R.id.etStepGoal);
+        etCalorieGoal = v.findViewById(R.id.etCalorieGoal);
+        etWaterGoal = v.findViewById(R.id.etWaterGoal);
+        arrowStepGoal = v.findViewById(R.id.arrowStepGoal);
+        arrowCalorieGoal = v.findViewById(R.id.arrowCalorieGoal);
+        arrowWaterGoal = v.findViewById(R.id.arrowWaterGoal);
+        tvStepsAutoHint = v.findViewById(R.id.tvStepsAutoHint);
+        tvCalorieAutoHint = v.findViewById(R.id.tvCalorieAutoHint);
+        tvWaterAutoHint = v.findViewById(R.id.tvWaterAutoHint);
+        tvOnboardingGoalsHint = v.findViewById(R.id.tvOnboardingGoalsHint);
+        dailyGoalsSection = v.findViewById(R.id.layoutDailyGoalsSection);
+
+        // Diet mode + multiplier slider
         spinnerDietMode = v.findViewById(R.id.spinnerDietMode);
         layoutMultiplier = v.findViewById(R.id.layoutMultiplier);
         sliderMultiplier = v.findViewById(R.id.sliderMultiplier);
         tvMultiplierValue = v.findViewById(R.id.tvMultiplierValue);
         tvMultiplierMin = v.findViewById(R.id.tvMultiplierMin);
         tvMultiplierMax = v.findViewById(R.id.tvMultiplierMax);
-        etCalorieGoal = v.findViewById(R.id.etCalorieGoal);
-        etWaterGoal = v.findViewById(R.id.etWaterGoal);
-        tvStepsAutoHint = v.findViewById(R.id.tvStepsAutoHint);
-        tvCalorieAutoHint = v.findViewById(R.id.tvCalorieAutoHint);
-        tvWaterAutoHint = v.findViewById(R.id.tvWaterAutoHint);
-        arrowAge = v.findViewById(R.id.arrowAge);
-        arrowWeight = v.findViewById(R.id.arrowWeight);
-        arrowHeight = v.findViewById(R.id.arrowHeight);
-        dailyGoalsSection = v.findViewById(R.id.layoutDailyGoalsSection);
-        btnSave = v.findViewById(R.id.btnSave);
+
+        // Save / lock UI
         btnDone = v.findViewById(R.id.btnDone);
+        btnBack = v.findViewById(R.id.btnBack);
+        btnSave = v.findViewById(R.id.btnSave);
+        layoutOnboardingNav = v.findViewById(R.id.layoutOnboardingNav);
         tvLockNotice = v.findViewById(R.id.tvLockNotice);
     }
 
@@ -146,9 +181,14 @@ public class ProfileFragment extends Fragment {
         etHeight.addTextChangedListener(recalcWatcher);
         etAge.addTextChangedListener(recalcWatcher);
 
-        etCalorieGoal.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus && !suppressCalorieWatcher) {
-                autoDetectDietMode();
+        // Real-time: re-detect diet mode + reposition slider as the user types calories.
+        etCalorieGoal.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!suppressCalorieWatcher) autoDetectDietMode();
             }
         });
     }
@@ -539,21 +579,92 @@ public class ProfileFragment extends Fragment {
         return String.valueOf(value);
     }
 
-    // Switches the screen into a guided sequence. Hides the daily-goals section
-    // and the regular Save button; the arrow follows whichever input has focus
-    // and "Done" finalizes the profile.
+    // Step 1: personal data only. Daily-goals section stays hidden until "Next".
     private void enterOnboardingMode() {
+        onboardingStep = 1;
         dailyGoalsSection.setVisibility(View.GONE);
         btnSave.setVisibility(View.GONE);
         tvLockNotice.setVisibility(View.GONE);
 
-        btnDone.setVisibility(View.VISIBLE);
-        btnDone.setOnClickListener(v -> completeOnboarding());
+        layoutOnboardingNav.setVisibility(View.VISIBLE);
+        btnBack.setVisibility(View.GONE);
+        btnDone.setText(R.string.onboarding_next);
+        btnDone.setOnClickListener(v -> enterOnboardingStep2());
 
         setupOnboardingFocusListeners();
 
         // Default to the age field. requestFocus() will fire the focus listener
         // and showArrowFor will be triggered through that path.
+        etAge.requestFocus();
+        showArrowFor(arrowAge);
+    }
+
+    // Step 2: hide personal data, prefill recommended goals, attach diet/slider/arrows,
+    // and rebind the Done button to actually finalize onboarding.
+    private void enterOnboardingStep2() {
+        onboardingStep = 2;
+        stopArrowAnimation();
+
+        layoutPersonalDataSection.setVisibility(View.GONE);
+        dailyGoalsSection.setVisibility(View.VISIBLE);
+        tvOnboardingGoalsHint.setVisibility(View.VISIBLE);
+
+        btnBack.setVisibility(View.VISIBLE);
+        btnBack.setOnClickListener(v -> returnToOnboardingStep1());
+
+        // Wire up the goals-section interactions (diet dropdown, slider, auto hints).
+        setupDietSpinner();
+        setupMultiplierSlider();
+        setupAutoHints();
+        updateRecommendations();
+
+        // Prefill goal fields with recommendations derived from step 1's inputs.
+        UserProfile temp = new UserProfile();
+        temp.setAge(parseIntSafe(etAge, 0));
+        temp.setWeightKg(parseFloatSafe(etWeight));
+        temp.setHeightCm(parseFloatSafe(etHeight));
+        etStepGoal.setText(String.valueOf(temp.getRecommendedSteps()));
+        etCalorieGoal.setText(String.valueOf(temp.getRecommendedCalories()));
+        int water = temp.getRecommendedWaterMl();
+        etWaterGoal.setText(String.valueOf(water > 0 ? water : 2500));
+
+        // Default diet mode to "Maintain" so the slider stays hidden initially.
+        spinnerDietMode.setText(spinnerDietMode.getAdapter().getItem(0).toString(), false);
+
+        // Hook focus listeners for the goal-field arrows. The calorie listener also
+        // preserves the auto-detect-diet behavior installed by setupAutoHints().
+        etStepGoal.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) showArrowFor(arrowStepGoal);
+        });
+        etCalorieGoal.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) showArrowFor(arrowCalorieGoal);
+        });
+        etWaterGoal.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) showArrowFor(arrowWaterGoal);
+        });
+
+        // Rebind Done to actually finish onboarding now.
+        btnDone.setText(R.string.onboarding_done);
+        btnDone.setOnClickListener(v -> completeOnboarding());
+
+        // Default focus on the first goal field.
+        etStepGoal.requestFocus();
+        showArrowFor(arrowStepGoal);
+    }
+
+    // Step 2 → step 1: re-show personal data, hide goals + Back, restore Next.
+    private void returnToOnboardingStep1() {
+        onboardingStep = 1;
+        stopArrowAnimation();
+
+        layoutPersonalDataSection.setVisibility(View.VISIBLE);
+        dailyGoalsSection.setVisibility(View.GONE);
+        tvOnboardingGoalsHint.setVisibility(View.GONE);
+
+        btnBack.setVisibility(View.GONE);
+        btnDone.setText(R.string.onboarding_next);
+        btnDone.setOnClickListener(v -> enterOnboardingStep2());
+
         etAge.requestFocus();
         showArrowFor(arrowAge);
     }
@@ -570,36 +681,25 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    // Hides the other two arrows, shows + animates the active one.
+    // Hides every arrow, then shows + animates the active one.
     private void showArrowFor(ImageView activeArrow) {
         arrowAge.setVisibility(View.INVISIBLE);
         arrowWeight.setVisibility(View.INVISIBLE);
         arrowHeight.setVisibility(View.INVISIBLE);
+        arrowStepGoal.setVisibility(View.INVISIBLE);
+        arrowCalorieGoal.setVisibility(View.INVISIBLE);
+        arrowWaterGoal.setVisibility(View.INVISIBLE);
         stopArrowAnimation();
 
         activeArrow.setVisibility(View.VISIBLE);
         startArrowAnimation(activeArrow);
     }
 
-    // Builds the initial profile, fills in recommended goals, persists, and shows the wrap-up popup.
+    // Builds the final profile from whatever's in the inputs, persists, and shows the wrap-up popup.
     private void completeOnboarding() {
         stopArrowAnimation();
 
-        UserProfile profile = new UserProfile();
-        profile.setAge(parseIntSafe(etAge, 0));
-        profile.setWeightKg(parseFloatSafe(etWeight));
-        profile.setHeightCm(parseFloatSafe(etHeight));
-
-        // Recommended methods on UserProfile already fall back to sensible
-        // defaults when their inputs are missing, except water (returns 0
-        // when weight is unknown), so guarding that one explicitly.
-        profile.setStepGoal(profile.getRecommendedSteps());
-        profile.setCaloriesGoal(profile.getRecommendedCalories());
-        int recommendedWater = profile.getRecommendedWaterMl();
-        profile.setWaterGoalMl(recommendedWater > 0 ? recommendedWater : 2500);
-        profile.setDietMode(0);
-        profile.setDietMultiplier(1.0f);
-
+        UserProfile profile = buildProfileFromInputs();
         db.userProfileDAO().insertOrUpdate(profile);
 
         String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());

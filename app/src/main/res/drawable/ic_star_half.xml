@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="80dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Full star outline as the empty (right) side -->
+    <path
+        android:fillColor="@color/sportify_surface"
+        android:strokeColor="@color/sportify_green_dark"
+        android:strokeWidth="1.2"
+        android:strokeLineJoin="round"
+        android:pathData="M12,2.5 L14.85,8.55 L21.5,9.4 L16.6,14 L17.85,20.6 L12,17.3 L6.15,20.6 L7.4,14 L2.5,9.4 L9.15,8.55 Z" />
+    <!-- Left half filled in green. Path traces the star's left silhouette
+         from top tip down to the bottom point, then closes through the center. -->
+    <path
+        android:fillColor="@color/sportify_green"
+        android:strokeColor="@color/sportify_green_dark"
+        android:strokeWidth="1.2"
+        android:strokeLineJoin="round"
+        android:pathData="M12,2.5 L9.15,8.55 L2.5,9.4 L7.4,14 L6.15,20.6 L12,17.3 Z" />
+</vector>

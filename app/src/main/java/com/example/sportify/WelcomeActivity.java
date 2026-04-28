@@ -1,11 +1,13 @@
 package com.example.sportify;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
@@ -17,10 +19,14 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // Shown the very first time the app starts
 public class WelcomeActivity extends AppCompatActivity {
 
     private AnimatorSet ring1Set, ring2Set;
+    private final List<Animator> wobbleAnimators = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +58,14 @@ public class WelcomeActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+        // Wobble each background icon with its own duration / phase so they don't sync.
+        wobble(findViewById(R.id.iconDumbbell),    1500L, 0L,    7f, 2.5f);
+        wobble(findViewById(R.id.iconApple),       1700L, 200L,  6f, 2f);
+        wobble(findViewById(R.id.iconHeart),       1400L, 400L,  8f, 2.5f);
+        wobble(findViewById(R.id.iconWaterGlass),  1800L, 100L,  5f, 2f);
+        wobble(findViewById(R.id.iconSleep),       1600L, 350L,  6f, 1.5f);
+        wobble(findViewById(R.id.iconMeasureTape), 1550L, 250L,  7f, 2f);
     }
 
     // One ripple = scale outward + fade out, looped forever. The two rings share the same animation but start at different times.
@@ -100,10 +114,40 @@ public class WelcomeActivity extends AppCompatActivity {
                 .start();
     }
 
+    // Subtle continuous wobble: rotation + a slight Y bob, looped forever.
+    // The bob runs slightly longer than the rotation so the two motions
+    // drift out of phase and the icon feels less mechanical.
+    private void wobble(View v, long duration, long startDelay, float rotateDeg, float bobDp) {
+        ObjectAnimator rot = ObjectAnimator.ofFloat(v, "rotation", -rotateDeg, rotateDeg);
+        rot.setDuration(duration);
+        rot.setRepeatMode(ValueAnimator.REVERSE);
+        rot.setRepeatCount(ValueAnimator.INFINITE);
+        rot.setInterpolator(new AccelerateDecelerateInterpolator());
+        rot.setStartDelay(startDelay);
+        rot.start();
+
+        ObjectAnimator bob = ObjectAnimator.ofFloat(v, "translationY", -dp(bobDp), dp(bobDp));
+        bob.setDuration(duration + 480L);
+        bob.setRepeatMode(ValueAnimator.REVERSE);
+        bob.setRepeatCount(ValueAnimator.INFINITE);
+        bob.setInterpolator(new AccelerateDecelerateInterpolator());
+        bob.setStartDelay(startDelay + 250L);
+        bob.start();
+
+        wobbleAnimators.add(rot);
+        wobbleAnimators.add(bob);
+    }
+
+    private float dp(float value) {
+        return value * getResources().getDisplayMetrics().density;
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (ring1Set != null) ring1Set.cancel();
         if (ring2Set != null) ring2Set.cancel();
+        for (Animator a : wobbleAnimators) a.cancel();
+        wobbleAnimators.clear();
     }
 }
