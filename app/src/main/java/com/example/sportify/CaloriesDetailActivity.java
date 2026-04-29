@@ -1,13 +1,18 @@
 package com.example.sportify;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -19,6 +24,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,6 +36,7 @@ import com.example.sportify.db.Product;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -42,10 +49,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CaloriesDetailActivity extends AppCompatActivity {
 
-    private TextView tvTotalCalories, tvCaloriesGoal;
+    private TextView tvTotalCalories, tvCaloriesGoal, tvStatusMessage;
     private TextView tvTotalProtein, tvTotalCarbs, tvTotalFat;
     private TextView tvProteinGoal, tvCarbsGoal, tvFatGoal;
-    private ProgressBar progressCalories;
+    private ProgressBar progressCalories, progressProtein, progressCarbs, progressFat;
+    private View blockProtein, blockCarbs, blockFat;
     private RecyclerView rvFoodItems;
     private FoodAdapter adapter;
     private AppDatabase db;
@@ -56,13 +64,19 @@ public class CaloriesDetailActivity extends AppCompatActivity {
     private int goalCarbs = 250;
     private int goalFat = 70;
 
+    private int lastCaloriesValue = 0;
+    private int lastProteinValue = 0;
+    private int lastCarbsValue = 0;
+    private int lastFatValue = 0;
+
     private Product selectedProduct = null;
     private OpenFoodFactsService apiService;
     private ActivityResultLauncher<Intent> scannerLauncher;
 
-    // References for the active dialog to update them after scan
     private AutoCompleteTextView activeEtName;
     private EditText activeEtProtein, activeEtCarbs, activeEtFat, activeEtGrams;
+
+    private final List<ObjectAnimator> decorAnimators = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,33 +105,122 @@ public class CaloriesDetailActivity extends AppCompatActivity {
         initViews();
         setupRecyclerView();
         loadData();
+        animateEntrance();
+        startDecorAnimations();
     }
 
     private void initViews() {
         tvTotalCalories = findViewById(R.id.tvTotalCalories);
         tvCaloriesGoal = findViewById(R.id.tvCaloriesGoal);
-        
+        tvStatusMessage = findViewById(R.id.tvStatusMessage);
         tvTotalProtein = findViewById(R.id.tvTotalProtein);
         tvTotalCarbs = findViewById(R.id.tvTotalCarbs);
         tvTotalFat = findViewById(R.id.tvTotalFat);
-
         tvProteinGoal = findViewById(R.id.tvProteinGoal);
         tvCarbsGoal = findViewById(R.id.tvCarbsGoal);
         tvFatGoal = findViewById(R.id.tvFatGoal);
-
         progressCalories = findViewById(R.id.progressCalories);
+        progressProtein = findViewById(R.id.progressProtein);
+        progressCarbs = findViewById(R.id.progressCarbs);
+        progressFat = findViewById(R.id.progressFat);
+        
+        blockProtein = findViewById(R.id.blockProtein);
+        blockCarbs = findViewById(R.id.blockCarbs);
+        blockFat = findViewById(R.id.blockFat);
+        
         rvFoodItems = findViewById(R.id.rvFoodItems);
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        findViewById(R.id.fabAddFood).setOnClickListener(v -> showAddFoodDialog());
+    }
 
-        FloatingActionButton fabAdd = findViewById(R.id.fabAddFood);
-        fabAdd.setOnClickListener(v -> showAddFoodDialog());
+    private void animateEntrance() {
+        View summaryCard = findViewById(R.id.summaryCard);
+        if (summaryCard != null) {
+            summaryCard.setAlpha(0f);
+            summaryCard.setTranslationY(100f);
+            summaryCard.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(800)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .start();
+        }
+
+        View[] blocks = {blockProtein, blockCarbs, blockFat};
+        for (int i = 0; i < blocks.length; i++) {
+            View b = blocks[i];
+            if (b != null) {
+                b.setAlpha(0f);
+                b.setTranslationY(30f);
+                b.animate()
+                        .alpha(1f)
+                        .translationY(0f)
+                        .setDuration(600)
+                        .setStartDelay(500 + (i * 150))
+                        .setInterpolator(new OvershootInterpolator())
+                        .start();
+            }
+        }
+        
+        rvFoodItems.setAlpha(0f);
+        rvFoodItems.setTranslationY(50f);
+        rvFoodItems.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(800)
+                .setStartDelay(300)
+                .start();
+
+        FloatingActionButton fab = findViewById(R.id.fabAddFood);
+        fab.setScaleX(0f);
+        fab.setScaleY(0f);
+        fab.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(600)
+                .setStartDelay(800)
+                .setInterpolator(new OvershootInterpolator())
+                .start();
+    }
+
+    private void startDecorAnimations() {
+        View decor1 = findViewById(R.id.decorIcon1);
+        View decor2 = findViewById(R.id.decorIcon2);
+
+        if (decor1 != null) {
+            applyFloatingAnimation(decor1, 3000, 0, 20f, 10f);
+        }
+        if (decor2 != null) {
+            applyFloatingAnimation(decor2, 3500, 500, -25f, 15f);
+        }
+    }
+
+    private void applyFloatingAnimation(View v, long duration, long delay, float translationY, float rotation) {
+        ObjectAnimator floatAnim = ObjectAnimator.ofFloat(v, "translationY", -translationY, translationY);
+        floatAnim.setDuration(duration);
+        floatAnim.setRepeatMode(ValueAnimator.REVERSE);
+        floatAnim.setRepeatCount(ValueAnimator.INFINITE);
+        floatAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        floatAnim.setStartDelay(delay);
+        floatAnim.start();
+        decorAnimators.add(floatAnim);
+
+        ObjectAnimator rotateAnim = ObjectAnimator.ofFloat(v, "rotation", -rotation, rotation);
+        rotateAnim.setDuration(duration + 500);
+        rotateAnim.setRepeatMode(ValueAnimator.REVERSE);
+        rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
+        rotateAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        rotateAnim.setStartDelay(delay);
+        rotateAnim.start();
+        decorAnimators.add(rotateAnim);
     }
 
     private void setupRecyclerView() {
         adapter = new FoodAdapter(this::deleteFoodItem);
         rvFoodItems.setLayoutManager(new LinearLayoutManager(this));
         rvFoodItems.setAdapter(adapter);
+        rvFoodItems.setItemAnimator(new androidx.recyclerview.widget.DefaultItemAnimator());
     }
 
     private void loadData() {
@@ -130,10 +233,14 @@ public class CaloriesDetailActivity extends AppCompatActivity {
         }
         
         tvCaloriesGoal.setText("of " + goalKcal + " kcal");
-        tvProteinGoal.setText("/ " + goalProtein + "g");
-        tvCarbsGoal.setText("/ " + goalCarbs + "g");
-        tvFatGoal.setText("/ " + goalFat + "g");
+        tvProteinGoal.setText("/" + goalProtein + "g");
+        tvCarbsGoal.setText("/" + goalCarbs + "g");
+        tvFatGoal.setText("/" + goalFat + "g");
+        
         progressCalories.setMax(goalKcal);
+        progressProtein.setMax(goalProtein);
+        progressCarbs.setMax(goalCarbs);
+        progressFat.setMax(goalFat);
 
         refreshFoodList();
     }
@@ -154,11 +261,7 @@ public class CaloriesDetailActivity extends AppCompatActivity {
             totalFat += item.getFat();
         }
 
-        tvTotalCalories.setText(String.valueOf(totalKcal));
-        tvTotalProtein.setText(String.valueOf(totalProtein));
-        tvTotalCarbs.setText(String.valueOf(totalCarbs));
-        tvTotalFat.setText(String.valueOf(totalFat));
-        progressCalories.setProgress(totalKcal);
+        animateSummaryUpdate(totalKcal, totalProtein, totalCarbs, totalFat);
 
         DailyRecord record = db.dailyRecordDAO().getByDate(todayDate);
         if (record == null) {
@@ -170,6 +273,88 @@ public class CaloriesDetailActivity extends AppCompatActivity {
         }
         record.setCaloriesConsumed(totalKcal);
         db.dailyRecordDAO().insertOrUpdate(record);
+    }
+
+    private void animateSummaryUpdate(int kcal, int p, int c, int f) {
+        updateStatusMessage(kcal);
+
+        progressCalories.animate()
+                .scaleY(1.3f)
+                .setDuration(200)
+                .withEndAction(() -> progressCalories.animate().scaleY(1f).setDuration(200).start())
+                .start();
+
+        ObjectAnimator animCalories = ObjectAnimator.ofInt(progressCalories, "progress", progressCalories.getProgress(), kcal);
+        animCalories.setDuration(1000);
+        animCalories.setInterpolator(new DecelerateInterpolator());
+        animCalories.start();
+        
+        ObjectAnimator animProtein = ObjectAnimator.ofInt(progressProtein, "progress", progressProtein.getProgress(), p);
+        animProtein.setDuration(1000);
+        animProtein.setInterpolator(new DecelerateInterpolator());
+        animProtein.start();
+        
+        ObjectAnimator animCarbs = ObjectAnimator.ofInt(progressCarbs, "progress", progressCarbs.getProgress(), c);
+        animCarbs.setDuration(1000);
+        animCarbs.setInterpolator(new DecelerateInterpolator());
+        animCarbs.start();
+        
+        ObjectAnimator animFat = ObjectAnimator.ofInt(progressFat, "progress", progressFat.getProgress(), f);
+        animFat.setDuration(1000);
+        animFat.setInterpolator(new DecelerateInterpolator());
+        animFat.start();
+
+        animateTextView(tvTotalCalories, lastCaloriesValue, kcal);
+        animateTextView(tvTotalProtein, lastProteinValue, p);
+        animateTextView(tvTotalCarbs, lastCarbsValue, c);
+        animateTextView(tvTotalFat, lastFatValue, f);
+
+        if (kcal > goalKcal) {
+            tvTotalCalories.setTextColor(ContextCompat.getColor(this, R.color.sportify_error));
+            shakeView(tvTotalCalories);
+        } else {
+            tvTotalCalories.setTextColor(ContextCompat.getColor(this, R.color.sportify_progress_calories));
+        }
+        
+        lastCaloriesValue = kcal;
+        lastProteinValue = p;
+        lastCarbsValue = c;
+        lastFatValue = f;
+    }
+
+    private void updateStatusMessage(int kcal) {
+        if (kcal == 0) {
+            tvStatusMessage.setText("Let's start tracking!");
+            tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_text_secondary));
+        } else if (kcal < goalKcal * 0.5) {
+            tvStatusMessage.setText("Good start! Keep it up.");
+            tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_green));
+        } else if (kcal < goalKcal * 0.9) {
+            tvStatusMessage.setText("You're doing great! Almost there.");
+            tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_green));
+        } else if (kcal <= goalKcal) {
+            tvStatusMessage.setText("Perfect! Goal reached.");
+            tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_green));
+        } else {
+            tvStatusMessage.setText("Over the limit. Watch out!");
+            tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_error));
+        }
+        
+        tvStatusMessage.setAlpha(0f);
+        tvStatusMessage.animate().alpha(1f).setDuration(500).start();
+    }
+
+    private void animateTextView(TextView tv, int start, int end) {
+        ValueAnimator anim = ValueAnimator.ofInt(start, end);
+        anim.setDuration(1000);
+        anim.addUpdateListener(animation -> tv.setText(animation.getAnimatedValue().toString()));
+        anim.start();
+    }
+
+    private void shakeView(View view) {
+        ObjectAnimator.ofFloat(view, "translationX", 0, 20, -20, 20, -20, 10, -10, 5, -5, 0)
+                .setDuration(500)
+                .start();
     }
 
     private void showAddFoodDialog() {
@@ -188,10 +373,7 @@ public class CaloriesDetailActivity extends AppCompatActivity {
             scannerLauncher.launch(intent);
         });
 
-        etKcal.setFocusable(false);
-        etKcal.setHint("Calories (auto)");
         activeEtGrams.setText("100");
-
         String[] mealTypes = {"Breakfast", "Lunch", "Dinner", "Snack"};
         ArrayAdapter<String> mealAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mealTypes);
         mealAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -235,14 +417,14 @@ public class CaloriesDetailActivity extends AppCompatActivity {
         activeEtCarbs.addTextChangedListener(macroWatcher);
         activeEtFat.addTextChangedListener(macroWatcher);
 
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Add Food")
                 .setView(view)
-                .setPositiveButton("Add", (dialog, which) -> {
+                .setPositiveButton("Add", (d, which) -> {
                     String name = activeEtName.getText().toString().trim();
                     if (!name.isEmpty()) {
                         int grams = Integer.parseInt(activeEtGrams.getText().toString().isEmpty() ? "100" : activeEtGrams.getText().toString());
-                        int kcal = Integer.parseInt(etKcal.getText().toString());
+                        int kcal = Integer.parseInt(etKcal.getText().toString().isEmpty() ? "0" : etKcal.getText().toString());
                         int p = Integer.parseInt(activeEtProtein.getText().toString().isEmpty() ? "0" : activeEtProtein.getText().toString());
                         int c = Integer.parseInt(activeEtCarbs.getText().toString().isEmpty() ? "0" : activeEtCarbs.getText().toString());
                         int f = Integer.parseInt(activeEtFat.getText().toString().isEmpty() ? "0" : activeEtFat.getText().toString());
@@ -252,7 +434,47 @@ public class CaloriesDetailActivity extends AppCompatActivity {
                     }
                 })
                 .setNegativeButton("Cancel", null)
-                .show();
+                .create();
+
+        dialog.show();
+
+        view.post(() -> animateDialogContent((ViewGroup) view));
+    }
+
+    private void animateDialogContent(ViewGroup root) {
+        int delay = 0;
+        for (int i = 0; i < root.getChildCount(); i++) {
+            View child = root.getChildAt(i);
+
+            if (child instanceof ViewGroup && !(child instanceof com.google.android.material.textfield.TextInputLayout)) {
+                ViewGroup group = (ViewGroup) child;
+                for (int j = 0; j < group.getChildCount(); j++) {
+                    View subChild = group.getChildAt(j);
+                    applyStrongPopAnimation(subChild, delay);
+                    delay += 70;
+                }
+            } else {
+                applyStrongPopAnimation(child, delay);
+                delay += 100;
+            }
+        }
+    }
+
+    private void applyStrongPopAnimation(View v, int delay) {
+        v.setAlpha(0f);
+        v.setTranslationY(150f); 
+        v.setScaleX(0.4f);
+        v.setScaleY(0.4f);
+        
+        v.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(600)
+                .setStartDelay(delay)
+                .setInterpolator(new OvershootInterpolator(1.5f))
+                .start();
     }
 
     private void updateMacrosByGrams() {
@@ -290,5 +512,14 @@ public class CaloriesDetailActivity extends AppCompatActivity {
     private void deleteFoodItem(FoodItem item) {
         db.foodItemDAO().delete(item);
         refreshFoodList();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (ObjectAnimator anim : decorAnimators) {
+            anim.cancel();
+        }
+        decorAnimators.clear();
     }
 }

@@ -3,10 +3,12 @@ package com.example.sportify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sportify.db.FoodItem;
@@ -28,9 +30,31 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         this.deleteListener = deleteListener;
     }
 
-    public void setFoodItems(List<FoodItem> foodItems) {
-        this.foodItems = foodItems;
-        notifyDataSetChanged();
+    public void setFoodItems(List<FoodItem> newFoodItems) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return foodItems.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newFoodItems.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return foodItems.get(oldItemPosition).getId() == newFoodItems.get(newItemPosition).getId();
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return foodItems.get(oldItemPosition).equals(newFoodItems.get(newItemPosition));
+            }
+        });
+
+        this.foodItems = new ArrayList<>(newFoodItems);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @NonNull
@@ -52,6 +76,31 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.tvMacros.setText(macros);
 
         holder.btnDelete.setOnClickListener(v -> deleteListener.onDelete(item));
+
+        if (holder.itemView.getScaleX() != 1.0f) {
+             animateView(holder.itemView);
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull FoodViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (holder.itemView.getScaleX() == 0f) {
+            animateView(holder.itemView);
+        }
+    }
+
+    private void animateView(View view) {
+        view.setScaleX(0f);
+        view.setScaleY(0f);
+        view.setAlpha(0f);
+        view.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f)
+                .setDuration(500)
+                .setInterpolator(new OvershootInterpolator())
+                .start();
     }
 
     @Override

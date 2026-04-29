@@ -6,6 +6,29 @@
     android:layout_height="match_parent"
     android:background="@color/sportify_background">
 
+
+    <ImageView
+        android:id="@+id/decorIcon1"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="-30dp"
+        android:layout_marginEnd="-20dp"
+        android:alpha="0.15"
+        android:rotation="15"
+        android:src="@drawable/ic_apple" />
+
+    <ImageView
+        android:id="@+id/decorIcon2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="100dp"
+        android:layout_marginStart="-20dp"
+        android:alpha="0.15"
+        android:rotation="-10"
+        android:src="@drawable/ic_heart_pulse" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,6 +74,7 @@
 
             <!-- Summary Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/summaryCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="24dp"
@@ -86,34 +110,54 @@
                             android:textSize="16sp"
                             android:textColor="@color/sportify_text_secondary" />
 
+                        <TextView
+                            android:id="@+id/tvStatusMessage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Let's start tracking!"
+                            android:textSize="14sp"
+                            android:textStyle="italic"
+                            android:textColor="@color/sportify_text_secondary" />
+
                         <ProgressBar
                             android:id="@+id/progressCalories"
                             style="@android:style/Widget.ProgressBar.Horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="12dp"
-                            android:layout_marginTop="24dp"
+                            android:layout_marginTop="16dp"
                             android:progressDrawable="@drawable/progress_calories" />
                     </LinearLayout>
 
                     <!-- Macronutrients Row -->
                     <LinearLayout
+                        android:id="@+id/layoutMacros"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:orientation="horizontal"
                         android:weightSum="3">
 
+                        <!-- Protein Block -->
                         <LinearLayout
+                            android:id="@+id/blockProtein"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Protein"
+                                android:textSize="12sp"
+                                android:textColor="@color/sportify_text_secondary" />
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:gravity="bottom">
+                                android:gravity="bottom"
+                                android:layout_marginTop="4dp">
                                 <TextView
                                     android:id="@+id/tvTotalProtein"
                                     android:layout_width="wrap_content"
@@ -125,30 +169,39 @@
                                     android:id="@+id/tvProteinGoal"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="/ 150g"
+                                    android:text="/150g"
                                     android:textSize="10sp"
-                                    android:textColor="@color/sportify_text_secondary"
-                                    android:layout_marginStart="2dp"/>
+                                    android:textColor="@color/sportify_text_secondary" />
                             </LinearLayout>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Protein"
-                                android:textSize="12sp"
-                                android:textColor="@color/sportify_text_secondary" />
+                            <ProgressBar
+                                android:id="@+id/progressProtein"
+                                style="@android:style/Widget.ProgressBar.Horizontal"
+                                android:layout_width="40dp"
+                                android:layout_height="4dp"
+                                android:layout_marginTop="4dp"
+                                android:progressDrawable="@drawable/progress_calories" />
                         </LinearLayout>
 
+                        <!-- Carbs Block -->
                         <LinearLayout
+                            android:id="@+id/blockCarbs"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Carbs"
+                                android:textSize="12sp"
+                                android:textColor="@color/sportify_text_secondary" />
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:gravity="bottom">
+                                android:gravity="bottom"
+                                android:layout_marginTop="4dp">
                                 <TextView
                                     android:id="@+id/tvTotalCarbs"
                                     android:layout_width="wrap_content"
@@ -160,30 +213,39 @@
                                     android:id="@+id/tvCarbsGoal"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="/ 250g"
+                                    android:text="/250g"
                                     android:textSize="10sp"
-                                    android:textColor="@color/sportify_text_secondary"
-                                    android:layout_marginStart="2dp"/>
+                                    android:textColor="@color/sportify_text_secondary" />
                             </LinearLayout>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Carbs"
-                                android:textSize="12sp"
-                                android:textColor="@color/sportify_text_secondary" />
+                            <ProgressBar
+                                android:id="@+id/progressCarbs"
+                                style="@android:style/Widget.ProgressBar.Horizontal"
+                                android:layout_width="40dp"
+                                android:layout_height="4dp"
+                                android:layout_marginTop="4dp"
+                                android:progressDrawable="@drawable/progress_calories" />
                         </LinearLayout>
 
+                        <!-- Fat Block -->
                         <LinearLayout
+                            android:id="@+id/blockFat"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Fat"
+                                android:textSize="12sp"
+                                android:textColor="@color/sportify_text_secondary" />
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:gravity="bottom">
+                                android:gravity="bottom"
+                                android:layout_marginTop="4dp">
                                 <TextView
                                     android:id="@+id/tvTotalFat"
                                     android:layout_width="wrap_content"
@@ -195,17 +257,17 @@
                                     android:id="@+id/tvFatGoal"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="/ 70g"
+                                    android:text="/70g"
                                     android:textSize="10sp"
-                                    android:textColor="@color/sportify_text_secondary"
-                                    android:layout_marginStart="2dp"/>
+                                    android:textColor="@color/sportify_text_secondary" />
                             </LinearLayout>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Fat"
-                                android:textSize="12sp"
-                                android:textColor="@color/sportify_text_secondary" />
+                            <ProgressBar
+                                android:id="@+id/progressFat"
+                                style="@android:style/Widget.ProgressBar.Horizontal"
+                                android:layout_width="40dp"
+                                android:layout_height="4dp"
+                                android:layout_marginTop="4dp"
+                                android:progressDrawable="@drawable/progress_calories" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

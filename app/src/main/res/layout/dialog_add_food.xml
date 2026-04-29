@@ -4,14 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="20dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <Spinner
             android:id="@+id/spinnerMealType"
@@ -80,11 +84,12 @@
             android:padding="16dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- БЖУ в один ряд с отступами между ними -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
