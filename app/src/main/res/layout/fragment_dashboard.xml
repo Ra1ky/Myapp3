@@ -1,483 +1,529 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dashboardRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/sportify_background"
-    android:fillViewport="true"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:paddingBottom="@dimen/spacing_md">
+    android:background="@color/sportify_background">
 
-    <LinearLayout
+    <!-- Decorative Background Icons -->
+    <ImageView
+        android:id="@+id/decorIcon1"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="-40dp"
+        android:layout_marginEnd="-30dp"
+        android:alpha="0.1"
+        android:rotation="20"
+        android:src="@drawable/ic_apple"
+        app:tint="@color/sportify_green" />
+
+    <ImageView
+        android:id="@+id/decorIcon2"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="120dp"
+        android:layout_marginStart="-30dp"
+        android:alpha="0.1"
+        android:rotation="-15"
+        android:src="@drawable/ic_dumbbell"
+        app:tint="@color/sportify_green" />
+
+    <ImageView
+        android:id="@+id/decorIcon3"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="-100dp"
+        android:alpha="0.08"
+        android:rotation="45"
+        android:src="@drawable/ic_water_glass"
+        app:tint="@color/sportify_green" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/spacing_md">
 
-        <!-- Header -->
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/mainContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="20dp"
-            android:paddingTop="@dimen/spacing_md"
-            android:paddingBottom="@dimen/spacing_sm">
+            android:orientation="vertical">
 
+            <!-- Header -->
+            <RelativeLayout
+                android:id="@+id/layoutHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="@dimen/spacing_md"
+                android:paddingBottom="@dimen/spacing_sm">
+
+                <TextView
+                    android:id="@+id/tvAppTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/app_name"
+                    style="@style/Sportify.Text.Title" />
+
+            </RelativeLayout>
+
+            <!-- Today's Date -->
             <TextView
-                android:id="@+id/tvAppTitle"
+                android:id="@+id/tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:text="@string/app_name"
-                style="@style/Sportify.Text.Title" />
+                android:layout_gravity="center"
+                android:text="@string/date_example"
+                style="@style/Sportify.Text.Subtitle"
+                android:paddingBottom="@dimen/spacing_md" />
 
-        </RelativeLayout>
-
-        <!-- Today's Date -->
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/date_example"
-            style="@style/Sportify.Text.Subtitle"
-            android:paddingBottom="@dimen/spacing_md" />
-
-        <!-- Steps -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardSteps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/card_margin_h"
-            android:layout_marginBottom="12dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardCornerRadius="@dimen/card_corner"
-            app:cardElevation="@dimen/card_elevation"
-            app:cardBackgroundColor="@color/sportify_surface">
-
-            <LinearLayout
+            <!-- Steps -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSteps"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/card_padding">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_steps"
-                    style="@style/Sportify.Text.Caption" />
+                android:layout_marginHorizontal="@dimen/card_margin_h"
+                android:layout_marginBottom="12dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="@dimen/card_corner"
+                app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/sportify_surface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:background="@drawable/bg_green_pill"
-                    android:paddingVertical="12dp"
-                    android:layout_marginTop="@dimen/spacing_sm"
-                    android:layout_marginBottom="@dimen/spacing_sm">
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_padding">
 
                     <TextView
-                        android:id="@+id/tvStepsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/_0"
-                        style="@style/Sportify.Text.BigNumber"
-                        android:textColor="@color/sportify_text_on_green" />
-                </LinearLayout>
-
-                <ProgressBar
-                    android:id="@+id/progressSteps"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/progress_height"
-                    android:max="10000"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/progress_steps" />
-
-                <TextView
-                    android:id="@+id/tvStepsGoal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="@string/_0_10000"
-                    style="@style/Sportify.Text.Caption"
-                    android:layout_marginTop="@dimen/spacing_xs" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Calories -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardCalories"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/card_margin_h"
-            android:layout_marginBottom="12dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardCornerRadius="@dimen/card_corner"
-            app:cardElevation="@dimen/card_elevation"
-            app:cardBackgroundColor="@color/sportify_surface">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/card_padding">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_calories"
-                    style="@style/Sportify.Text.Caption" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="@dimen/spacing_sm">
-
-                    <TextView
-                        android:id="@+id/tvCaloriesCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/_0_kcal"
-                        style="@style/Sportify.Text.Subtitle" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/tvCaloriesGoal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/_2000_kcal"
+                        android:text="@string/dashboard_steps"
                         style="@style/Sportify.Text.Caption" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:background="@drawable/bg_green_pill"
+                        android:paddingVertical="12dp"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:layout_marginBottom="@dimen/spacing_sm">
+
+                        <TextView
+                            android:id="@+id/tvStepsCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/_0"
+                            style="@style/Sportify.Text.BigNumber"
+                            android:textColor="@color/sportify_text_on_green" />
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/progressSteps"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/progress_height"
+                        android:max="10000"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/progress_steps" />
+
+                    <TextView
+                        android:id="@+id/tvStepsGoal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="@string/_0_10000"
+                        style="@style/Sportify.Text.Caption"
+                        android:layout_marginTop="@dimen/spacing_xs" />
+
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <ProgressBar
-                    android:id="@+id/progressCalories"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/progress_height"
-                    android:max="2000"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/progress_calories"
-                    android:layout_marginTop="@dimen/spacing_sm" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Water -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardWater"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/card_margin_h"
-            android:layout_marginBottom="12dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardCornerRadius="@dimen/card_corner"
-            app:cardElevation="@dimen/card_elevation"
-            app:cardBackgroundColor="@color/sportify_surface">
-
-            <LinearLayout
+            <!-- Calories -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardCalories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/card_padding">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_water"
-                    style="@style/Sportify.Text.Caption" />
+                android:layout_marginHorizontal="@dimen/card_margin_h"
+                android:layout_marginBottom="12dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="@dimen/card_corner"
+                app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/sportify_surface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="@dimen/spacing_sm">
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_padding">
 
                     <TextView
-                        android:id="@+id/tvWaterCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/_0_ml"
-                        style="@style/Sportify.Text.Subtitle" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/tvWaterGoal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/_2500_ml"
+                        android:text="@string/dashboard_calories"
                         style="@style/Sportify.Text.Caption" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="@dimen/spacing_sm">
+
+                        <TextView
+                            android:id="@+id/tvCaloriesCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/_0_kcal"
+                            style="@style/Sportify.Text.Subtitle" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/tvCaloriesGoal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/_2000_kcal"
+                            style="@style/Sportify.Text.Caption" />
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/progressCalories"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/progress_height"
+                        android:max="2000"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/progress_calories"
+                        android:layout_marginTop="@dimen/spacing_sm" />
+
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <ProgressBar
-                    android:id="@+id/progressWater"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/progress_height"
-                    android:max="2500"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/progress_water"
-                    android:layout_marginTop="@dimen/spacing_sm" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Sleep -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardSleep"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/card_margin_h"
-            android:layout_marginBottom="12dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardCornerRadius="@dimen/card_corner"
-            app:cardElevation="@dimen/card_elevation"
-            app:cardBackgroundColor="@color/sportify_surface">
-
-            <LinearLayout
+            <!-- Water -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardWater"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/card_padding">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_sleep"
-                    style="@style/Sportify.Text.Caption" />
+                android:layout_marginHorizontal="@dimen/card_margin_h"
+                android:layout_marginBottom="12dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="@dimen/card_corner"
+                app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/sportify_surface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="@dimen/spacing_sm">
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_padding">
 
                     <TextView
-                        android:id="@+id/tvSleepHours"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/h"
-                        style="@style/Sportify.Text.Subtitle" />
-
-                    <TextView
-                        android:id="@+id/tvSleepMood"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/mood_default"
-                        android:textSize="28sp"
-                        android:textColor="@color/sportify_text_primary" />
+                        android:text="@string/dashboard_water"
+                        style="@style/Sportify.Text.Caption" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="@dimen/spacing_sm">
+
+                        <TextView
+                            android:id="@+id/tvWaterCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/_0_ml"
+                            style="@style/Sportify.Text.Subtitle" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/tvWaterGoal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/_2500_ml"
+                            style="@style/Sportify.Text.Caption" />
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/progressWater"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/progress_height"
+                        android:max="2500"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/progress_water"
+                        android:layout_marginTop="@dimen/spacing_sm" />
+
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <ProgressBar
-                    android:id="@+id/progressSleep"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/progress_height"
-                    android:max="100"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/progress_sleep"
-                    android:layout_marginTop="@dimen/spacing_sm" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Mood -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/card_margin_h"
-            android:layout_marginBottom="12dp"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            app:cardCornerRadius="@dimen/card_corner"
-            app:cardElevation="@dimen/card_elevation"
-            app:cardPreventCornerOverlap="false"
-            app:cardBackgroundColor="@color/sportify_surface">
-
-            <LinearLayout
+            <!-- Sleep -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSleep"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_marginHorizontal="@dimen/card_margin_h"
+                android:layout_marginBottom="12dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="@dimen/card_corner"
+                app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/sportify_surface">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_padding">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dashboard_sleep"
+                        style="@style/Sportify.Text.Caption" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="@dimen/spacing_sm">
+
+                        <TextView
+                            android:id="@+id/tvSleepHours"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/h"
+                            style="@style/Sportify.Text.Subtitle" />
+
+                        <TextView
+                            android:id="@+id/tvSleepMood"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/mood_default"
+                            android:textSize="28sp"
+                            android:textColor="@color/sportify_text_primary" />
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/progressSleep"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/progress_height"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/progress_sleep"
+                        android:layout_marginTop="@dimen/spacing_sm" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Mood -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardMood"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/card_margin_h"
+                android:layout_marginBottom="12dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:padding="@dimen/card_padding">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_mood"
-                    style="@style/Sportify.Text.Caption" />
+                app:cardCornerRadius="@dimen/card_corner"
+                app:cardElevation="@dimen/card_elevation"
+                app:cardPreventCornerOverlap="false"
+                app:cardBackgroundColor="@color/sportify_surface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginTop="12dp"
+                    android:orientation="vertical"
                     android:clipChildren="false"
-                    android:clipToPadding="false">
+                    android:clipToPadding="false"
+                    android:padding="@dimen/card_padding">
 
-                    <FrameLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:clipChildren="false">
-                        <TextView
-                            android:id="@+id/btnMood1"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:text="@string/mood1"
-                            android:textSize="24sp"
-                            android:textColor="@color/sportify_text_primary"
-                            android:background="@drawable/bg_mood_circle" />
-                    </FrameLayout>
+                        android:text="@string/dashboard_mood"
+                        style="@style/Sportify.Text.Caption" />
 
-                    <FrameLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clipChildren="false">
-                        <TextView
-                            android:id="@+id/btnMood2"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:text="@string/mood2"
-                            android:textSize="24sp"
-                            android:textColor="@color/sportify_text_primary"
-                            android:background="@drawable/bg_mood_circle" />
-                    </FrameLayout>
+                        android:baselineAligned="false"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginTop="12dp"
+                        android:clipChildren="false"
+                        android:clipToPadding="false">
 
-                    <FrameLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:clipChildren="false">
-                        <TextView
-                            android:id="@+id/btnMood3"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:gravity="center"
-                            android:text="@string/mood3"
-                            android:textSize="24sp"
-                            android:textColor="@color/sportify_text_primary"
-                            android:background="@drawable/bg_mood_selected" />
-                    </FrameLayout>
+                            android:clipChildren="false">
+                            <TextView
+                                android:id="@+id/btnMood1"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="@string/mood1"
+                                android:textSize="24sp"
+                                android:textColor="@color/sportify_text_primary"
+                                android:background="@drawable/bg_mood_circle" />
+                        </FrameLayout>
 
-                    <FrameLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:clipChildren="false">
-                        <TextView
-                            android:id="@+id/btnMood4"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:text="@string/mood4"
-                            android:textSize="24sp"
-                            android:textColor="@color/sportify_text_primary"
-                            android:background="@drawable/bg_mood_circle" />
-                    </FrameLayout>
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:clipChildren="false">
+                            <TextView
+                                android:id="@+id/btnMood2"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="@string/mood2"
+                                android:textSize="24sp"
+                                android:textColor="@color/sportify_text_primary"
+                                android:background="@drawable/bg_mood_circle" />
+                        </FrameLayout>
 
-                    <FrameLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:clipChildren="false">
-                        <TextView
-                            android:id="@+id/btnMood5"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:text="@string/mood5"
-                            android:textSize="24sp"
-                            android:textColor="@color/sportify_text_primary"
-                            android:background="@drawable/bg_mood_circle" />
-                    </FrameLayout>
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:clipChildren="false">
+                            <TextView
+                                android:id="@+id/btnMood3"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="@string/mood3"
+                                android:textSize="24sp"
+                                android:textColor="@color/sportify_text_primary"
+                                android:background="@drawable/bg_mood_selected" />
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:clipChildren="false">
+                            <TextView
+                                android:id="@+id/btnMood4"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="@string/mood4"
+                                android:textSize="24sp"
+                                android:textColor="@color/sportify_text_primary"
+                                android:background="@drawable/bg_mood_circle" />
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:clipChildren="false">
+                            <TextView
+                                android:id="@+id/btnMood5"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="@string/mood5"
+                                android:textSize="24sp"
+                                android:textColor="@color/sportify_text_primary"
+                                android:background="@drawable/bg_mood_circle" />
+                        </FrameLayout>
+
+                    </LinearLayout>
 
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Day Assessment -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardAssessment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/card_margin_h"
-            android:layout_marginBottom="@dimen/spacing_md"
-            app:cardCornerRadius="@dimen/card_corner"
-            app:cardElevation="0dp">
-
-            <LinearLayout
+            <!-- Day Assessment -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardAssessment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_assessment"
-                android:padding="20dp">
+                android:layout_marginHorizontal="@dimen/card_margin_h"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/card_corner"
+                app:cardElevation="0dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_assessment"
-                    android:textSize="14sp"
-                    android:textColor="@color/sportify_text_primary"
-                    android:fontFamily="sans-serif-medium" />
-
-                <ImageView
-                    android:id="@+id/imgAssessment"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="12dp"
-                    android:src="@android:drawable/ic_menu_info_details"
-                    android:contentDescription="@string/dashboard_assessment" />
-
-                <TextView
-                    android:id="@+id/tvAssessmentText"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/assess_no_data"
-                    android:textAlignment="center"
-                    android:textSize="15sp"
-                    android:textColor="@color/sportify_text_primary"
-                    android:layout_marginTop="@dimen/spacing_sm" />
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_assessment"
+                    android:padding="20dp">
 
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dashboard_assessment"
+                        android:textSize="14sp"
+                        android:textColor="@color/sportify_text_primary"
+                        android:fontFamily="sans-serif-medium" />
 
-    </LinearLayout>
-</ScrollView>
+                    <ImageView
+                        android:id="@+id/imgAssessment"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="12dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        android:contentDescription="@string/dashboard_assessment" />
+
+                    <TextView
+                        android:id="@+id/tvAssessmentText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/assess_no_data"
+                        android:textAlignment="center"
+                        android:textSize="15sp"
+                        android:textColor="@color/sportify_text_primary"
+                        android:layout_marginTop="@dimen/spacing_sm" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

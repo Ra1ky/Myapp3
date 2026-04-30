@@ -1,64 +1,95 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sleepRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/sportify_background"
-    android:padding="20dp">
+    android:background="@color/sportify_background">
 
-    <!-- Back Navigation -->
-    <LinearLayout
+    <!-- Decorative Background Icons -->
+    <ImageView
+        android:id="@+id/decorIcon1"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="-30dp"
+        android:layout_marginEnd="-20dp"
+        android:alpha="0.15"
+        android:rotation="15"
+        android:src="@drawable/ic_sleep"
+        app:tint="@color/sportify_green" />
+
+    <ImageView
+        android:id="@+id/decorIcon2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="100dp"
+        android:layout_marginStart="-20dp"
+        android:alpha="0.15"
+        android:rotation="-10"
+        android:src="@drawable/ic_heart_pulse"
+        app:tint="@color/sportify_green" />
+
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="@dimen/spacing_lg">
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_revert"
-            android:contentDescription="@string/placeholder_back" />
-
-        <TextView
-            android:id="@+id/tvSleepTitle"
-            style="@style/Sportify.Text.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="@string/dashboard_sleep" />
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true">
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="@color/sportify_text_primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/dashboard_sleep"
+                style="@style/Sportify.Text.Title"
+                android:textColor="@color/sportify_text_primary" />
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <!-- Total Sleep Today Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardTotalSleep"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
-                app:cardCornerRadius="@dimen/card_corner"
-                app:cardElevation="@dimen/card_elevation"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
                 app:cardBackgroundColor="@color/sportify_surface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/card_padding"
+                    android:padding="24dp"
                     android:gravity="center_horizontal">
 
                     <TextView
@@ -80,24 +111,25 @@
 
             <!-- Sleep Tracking Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardTracking"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
-                app:cardCornerRadius="@dimen/card_corner"
-                app:cardElevation="@dimen/card_elevation"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
                 app:cardBackgroundColor="@color/sportify_surface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/card_padding"
+                    android:padding="24dp"
                     android:gravity="center_horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sleep Duration"
+                        android:text="Session Timer"
                         style="@style/Sportify.Text.Subtitle"
                         android:layout_marginBottom="@dimen/spacing_sm" />
 
@@ -121,18 +153,19 @@
 
             <!-- Manual Entry Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardManual"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
-                app:cardCornerRadius="@dimen/card_corner"
-                app:cardElevation="@dimen/card_elevation"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
                 app:cardBackgroundColor="@color/sportify_surface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/card_padding">
+                    android:padding="24dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -181,7 +214,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnSaveManualSleep"
-                        style="@style/Sportify.Button.Primary"
+                        style="@style/Sportify.Button.Secondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_md"
@@ -192,17 +225,18 @@
 
             <!-- Sleep Mood Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardMood"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="@dimen/card_corner"
-                app:cardElevation="@dimen/card_elevation"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
                 app:cardBackgroundColor="@color/sportify_surface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/card_padding">
+                    android:padding="24dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -228,7 +262,11 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-        </LinearLayout>
-    </ScrollView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
 
-</LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

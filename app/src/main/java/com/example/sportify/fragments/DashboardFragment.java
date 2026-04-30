@@ -1,11 +1,14 @@
 package com.example.sportify.fragments;
 
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -28,7 +31,9 @@ import com.example.sportify.db.DailyRecord;
 import com.example.sportify.db.UserProfile;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.IntStream;
 
@@ -43,12 +48,16 @@ public class DashboardFragment extends Fragment {
     private ProgressBar progressSteps, progressSleep, progressCalories, progressWater;
     private ImageView imgAssessment;
     private TextView[] moodButtons;
+    private View layoutHeader, cardSteps, cardCalories, cardWater, cardSleep, cardMood, cardAssessment;
 
     // Data
     private AppDatabase db;
     private String todayDate;
     private DailyRecord todayRecord;
     private UserProfile profile;
+    
+    private final List<ObjectAnimator> decorAnimators = new ArrayList<>();
+    private int lastSteps = 0, lastCalories = 0, lastWater = 0, lastSleep = 0;
 
     @Nullable
     @Override
@@ -69,6 +78,9 @@ public class DashboardFragment extends Fragment {
         setupCardClickListeners(view);
         setupMoodButtons();
         loadData();
+        
+        animateEntrance();
+        startDecorAnimations(view);
     }
 
     @Override
@@ -93,6 +105,15 @@ public class DashboardFragment extends Fragment {
         progressWater = v.findViewById(R.id.progressWater);
         tvAssessmentText = v.findViewById(R.id.tvAssessmentText);
         imgAssessment = v.findViewById(R.id.imgAssessment);
+        
+        layoutHeader = v.findViewById(R.id.layoutHeader);
+        cardSteps = v.findViewById(R.id.cardSteps);
+        cardCalories = v.findViewById(R.id.cardCalories);
+        cardWater = v.findViewById(R.id.cardWater);
+        cardSleep = v.findViewById(R.id.cardSleep);
+        cardMood = v.findViewById(R.id.cardMood);
+        cardAssessment = v.findViewById(R.id.cardAssessment);
+
         TextView btnMood1 = v.findViewById(R.id.btnMood1);
         TextView btnMood2 = v.findViewById(R.id.btnMood2);
         TextView btnMood3 = v.findViewById(R.id.btnMood3);
@@ -101,12 +122,55 @@ public class DashboardFragment extends Fragment {
         moodButtons = new TextView[]{btnMood1, btnMood2, btnMood3, btnMood4, btnMood5};
     }
 
-    private void setupCardClickListeners(View v) {
-        CardView cardSteps = v.findViewById(R.id.cardSteps);
-        CardView cardCalories = v.findViewById(R.id.cardCalories);
-        CardView cardWater = v.findViewById(R.id.cardWater);
-        CardView cardSleep = v.findViewById(R.id.cardSleep);
+    private void animateEntrance() {
+        View[] elements = {layoutHeader, tvDate, cardSteps, cardCalories, cardWater, cardSleep, cardMood, cardAssessment};
+        for (int i = 0; i < elements.length; i++) {
+            View v = elements[i];
+            if (v != null) {
+                v.setAlpha(0f);
+                v.setTranslationY(80f);
+                v.animate()
+                        .alpha(1f)
+                        .translationY(0f)
+                        .setDuration(700)
+                        .setStartDelay(i * 100)
+                        .setInterpolator(new DecelerateInterpolator())
+                        .start();
+            }
+        }
+    }
 
+    private void startDecorAnimations(View v) {
+        View d1 = v.findViewById(R.id.decorIcon1);
+        View d2 = v.findViewById(R.id.decorIcon2);
+        View d3 = v.findViewById(R.id.decorIcon3);
+
+        if (d1 != null) applyFloatingAnimation(d1, 4000, 0, 30f, 20f);
+        if (d2 != null) applyFloatingAnimation(d2, 4500, 500, -25f, -15f);
+        if (d3 != null) applyFloatingAnimation(d3, 5000, 1000, 20f, 30f);
+    }
+
+    private void applyFloatingAnimation(View v, long duration, long delay, float translationY, float rotation) {
+        ObjectAnimator floatAnim = ObjectAnimator.ofFloat(v, "translationY", -translationY, translationY);
+        floatAnim.setDuration(duration);
+        floatAnim.setRepeatMode(ValueAnimator.REVERSE);
+        floatAnim.setRepeatCount(ValueAnimator.INFINITE);
+        floatAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        floatAnim.setStartDelay(delay);
+        floatAnim.start();
+        decorAnimators.add(floatAnim);
+
+        ObjectAnimator rotateAnim = ObjectAnimator.ofFloat(v, "rotation", -rotation, rotation);
+        rotateAnim.setDuration(duration + 800);
+        rotateAnim.setRepeatMode(ValueAnimator.REVERSE);
+        rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
+        rotateAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        rotateAnim.setStartDelay(delay);
+        rotateAnim.start();
+        decorAnimators.add(rotateAnim);
+    }
+
+    private void setupCardClickListeners(View v) {
         cardSteps.setOnClickListener(click ->{
             Intent intent = new Intent(requireContext(), StepsDetailActivity.class);
             startActivity(intent);
@@ -128,13 +192,6 @@ public class DashboardFragment extends Fragment {
         });
     }
 
-    private void openDetail(String title, String description) {
-        Intent intent = new Intent(requireContext(), CardDetailActivity.class);
-        intent.putExtra(CardDetailActivity.EXTRA_TITLE, title);
-        intent.putExtra(CardDetailActivity.EXTRA_DESC, description);
-        startActivity(intent);
-    }
-
     private void setupMoodButtons() {
         IntStream.range(0, moodButtons.length)
                 .forEach(i -> {
@@ -144,6 +201,12 @@ public class DashboardFragment extends Fragment {
                         selectMood(score);
                     });
                 });
+    }
+
+    private void animateMoodPress(View v) {
+        v.animate().scaleX(1.3f).scaleY(1.3f).setDuration(150).withEndAction(() -> 
+            v.animate().scaleX(1f).scaleY(1f).setDuration(300).setInterpolator(new OvershootInterpolator()).start()
+        ).start();
     }
 
     private void selectMood(int score) {
@@ -161,41 +224,12 @@ public class DashboardFragment extends Fragment {
         updateAssessment();
     }
 
-    // Tactile press feedback for mood emojis: a quick scale-up, then scale-down
-    // with overshoot bounce, while a rotation wobble runs concurrently.
-    private void animateMoodPress(View v) {
-        v.animate().cancel();
-        v.setRotation(0f);
-
-        // Scale: pop up fast, settle back with an overshoot
-        v.animate()
-                .scaleX(1.3f).scaleY(1.3f)
-                .setDuration(120)
-                .withEndAction(() -> v.animate()
-                        .scaleX(1f).scaleY(1f)
-                        .setDuration(280)
-                        .setInterpolator(new OvershootInterpolator(3f))
-                        .start())
-                .start();
-
-        // Wobble: independent rotation animator running over the full duration
-        ObjectAnimator wobble = ObjectAnimator.ofFloat(v, "rotation",
-                0f, -18f, 14f, -10f, 6f, 0f);
-        wobble.setDuration(400);
-        wobble.start();
-    }
-
     private void loadData() {
-        // Goals
         profile = db.userProfileDAO().getProfile();
-
-        // Today's date
         String displayDate = new SimpleDateFormat("MMMM d", Locale.getDefault()).format(new Date());
         tvDate.setText(displayDate);
 
-        // Today's record
         todayRecord = db.dailyRecordDAO().getByDate(todayDate);
-
         if (todayRecord == null) {
             todayRecord = new DailyRecord(todayDate);
             applyGoalsFromProfile(todayRecord);
@@ -212,7 +246,6 @@ public class DashboardFragment extends Fragment {
 
     private void applyGoalsFromProfile(DailyRecord record) {
         if (profile != null) {
-            // If the profile has biometric data, prefer calculated recommendations
             if (profile.getWeightKg() > 0 && profile.getHeightCm() > 0) {
                 record.setCaloriesGoal(profile.getCaloriesGoal() > 0
                         ? profile.getCaloriesGoal()
@@ -231,7 +264,6 @@ public class DashboardFragment extends Fragment {
 
             record.setStepGoal(profile.getStepGoal());
         } else {
-            // Universal defaults
             record.setStepGoal(10000);
             record.setCaloriesGoal(2000);
             record.setWaterGoalMl(2500);
@@ -245,81 +277,92 @@ public class DashboardFragment extends Fragment {
         }
     }
 
-    // Steps
     private void updateStepsUI() {
         int steps = todayRecord.getSteps();
         int goal = todayRecord.getStepGoal();
+        
+        animateCountUp(tvStepsCount, lastSteps, steps, "");
+        lastSteps = steps;
 
-        tvStepsCount.setText(String.valueOf(steps));
         tvStepsGoal.setText(String.format(Locale.getDefault(), "%d / %d", steps, goal));
         progressSteps.setMax(goal > 0 ? goal : 10000);
-        progressSteps.setProgress(steps);
+        animateProgress(progressSteps, steps);
     }
 
-    // Sleep
     private void updateSleepUI() {
         int minutes = todayRecord.getSleepMinutes();
         int hours = minutes / 60;
         int mins = minutes % 60;
+        
+        tvSleepHours.setText(minutes > 0 ? String.format(Locale.getDefault(), "%d h %d min", hours, mins) : "-- h");
 
-        if (minutes > 0) {
-            tvSleepHours.setText(String.format(Locale.getDefault(), "%d h %d min", hours, mins));
-        } else {
-            tvSleepHours.setText("-- h");
-        }
-
-        // Sleep progress bar: 8 h (480 min) — 100%
         int sleepPercent = minutes > 0 ? Math.min(100, (minutes * 100) / 480) : 0;
-        progressSleep.setProgress(sleepPercent);
+        animateProgress(progressSleep, sleepPercent);
 
         int sleepMood = todayRecord.getSleepMood();
         String[] emojis = {"?", "😞", "😕", "😐", "🙂", "😄"};
         tvSleepMood.setText(emojis[Math.max(0, Math.min(sleepMood, 5))]);
     }
 
-    // Calories
     private void updateCaloriesUI() {
         int consumed = todayRecord.getCaloriesConsumed();
         int goal = todayRecord.getCaloriesGoal();
 
-        tvCaloriesCount.setText(String.valueOf(consumed));
+        animateCountUp(tvCaloriesCount, lastCalories, consumed, " kcal");
+        lastCalories = consumed;
+
         tvCaloriesGoal.setText(String.format(Locale.getDefault(), "/ %d kcal", goal));
         progressCalories.setMax(goal > 0 ? goal : 2000);
-        progressCalories.setProgress(consumed);
+        animateProgress(progressCalories, consumed);
     }
 
-    // Water
     private void updateWaterUI() {
         int ml = todayRecord.getWaterMl();
         int goal = todayRecord.getWaterGoalMl();
 
-        tvWaterCount.setText(String.format(Locale.getDefault(), "%d ml", ml));
+        animateCountUp(tvWaterCount, lastWater, ml, " ml");
+        lastWater = ml;
+
         tvWaterGoal.setText(String.format(Locale.getDefault(), "/ %d ml", goal));
         progressWater.setMax(goal > 0 ? goal : 2500);
-        progressWater.setProgress(ml);
+        animateProgress(progressWater, ml);
     }
 
-    // Mood
+    private void animateCountUp(TextView tv, int start, int end, String suffix) {
+        ValueAnimator anim = ValueAnimator.ofInt(start, end);
+        anim.setDuration(1000);
+        anim.addUpdateListener(animation -> {
+            String text = String.format(Locale.getDefault(), "%d%s", (int) animation.getAnimatedValue(), suffix);
+            tv.setText(text);
+        });
+        anim.start();
+    }
+
+    private void animateProgress(ProgressBar pb, int value) {
+        pb.animate().scaleY(1.2f).setDuration(200).withEndAction(() -> 
+            pb.animate().scaleY(1f).setDuration(200).start()
+        ).start();
+
+        ObjectAnimator anim = ObjectAnimator.ofInt(pb, "progress", pb.getProgress(), value);
+        anim.setDuration(1000);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.start();
+    }
+
     private void updateMoodUI() {
         int mood = todayRecord.getMoodScore();
         for (int i = 0; i < moodButtons.length; i++) {
-            if (i + 1 == mood) {
-                moodButtons[i].setBackgroundResource(R.drawable.bg_mood_selected);
-            } else {
-                moodButtons[i].setBackgroundResource(R.drawable.bg_mood_circle);
-            }
+            moodButtons[i].setBackgroundResource(i + 1 == mood ? R.drawable.bg_mood_selected : R.drawable.bg_mood_circle);
         }
     }
 
     private void updateAssessment() {
         int score = todayRecord.calculateHealthScore();
-
         if (score == 0) {
             tvAssessmentText.setText(R.string.assess_no_data);
             imgAssessment.setImageResource(android.R.drawable.ic_menu_info_details);
             return;
         }
-
         if (score >= 80) {
             tvAssessmentText.setText(R.string.assess_excellent);
             imgAssessment.setImageResource(R.drawable.ic_star_shiny);
@@ -333,5 +376,11 @@ public class DashboardFragment extends Fragment {
             tvAssessmentText.setText(R.string.assess_below);
             imgAssessment.setImageResource(R.drawable.ic_star_outline);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        for (ObjectAnimator anim : decorAnimators) anim.cancel();
     }
 }

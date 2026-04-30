@@ -1,8 +1,12 @@
 package com.example.sportify;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +24,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class SleepDetailActivity extends AppCompatActivity {
@@ -30,11 +36,15 @@ public class SleepDetailActivity extends AppCompatActivity {
     private TextInputEditText etSleepHours, etSleepMinutes;
     private MaterialButton btnSaveManualSleep;
     private TextView[] moodButtons;
+    private View cardTotalSleep, cardTracking, cardManual, cardMood;
 
     private AppDatabase db;
     private DailyRecordDAO recordDao;
     private String todayDate;
     private DailyRecord todayRecord;
+    
+    private final List<ObjectAnimator> decorAnimators = new ArrayList<>();
+    private int lastSleepMinutes = 0;
 
     private boolean isTracking = false;
     private long startTime = 0;
@@ -62,7 +72,7 @@ public class SleepDetailActivity extends AppCompatActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.sleepRoot), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
@@ -74,6 +84,11 @@ public class SleepDetailActivity extends AppCompatActivity {
         etSleepHours = findViewById(R.id.etSleepHours);
         etSleepMinutes = findViewById(R.id.etSleepMinutes);
         btnSaveManualSleep = findViewById(R.id.btnSaveManualSleep);
+        
+        cardTotalSleep = findViewById(R.id.cardTotalSleep);
+        cardTracking = findViewById(R.id.cardTracking);
+        cardManual = findViewById(R.id.cardManual);
+        cardMood = findViewById(R.id.cardMood);
 
         moodButtons = new TextView[]{
                 findViewById(R.id.sleepMood1),
@@ -99,6 +114,59 @@ public class SleepDetailActivity extends AppCompatActivity {
             final int score = i + 1;
             moodButtons[i].setOnClickListener(v -> selectSleepMood(score));
         }
+        
+        animateEntrance();
+        startDecorAnimations();
+    }
+
+    private void animateEntrance() {
+        View[] cards = {cardTotalSleep, cardTracking, cardManual, cardMood};
+        for (int i = 0; i < cards.length; i++) {
+            View v = cards[i];
+            if (v != null) {
+                v.setAlpha(0f);
+                v.setTranslationY(100f);
+                v.animate()
+                        .alpha(1f)
+                        .translationY(0f)
+                        .setDuration(800)
+                        .setStartDelay(i * 150)
+                        .setInterpolator(new DecelerateInterpolator())
+                        .start();
+            }
+        }
+    }
+
+    private void startDecorAnimations() {
+        View decor1 = findViewById(R.id.decorIcon1);
+        View decor2 = findViewById(R.id.decorIcon2);
+
+        if (decor1 != null) {
+            applyFloatingAnimation(decor1, 3000, 0, 20f, 15f);
+        }
+        if (decor2 != null) {
+            applyFloatingAnimation(decor2, 3500, 500, -25f, 10f);
+        }
+    }
+
+    private void applyFloatingAnimation(View v, long duration, long delay, float translationY, float rotation) {
+        ObjectAnimator floatAnim = ObjectAnimator.ofFloat(v, "translationY", -translationY, translationY);
+        floatAnim.setDuration(duration);
+        floatAnim.setRepeatMode(ValueAnimator.REVERSE);
+        floatAnim.setRepeatCount(ValueAnimator.INFINITE);
+        floatAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        floatAnim.setStartDelay(delay);
+        floatAnim.start();
+        decorAnimators.add(floatAnim);
+
+        ObjectAnimator rotateAnim = ObjectAnimator.ofFloat(v, "rotation", -rotation, rotation);
+        rotateAnim.setDuration(duration + 500);
+        rotateAnim.setRepeatMode(ValueAnimator.REVERSE);
+        rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
+        rotateAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        rotateAnim.setStartDelay(delay);
+        rotateAnim.start();
+        decorAnimators.add(rotateAnim);
     }
 
     private void loadData() {
@@ -113,11 +181,19 @@ public class SleepDetailActivity extends AppCompatActivity {
 
     private void updateTotalSleepUI() {
         int totalMinutes = todayRecord.getSleepMinutes();
-        int h = totalMinutes / 60;
-        int m = totalMinutes % 60;
-        if (tvTotalSleepDisplay != null) {
+        
+        // Count-up animation for the sleep text
+        ValueAnimator textAnim = ValueAnimator.ofInt(lastSleepMinutes, totalMinutes);
+        textAnim.setDuration(1000);
+        textAnim.addUpdateListener(animation -> {
+            int val = (int) animation.getAnimatedValue();
+            int h = val / 60;
+            int m = val % 60;
             tvTotalSleepDisplay.setText(String.format(Locale.getDefault(), "%d h %d min", h, m));
-        }
+        });
+        textAnim.start();
+        
+        lastSleepMinutes = totalMinutes;
     }
 
     private void toggleSleepTracking() {
@@ -135,7 +211,6 @@ public class SleepDetailActivity extends AppCompatActivity {
             long millis = System.currentTimeMillis() - startTime;
             int sessionMinutes = (int) (millis / (1000 * 60));
 
-            // ADD session duration to total
             todayRecord.setSleepMinutes(todayRecord.getSleepMinutes() + sessionMinutes);
             recordDao.insertOrUpdate(todayRecord);
 
@@ -161,7 +236,6 @@ public class SleepDetailActivity extends AppCompatActivity {
         int m = mStr.isEmpty() ? 0 : Integer.parseInt(mStr);
         int totalMinutes = (h * 60) + m;
 
-        // SET total sleep from manual entry
         todayRecord.setSleepMinutes(totalMinutes);
         recordDao.insertOrUpdate(todayRecord);
 
@@ -185,6 +259,14 @@ public class SleepDetailActivity extends AppCompatActivity {
             } else {
                 moodButtons[i].setBackgroundResource(R.drawable.bg_mood_circle);
             }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (ObjectAnimator anim : decorAnimators) {
+            anim.cancel();
         }
     }
 }
