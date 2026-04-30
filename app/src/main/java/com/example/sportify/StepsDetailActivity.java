@@ -1,24 +1,19 @@
 package com.example.sportify;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.Build;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -26,32 +21,26 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.sportify.db.AppDatabase;
 import com.example.sportify.db.DailyRecord;
 import com.example.sportify.db.DailyRecordDAO;
-import com.example.sportify.db.UserProfile;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-public class StepsDetailActivity extends AppCompatActivity implements SensorEventListener {
-
-    private static final int PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 100;
+public class StepsDetailActivity extends AppCompatActivity {
 
     private TextView tvStepsCount, tvProgressLabel;
     private ProgressBar pbSteps;
-    private TextInputEditText etStepGoal, etManualSteps;
-    private MaterialButton btnSaveGoal, btnAddManualSteps;
+    private View stepsCard, manualEntryCard;
 
     private AppDatabase db;
     private DailyRecordDAO recordDao;
     private String todayDate;
     private DailyRecord todayRecord;
-
-    private SensorManager sensorManager;
-    private Sensor stepSensor;
-    private boolean isSensorPresent = false;
-    private int initialStepCount = -1;
+    
+    private final List<ObjectAnimator> decorAnimators = new ArrayList<>();
+    private int lastStepsValue = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +50,7 @@ public class StepsDetailActivity extends AppCompatActivity implements SensorEven
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.detailRoot), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
@@ -70,10 +59,9 @@ public class StepsDetailActivity extends AppCompatActivity implements SensorEven
         tvStepsCount = findViewById(R.id.tvStepsCount);
         tvProgressLabel = findViewById(R.id.tvProgressLabel);
         pbSteps = findViewById(R.id.pbSteps);
-        etStepGoal = findViewById(R.id.etStepGoal);
-        btnSaveGoal = findViewById(R.id.btnSaveGoal);
-        etManualSteps = findViewById(R.id.etManualSteps);
-        btnAddManualSteps = findViewById(R.id.btnAddManualSteps);
+        
+        stepsCard = findViewById(R.id.stepsCard);
+        manualEntryCard = findViewById(R.id.manualEntryCard);
 
         btnBack.setOnClickListener(v -> finish());
 
@@ -84,89 +72,73 @@ public class StepsDetailActivity extends AppCompatActivity implements SensorEven
 
         loadData();
 
-        btnSaveGoal.setOnClickListener(v -> saveGoal());
-        btnAddManualSteps.setOnClickListener(v -> addManualSteps());
-
-        // Sensor setup
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
-            stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-            isSensorPresent = true;
-        } else {
-            Toast.makeText(this, "Step counter sensor not available on this device", Toast.LENGTH_SHORT).show();
-        }
-
-        checkPermission();
+        findViewById(R.id.btnAddManualSteps).setOnClickListener(v -> addManualSteps());
+        
+        animateEntrance();
+        startDecorAnimations();
     }
 
-    private void checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, PERMISSION_REQUEST_ACTIVITY_RECOGNITION);
-            }
+    private void animateEntrance() {
+        if (stepsCard != null) {
+            stepsCard.setAlpha(0f);
+            stepsCard.setTranslationY(100f);
+            stepsCard.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(800)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .start();
         }
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_ACTIVITY_RECOGNITION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted
-            } else {
-                Toast.makeText(this, "Permission denied for step counting", Toast.LENGTH_SHORT).show();
-            }
+        if (manualEntryCard != null) {
+            manualEntryCard.setAlpha(0f);
+            manualEntryCard.setTranslationY(50f);
+            manualEntryCard.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(800)
+                    .setStartDelay(300)
+                    .start();
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (isSensorPresent) {
-            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI);
+    private void startDecorAnimations() {
+        View decor1 = findViewById(R.id.decorIcon1);
+        View decor2 = findViewById(R.id.decorIcon2);
+
+        if (decor1 != null) {
+            applyFloatingAnimation(decor1, 3000, 0, 20f, 15f);
+        }
+        if (decor2 != null) {
+            applyFloatingAnimation(decor2, 3500, 500, -25f, 10f);
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (isSensorPresent) {
-            sensorManager.unregisterListener(this);
-        }
-    }
+    private void applyFloatingAnimation(View v, long duration, long delay, float translationY, float rotation) {
+        ObjectAnimator floatAnim = ObjectAnimator.ofFloat(v, "translationY", -translationY, translationY);
+        floatAnim.setDuration(duration);
+        floatAnim.setRepeatMode(ValueAnimator.REVERSE);
+        floatAnim.setRepeatCount(ValueAnimator.INFINITE);
+        floatAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        floatAnim.setStartDelay(delay);
+        floatAnim.start();
+        decorAnimators.add(floatAnim);
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            float totalStepsSinceReboot = event.values[0];
-            
-            if (initialStepCount == -1) {
-                initialStepCount = (int) totalStepsSinceReboot;
-            } else {
-                int sessionSteps = (int) totalStepsSinceReboot - initialStepCount;
-                if (sessionSteps > 0) {
-                    // Update database
-                    todayRecord.setSteps(todayRecord.getSteps() + sessionSteps);
-                    recordDao.insertOrUpdate(todayRecord);
-                    
-                    // Reset session counter
-                    initialStepCount = (int) totalStepsSinceReboot;
-                    
-                    updateUI();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        ObjectAnimator rotateAnim = ObjectAnimator.ofFloat(v, "rotation", -rotation, rotation);
+        rotateAnim.setDuration(duration + 500);
+        rotateAnim.setRepeatMode(ValueAnimator.REVERSE);
+        rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
+        rotateAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        rotateAnim.setStartDelay(delay);
+        rotateAnim.start();
+        decorAnimators.add(rotateAnim);
     }
 
     private void loadData() {
         todayRecord = recordDao.getByDate(todayDate);
         if (todayRecord == null) {
             todayRecord = new DailyRecord(todayDate);
-            todayRecord.setStepGoal(10000); // Default goal
+            todayRecord.setStepGoal(10000); 
             recordDao.insertOrUpdate(todayRecord);
         }
 
@@ -177,52 +149,37 @@ public class StepsDetailActivity extends AppCompatActivity implements SensorEven
         int steps = todayRecord.getSteps();
         int goal = todayRecord.getStepGoal();
 
-        tvStepsCount.setText(String.valueOf(steps));
+        // 1. Count-up animation for the steps number
+        ValueAnimator textAnim = ValueAnimator.ofInt(lastStepsValue, steps);
+        textAnim.setDuration(1000);
+        textAnim.addUpdateListener(animation -> 
+            tvStepsCount.setText(animation.getAnimatedValue().toString())
+        );
+        textAnim.start();
         
-        // Using string formatting for better localization support
+        lastStepsValue = steps;
+        
         String progressText = steps + " / " + goal;
         tvProgressLabel.setText(progressText);
 
         pbSteps.setMax(goal);
-        pbSteps.setProgress(steps);
+        
+        // 2. Pulse animation for the progress bar
+        pbSteps.animate()
+                .scaleY(1.4f)
+                .setDuration(200)
+                .withEndAction(() -> pbSteps.animate().scaleY(1f).setDuration(200).start())
+                .start();
 
-        etStepGoal.setText(String.valueOf(goal));
-    }
-
-    private void saveGoal() {
-        String goalStr = etStepGoal.getText().toString();
-        if (goalStr.isEmpty()) {
-            Toast.makeText(this, "Please enter a goal", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        try {
-            int newGoal = Integer.parseInt(goalStr);
-            if (newGoal <= 0) {
-                Toast.makeText(this, "Goal must be greater than 0", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            todayRecord.setStepGoal(newGoal);
-            recordDao.insertOrUpdate(todayRecord);
-
-            // Sync to profile
-            UserProfile profile = db.userProfileDAO().getProfile();
-            if (profile != null) {
-                profile.setStepGoal(newGoal);
-                db.userProfileDAO().insertOrUpdate(profile);
-            }
-
-            updateUI();
-            Toast.makeText(this, R.string.profile_updated, Toast.LENGTH_SHORT).show();
-
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Invalid number", Toast.LENGTH_SHORT).show();
-        }
+        // 3. Smooth progress transition
+        ObjectAnimator anim = ObjectAnimator.ofInt(pbSteps, "progress", pbSteps.getProgress(), steps);
+        anim.setDuration(1000);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.start();
     }
 
     private void addManualSteps() {
-        String manualStr = etManualSteps.getText().toString();
+        String manualStr = ((TextView)findViewById(R.id.etManualSteps)).getText().toString();
         if (manualStr.isEmpty()) {
             Toast.makeText(this, "Please enter steps", Toast.LENGTH_SHORT).show();
             return;
@@ -235,16 +192,23 @@ public class StepsDetailActivity extends AppCompatActivity implements SensorEven
                 return;
             }
 
-            // Set total steps instead of adding
             todayRecord.setSteps(totalSteps);
             recordDao.insertOrUpdate(todayRecord);
 
             updateUI();
-            etManualSteps.setText(""); // Clear input
+            ((TextView)findViewById(R.id.etManualSteps)).setText("");
             Toast.makeText(this, "Steps updated!", Toast.LENGTH_SHORT).show();
 
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid number", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (ObjectAnimator anim : decorAnimators) {
+            anim.cancel();
         }
     }
 }
