@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -33,7 +34,9 @@ import com.example.sportify.db.UserProfile;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class ProfileFragment extends Fragment {
@@ -41,6 +44,9 @@ public class ProfileFragment extends Fragment {
     private static final String ARG_ONBOARDING = "onboarding_mode";
     private boolean onboardingMode = false;
     private int onboardingStep = 1;
+
+    // Title
+    private TextView tvProfileTitle;
 
     // Personal data inputs
     private TextInputEditText etAge, etWeight, etHeight;
@@ -112,6 +118,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void bindViews(View v) {
+        tvProfileTitle = v.findViewById(R.id.tvProfileTitle);
+
         // Personal data inputs
         etAge = v.findViewById(R.id.etAge);
         etWeight = v.findViewById(R.id.etWeight);
@@ -273,6 +281,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void configureMultiplierSlider(int dietMode) {
+        boolean wasHidden = layoutMultiplier.getVisibility() != View.VISIBLE;
         switch (dietMode) {
             case 1:
                 layoutMultiplier.setVisibility(View.VISIBLE);
@@ -296,7 +305,20 @@ public class ProfileFragment extends Fragment {
                 break;
             default:
                 layoutMultiplier.setVisibility(View.GONE);
-                break;
+                return;
+        }
+
+        // Only fade in on the GONE to VISIBLE transition. Switching between Lose
+        // and Gain leaves visibility unchanged and shouldn't re-animate.
+        if (wasHidden) {
+            layoutMultiplier.setAlpha(0f);
+            layoutMultiplier.setTranslationY(60f);
+            layoutMultiplier.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(600)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .start();
         }
     }
 
@@ -366,6 +388,10 @@ public class ProfileFragment extends Fragment {
         int savedDietMode = profile.getDietMode();
         float savedMultiplier = profile.getDietMultiplier();
         int savedCalories = profile.getCaloriesGoal();
+
+        if (savedDietMode != 0) {
+            layoutMultiplier.setVisibility(View.VISIBLE);
+        }
 
         etCalorieGoal.post(() -> {
             spinnerDietMode.setOnItemSelectedListener(null);
@@ -650,6 +676,8 @@ public class ProfileFragment extends Fragment {
         // Default focus on the first goal field.
         etStepGoal.requestFocus();
         showArrowFor(arrowStepGoal);
+
+        animateEntrance();
     }
 
     // Step 2 → step 1: re-show personal data, hide goals + Back, restore Next.
@@ -667,6 +695,8 @@ public class ProfileFragment extends Fragment {
 
         etAge.requestFocus();
         showArrowFor(arrowAge);
+
+        animateEntrance();
     }
 
     private void setupOnboardingFocusListeners() {
@@ -737,6 +767,55 @@ public class ProfileFragment extends Fragment {
             arrowAnimator.cancel();
             arrowAnimator = null;
         }
+    }
+
+    private void animateEntrance() {
+        List<View> visible = new ArrayList<>();
+        addIfVisible(visible, tvProfileTitle);
+        addVisibleChildren(visible, layoutPersonalDataSection);
+        addVisibleChildren(visible, dailyGoalsSection);
+        addIfVisible(visible, layoutOnboardingNav);
+        addIfVisible(visible, btnSave);
+        addIfVisible(visible, tvLockNotice);
+
+        for (int i = 0; i < visible.size(); i++) {
+            View v = visible.get(i);
+            v.setAlpha(0f);
+            v.setTranslationY(60f);
+            v.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(600)
+                    .setStartDelay(i * 70L)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .start();
+        }
+    }
+
+    private void addIfVisible(List<View> out, View v) {
+        if (v != null && v.getVisibility() == View.VISIBLE) out.add(v);
+    }
+
+    // Adds each visible direct child of `section` to `out`, or nothing if the
+    // section itself is hidden. Used so each row inside a section animates
+    // individually instead of the whole section sliding in as one block.
+    private void addVisibleChildren(List<View> out, View section) {
+        if (section == null || section.getVisibility() != View.VISIBLE) return;
+        if (!(section instanceof ViewGroup)) {
+            out.add(section);
+            return;
+        }
+        ViewGroup group = (ViewGroup) section;
+        for (int i = 0; i < group.getChildCount(); i++) {
+            View child = group.getChildAt(i);
+            if (child.getVisibility() == View.VISIBLE) out.add(child);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        animateEntrance();
     }
 
     @Override

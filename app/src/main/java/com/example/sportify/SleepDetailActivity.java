@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +45,7 @@ public class SleepDetailActivity extends AppCompatActivity {
     private DailyRecord todayRecord;
     
     private final List<ObjectAnimator> decorAnimators = new ArrayList<>();
+    private ObjectAnimator moodWobbleAnimator;
     private int lastSleepMinutes = 0;
 
     private boolean isTracking = false;
@@ -112,7 +114,10 @@ public class SleepDetailActivity extends AppCompatActivity {
 
         for (int i = 0; i < moodButtons.length; i++) {
             final int score = i + 1;
-            moodButtons[i].setOnClickListener(v -> selectSleepMood(score));
+            moodButtons[i].setOnClickListener(v -> {
+                animateMoodPress(v);
+                selectSleepMood(score);
+            });
         }
         
         animateEntrance();
@@ -167,6 +172,39 @@ public class SleepDetailActivity extends AppCompatActivity {
         rotateAnim.setStartDelay(delay);
         rotateAnim.start();
         decorAnimators.add(rotateAnim);
+    }
+
+    private void animateMoodPress(View v) {
+        v.animate().scaleX(1.3f).scaleY(1.3f).setDuration(150).withEndAction(() ->
+                v.animate().scaleX(1f).scaleY(1f).setDuration(300).setInterpolator(new OvershootInterpolator()).start()
+        ).start();
+
+        ObjectAnimator wobble = ObjectAnimator.ofFloat(v, "rotation",
+                0f, -18f, 18f, -12f, 12f, -6f, 6f, 0f);
+        wobble.setDuration(500);
+        wobble.start();
+    }
+
+    // Shared with the dashboard pattern: continuous gentle rotation wobble.
+    private ObjectAnimator startContinuousWobble(View v, float degrees) {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(v, "rotation", -degrees, degrees);
+        anim.setDuration(1200);
+        anim.setRepeatMode(ValueAnimator.REVERSE);
+        anim.setRepeatCount(ValueAnimator.INFINITE);
+        anim.setInterpolator(new AccelerateDecelerateInterpolator());
+        anim.start();
+        return anim;
+    }
+
+    private void updateMoodWobble(int score) {
+        if (moodWobbleAnimator != null) {
+            Object target = moodWobbleAnimator.getTarget();
+            moodWobbleAnimator.cancel();
+            if (target instanceof View) ((View) target).setRotation(0f);
+            moodWobbleAnimator = null;
+        }
+        if (score < 1 || score > 5) return;
+        moodWobbleAnimator = startContinuousWobble(moodButtons[score - 1], 8f);
     }
 
     private void loadData() {
@@ -260,6 +298,7 @@ public class SleepDetailActivity extends AppCompatActivity {
                 moodButtons[i].setBackgroundResource(R.drawable.bg_mood_circle);
             }
         }
+        updateMoodWobble(selectedMood);
     }
 
     @Override
@@ -268,5 +307,6 @@ public class SleepDetailActivity extends AppCompatActivity {
         for (ObjectAnimator anim : decorAnimators) {
             anim.cancel();
         }
+        if (moodWobbleAnimator != null) moodWobbleAnimator.cancel();
     }
 }

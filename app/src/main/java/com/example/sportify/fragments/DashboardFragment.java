@@ -16,12 +16,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.sportify.CaloriesDetailActivity;
 import com.example.sportify.R;
-import com.example.sportify.CardDetailActivity;
 import com.example.sportify.SleepDetailActivity;
 import com.example.sportify.SportifyApp;
 import com.example.sportify.StepsDetailActivity;
@@ -57,6 +55,9 @@ public class DashboardFragment extends Fragment {
     private UserProfile profile;
     
     private final List<ObjectAnimator> decorAnimators = new ArrayList<>();
+    private ObjectAnimator moodWobbleAnimator;
+    private ObjectAnimator sleepMoodWobbleAnimator;
+    private ObjectAnimator assessmentWobbleAnimator;
     private int lastSteps = 0, lastCalories = 0, lastWater = 0, lastSleep = 0;
 
     @Nullable
@@ -78,8 +79,6 @@ public class DashboardFragment extends Fragment {
         setupCardClickListeners(view);
         setupMoodButtons();
         loadData();
-        
-        animateEntrance();
         startDecorAnimations(view);
     }
 
@@ -87,6 +86,7 @@ public class DashboardFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadData();
+        animateEntrance();
     }
 
     private void bindViews(View v) {
@@ -204,9 +204,27 @@ public class DashboardFragment extends Fragment {
     }
 
     private void animateMoodPress(View v) {
-        v.animate().scaleX(1.3f).scaleY(1.3f).setDuration(150).withEndAction(() -> 
-            v.animate().scaleX(1f).scaleY(1f).setDuration(300).setInterpolator(new OvershootInterpolator()).start()
+        v.animate().scaleX(1.3f).scaleY(1.3f).setDuration(150).withEndAction(() ->
+                v.animate().scaleX(1f).scaleY(1f).setDuration(300).setInterpolator(new OvershootInterpolator()).start()
         ).start();
+
+        // Damped wobble — rotation oscillates and decays back to 0
+        ObjectAnimator wobble = ObjectAnimator.ofFloat(v, "rotation",
+                0f, -18f, 18f, -12f, 12f, -6f, 6f, 0f);
+        wobble.setDuration(500);
+        wobble.start();
+    }
+
+    // Shared wobble used by tvSleepMood, the active mood button, and the assessment star.
+    // Returns the started animator so each caller can cancel its own when state changes.
+    private ObjectAnimator startContinuousWobble(View v, float degrees) {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(v, "rotation", -degrees, degrees);
+        anim.setDuration(1200);
+        anim.setRepeatMode(ValueAnimator.REVERSE);
+        anim.setRepeatCount(ValueAnimator.INFINITE);
+        anim.setInterpolator(new AccelerateDecelerateInterpolator());
+        anim.start();
+        return anim;
     }
 
     private void selectMood(int score) {
@@ -221,7 +239,53 @@ public class DashboardFragment extends Fragment {
         todayRecord.setMoodScore(score);
         db.dailyRecordDAO().insertOrUpdate(todayRecord);
 
+        updateMoodWobble(score);
         updateAssessment();
+    }
+
+    // Wobbles whichever of the 5 mood buttons is currently selected. When switching
+    // selection, the previously wobbling button's rotation is reset to 0 since
+    // cancel() leaves it frozen at whatever angle it had reached.
+    private void updateMoodWobble(int score) {
+        if (moodWobbleAnimator != null) {
+            Object target = moodWobbleAnimator.getTarget();
+            moodWobbleAnimator.cancel();
+            if (target instanceof View) ((View) target).setRotation(0f);
+            moodWobbleAnimator = null;
+        }
+        if (score < 1 || score > 5) return;
+        moodWobbleAnimator = startContinuousWobble(moodButtons[score - 1], 8f);
+    }
+
+    private void updateSleepMoodWobble(int mood) {
+        if (sleepMoodWobbleAnimator != null) {
+            sleepMoodWobbleAnimator.cancel();
+            sleepMoodWobbleAnimator = null;
+        }
+        if (mood <= 0) {
+            tvSleepMood.setRotation(0f);
+            return;
+        }
+        sleepMoodWobbleAnimator = startContinuousWobble(tvSleepMood, 8f);
+    }
+
+    // Wobbles imgAssessment only when it shows a star drawable. Score 0 means
+    // "no data" and uses ic_menu_info_details — that should stay still.
+    private void updateAssessmentWobble(boolean hasStar) {
+        if (!hasStar) {
+            if (assessmentWobbleAnimator != null) {
+                assessmentWobbleAnimator.cancel();
+                assessmentWobbleAnimator = null;
+            }
+            imgAssessment.setRotation(0f);
+            return;
+        }
+        // Drawable swaps don't affect the View's rotation property, so let the
+        // animator keep running across star transitions instead of restarting it.
+        if (assessmentWobbleAnimator != null && assessmentWobbleAnimator.isRunning()) {
+            return;
+        }
+        assessmentWobbleAnimator = startContinuousWobble(imgAssessment, 4f);
     }
 
     private void loadData() {
@@ -302,6 +366,7 @@ public class DashboardFragment extends Fragment {
         int sleepMood = todayRecord.getSleepMood();
         String[] emojis = {"?", "😞", "😕", "😐", "🙂", "😄"};
         tvSleepMood.setText(emojis[Math.max(0, Math.min(sleepMood, 5))]);
+        updateSleepMoodWobble(sleepMood);
     }
 
     private void updateCaloriesUI() {
@@ -354,6 +419,7 @@ public class DashboardFragment extends Fragment {
         for (int i = 0; i < moodButtons.length; i++) {
             moodButtons[i].setBackgroundResource(i + 1 == mood ? R.drawable.bg_mood_selected : R.drawable.bg_mood_circle);
         }
+        updateMoodWobble(mood);
     }
 
     private void updateAssessment() {
@@ -361,6 +427,7 @@ public class DashboardFragment extends Fragment {
         if (score == 0) {
             tvAssessmentText.setText(R.string.assess_no_data);
             imgAssessment.setImageResource(android.R.drawable.ic_menu_info_details);
+            updateAssessmentWobble(false);
             return;
         }
         if (score >= 80) {
@@ -376,11 +443,15 @@ public class DashboardFragment extends Fragment {
             tvAssessmentText.setText(R.string.assess_below);
             imgAssessment.setImageResource(R.drawable.ic_star_outline);
         }
+        updateAssessmentWobble(true);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         for (ObjectAnimator anim : decorAnimators) anim.cancel();
+        if (sleepMoodWobbleAnimator != null) sleepMoodWobbleAnimator.cancel();
+        if (moodWobbleAnimator != null) moodWobbleAnimator.cancel();
+        if (assessmentWobbleAnimator != null) assessmentWobbleAnimator.cancel();
     }
 }
