@@ -20,14 +20,15 @@ import java.util.Locale;
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
 
     private List<FoodItem> foodItems = new ArrayList<>();
-    private final OnFoodDeleteListener deleteListener;
+    private final OnFoodActionListener actionListener;
 
-    public interface OnFoodDeleteListener {
+    public interface OnFoodActionListener {
         void onDelete(FoodItem foodItem);
+        void onQuickAdd(FoodItem foodItem);
     }
 
-    public FoodAdapter(OnFoodDeleteListener deleteListener) {
-        this.deleteListener = deleteListener;
+    public FoodAdapter(OnFoodActionListener actionListener) {
+        this.actionListener = actionListener;
     }
 
     public void setFoodItems(List<FoodItem> newFoodItems) {
@@ -75,7 +76,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                 item.getProtein(), item.getCarbs(), item.getFat());
         holder.tvMacros.setText(macros);
 
-        holder.btnDelete.setOnClickListener(v -> deleteListener.onDelete(item));
+        holder.btnDelete.setOnClickListener(v -> actionListener.onDelete(item));
+        holder.btnQuickAdd.setOnClickListener(v -> actionListener.onQuickAdd(item));
 
         if (holder.itemView.getScaleX() != 1.0f) {
              animateView(holder.itemView);
@@ -110,7 +112,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     static class FoodViewHolder extends RecyclerView.ViewHolder {
         TextView tvMealType, tvName, tvCalories, tvMacros;
-        ImageButton btnDelete;
+        ImageButton btnDelete, btnQuickAdd;
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -119,6 +121,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             tvCalories = itemView.findViewById(R.id.tvFoodCalories);
             tvMacros = itemView.findViewById(R.id.tvFoodMacros);
             btnDelete = itemView.findViewById(R.id.btnDeleteFood);
+            btnQuickAdd = itemView.findViewById(R.id.btnQuickAdd);
         }
     }
 }

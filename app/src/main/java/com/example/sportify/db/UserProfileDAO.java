@@ -1,5 +1,6 @@
 package com.example.sportify.db;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -13,4 +14,7 @@ public interface UserProfileDAO {
 
     @Query("SELECT * FROM user_profile WHERE id = 1")
     UserProfile getProfile();
+
+    @Query("SELECT * FROM user_profile WHERE id = 1")
+    LiveData<UserProfile> getLiveProfile();
 }

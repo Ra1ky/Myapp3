@@ -51,6 +51,9 @@ public class DailyRecord {
     @ColumnInfo(name = "mood_score")
     private int moodScore;  // 1-5, 0 — not specified
 
+    @ColumnInfo(name = "weight_kg")
+    private float weightKg;
+
     public DailyRecord(@NonNull String date) {
         this.date = date;
     }
@@ -94,6 +97,9 @@ public class DailyRecord {
 
     public int getMoodScore() { return moodScore; }
     public void setMoodScore(int moodScore) { this.moodScore = moodScore; }
+
+    public float getWeightKg() { return weightKg; }
+    public void setWeightKg(float weightKg) { this.weightKg = weightKg; }
 
     // Calculates a daily health score (0-100)
     public int calculateHealthScore() {

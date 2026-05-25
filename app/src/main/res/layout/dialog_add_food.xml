@@ -8,6 +8,37 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
+    <!-- Recent Food Section -->
+    <TextView
+        android:id="@+id/tvRecentTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recently Added"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/sportify_text_secondary"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <HorizontalScrollView
+        android:id="@+id/scrollRecentFood"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_marginBottom="16dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/layoutRecentFood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clipChildren="false"
+            android:clipToPadding="false" />
+    </HorizontalScrollView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

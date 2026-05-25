@@ -20,4 +20,7 @@ public interface FoodItemDAO {
 
     @Query("SELECT SUM(calories) FROM food_items WHERE date = :date")
     int getTotalCaloriesForDate(String date);
+
+    @Query("SELECT * FROM food_items GROUP BY name ORDER BY id DESC LIMIT 10")
+    List<FoodItem> getRecentUniqueItems();
 }

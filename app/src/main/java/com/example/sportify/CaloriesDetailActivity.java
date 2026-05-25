@@ -16,6 +16,8 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -217,10 +219,36 @@ public class CaloriesDetailActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        adapter = new FoodAdapter(this::deleteFoodItem);
+        adapter = new FoodAdapter(new FoodAdapter.OnFoodActionListener() {
+            @Override
+            public void onDelete(FoodItem foodItem) {
+                deleteFoodItem(foodItem);
+            }
+
+            @Override
+            public void onQuickAdd(FoodItem foodItem) {
+                quickAddFoodItem(foodItem);
+            }
+        });
         rvFoodItems.setLayoutManager(new LinearLayoutManager(this));
         rvFoodItems.setAdapter(adapter);
         rvFoodItems.setItemAnimator(new androidx.recyclerview.widget.DefaultItemAnimator());
+    }
+
+    private void quickAddFoodItem(FoodItem item) {
+        FoodItem newItem = new FoodItem(
+                item.getName(),
+                item.getCalories(),
+                item.getProtein(),
+                item.getFat(),
+                item.getCarbs(),
+                item.getGrams(),
+                item.getMealType(),
+                todayDate
+        );
+        db.foodItemDAO().insert(newItem);
+        refreshFoodList();
+        Toast.makeText(this, "Added " + item.getName(), Toast.LENGTH_SHORT).show();
     }
 
     private void loadData() {
@@ -328,13 +356,13 @@ public class CaloriesDetailActivity extends AppCompatActivity {
             tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_text_secondary));
         } else if (kcal < goalKcal * 0.5) {
             tvStatusMessage.setText("Good start! Keep it up.");
-            tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_green));
+            tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_text_secondary));
         } else if (kcal < goalKcal * 0.9) {
             tvStatusMessage.setText("You're doing great! Almost there.");
-            tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_green));
+            tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_text_secondary));
         } else if (kcal <= goalKcal) {
             tvStatusMessage.setText("Perfect! Goal reached.");
-            tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_green));
+            tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_text_secondary));
         } else {
             tvStatusMessage.setText("Over the limit. Watch out!");
             tvStatusMessage.setTextColor(ContextCompat.getColor(this, R.color.sportify_error));
@@ -367,6 +395,11 @@ public class CaloriesDetailActivity extends AppCompatActivity {
         activeEtProtein = view.findViewById(R.id.etFoodProtein);
         activeEtCarbs = view.findViewById(R.id.etFoodCarbs);
         activeEtFat = view.findViewById(R.id.etFoodFat);
+        LinearLayout layoutRecentFood = view.findViewById(R.id.layoutRecentFood);
+        TextView tvRecentTitle = view.findViewById(R.id.tvRecentTitle);
+        View scrollRecentFood = view.findViewById(R.id.scrollRecentFood);
+
+        setupRecentFoodSection(layoutRecentFood, tvRecentTitle, scrollRecentFood);
 
         view.findViewById(R.id.btnScanBarcode).setOnClickListener(v -> {
             Intent intent = new Intent(this, ScannerActivity.class);
@@ -439,6 +472,44 @@ public class CaloriesDetailActivity extends AppCompatActivity {
         dialog.show();
 
         view.post(() -> animateDialogContent((ViewGroup) view));
+    }
+
+    private void setupRecentFoodSection(LinearLayout container, TextView title, View scroll) {
+        List<FoodItem> recents = db.foodItemDAO().getRecentUniqueItems();
+        if (recents == null || recents.isEmpty()) {
+            title.setVisibility(View.GONE);
+            scroll.setVisibility(View.GONE);
+            return;
+        }
+
+        title.setVisibility(View.VISIBLE);
+        scroll.setVisibility(View.VISIBLE);
+        container.removeAllViews();
+
+        for (FoodItem item : recents) {
+            View itemView = LayoutInflater.from(this).inflate(R.layout.item_recent_food_circle, container, false);
+            ImageView ivFood = itemView.findViewById(R.id.ivRecentFoodIcon);
+            TextView tvName = itemView.findViewById(R.id.tvRecentFoodName);
+
+            tvName.setText(item.getName());
+            // Map common food items to icons or use default
+            ivFood.setImageResource(R.drawable.ic_apple);
+
+            itemView.setOnClickListener(v -> {
+                // 360 Y rotation animation
+                v.animate()
+                        .rotationY(360f)
+                        .setDuration(600)
+                        .setInterpolator(new AccelerateDecelerateInterpolator())
+                        .withEndAction(() -> {
+                            v.setRotationY(0f); // Reset for next time
+                            quickAddFoodItem(item);
+                        })
+                        .start();
+            });
+
+            container.addView(itemView);
+        }
     }
 
     private void animateDialogContent(ViewGroup root) {
