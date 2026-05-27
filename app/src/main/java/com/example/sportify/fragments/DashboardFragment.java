@@ -8,13 +8,16 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.sportify.CaloriesDetailActivity;
@@ -95,6 +99,7 @@ public class DashboardFragment extends Fragment {
         setupCardClickListeners(view);
         setupMoodButtons();
         startDecorAnimations(view);
+        setupBackgroundClick(view);
 
         // SETUP REAL-TIME OBSERVING
         setupObservers();
@@ -318,19 +323,112 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setupCardClickListeners(View v) {
-        btnStatistics.setOnClickListener(c -> startActivity(new Intent(requireContext(), StatisticsActivity.class)));
-        cardWeight.setOnClickListener(c -> showWeightDialog());
-        v.findViewById(R.id.btnLogWeight).setOnClickListener(c -> showWeightDialog());
-        cardSteps.setOnClickListener(c -> startActivity(new Intent(requireContext(), StepsDetailActivity.class)));
-        cardCalories.setOnClickListener(c -> startActivity(new Intent(requireContext(), CaloriesDetailActivity.class)));
-        cardWater.setOnClickListener(c -> startActivity(new Intent(requireContext(), WaterDetailActivity.class)));
-        cardSleep.setOnClickListener(c -> startActivity(new Intent(requireContext(), SleepDetailActivity.class)));
+        applyClickAnimation(btnStatistics, () -> startActivity(new Intent(requireContext(), StatisticsActivity.class)));
+        applyClickAnimation(cardWeight, this::showWeightDialog);
+        applyClickAnimation(v.findViewById(R.id.btnLogWeight), this::showWeightDialog);
+        applyClickAnimation(cardSteps, () -> startActivity(new Intent(requireContext(), StepsDetailActivity.class)));
+        applyClickAnimation(cardCalories, () -> startActivity(new Intent(requireContext(), CaloriesDetailActivity.class)));
+        applyClickAnimation(cardWater, () -> startActivity(new Intent(requireContext(), WaterDetailActivity.class)));
+        applyClickAnimation(cardSleep, () -> startActivity(new Intent(requireContext(), SleepDetailActivity.class)));
+    }
+
+    private void applyClickAnimation(View view, Runnable action) {
+        if (view == null) return;
+        view.setOnClickListener(v -> {
+            v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+            v.animate()
+                .scaleX(0.96f)
+                .scaleY(0.96f)
+                .setDuration(80)
+                .withEndAction(() -> {
+                    v.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(150)
+                        .setInterpolator(new OvershootInterpolator())
+                        .withEndAction(action)
+                        .start();
+                })
+                .start();
+        });
+    }
+
+    private void setupBackgroundClick(View view) {
+        View root = view.findViewById(R.id.dashboardRoot);
+        View mainContent = view.findViewById(R.id.mainContent);
+        
+        View.OnTouchListener bgTouchListener = (v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // Haptic feedback for tactile feel
+                v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                
+                // Convert coordinates to be relative to the dashboardRoot container
+                int[] rootLoc = new int[2];
+                root.getLocationOnScreen(rootLoc);
+                float x = event.getRawX() - rootLoc[0];
+                float y = event.getRawY() - rootLoc[1];
+                
+                spawnTapEffect(x, y);
+                reactToTap();
+            }
+            return false; // Return false so we don't block scroll or child clicks
+        };
+        
+        if (mainContent != null) mainContent.setOnTouchListener(bgTouchListener);
+        if (root != null) root.setOnTouchListener(bgTouchListener);
+    }
+
+    private void spawnTapEffect(float x, float y) {
+        ImageView sparkle = new ImageView(requireContext());
+        sparkle.setImageResource(R.drawable.ic_star_sparkle1);
+        sparkle.setColorFilter(ContextCompat.getColor(requireContext(), R.color.sportify_green));
+        int size = (int) (60 * getResources().getDisplayMetrics().density); 
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
+        sparkle.setLayoutParams(params);
+        
+        View root = getView() != null ? getView().findViewById(R.id.dashboardRoot) : null;
+        if (root instanceof ViewGroup) {
+            ((ViewGroup) root).addView(sparkle);
+            sparkle.setX(x - size / 2f);
+            sparkle.setY(y - size / 2f);
+            
+            sparkle.setAlpha(0.9f);
+            sparkle.animate()
+                .scaleX(2.5f)
+                .scaleY(2.5f)
+                .alpha(0f)
+                .rotation(120)
+                .setDuration(600)
+                .setInterpolator(new DecelerateInterpolator())
+                .withEndAction(() -> ((ViewGroup) root).removeView(sparkle))
+                .start();
+        }
+    }
+
+    private void reactToTap() {
+        View[] decors = {
+            getView().findViewById(R.id.decorIcon1),
+            getView().findViewById(R.id.decorIcon2),
+            getView().findViewById(R.id.decorIcon3)
+        };
+        
+        for (View v : decors) {
+            if (v == null) continue;
+            v.animate()
+                .scaleX(1.4f)
+                .scaleY(1.4f)
+                .alpha(0.3f)
+                .setDuration(200)
+                .withEndAction(() -> v.animate().scaleX(1f).scaleY(1f).alpha(0.1f).setDuration(400).start())
+                .start();
+        }
     }
 
     private void setupMoodButtons() {
         IntStream.range(0, moodButtons.length).forEach(i -> {
             int score = i + 1;
             moodButtons[i].setOnClickListener(v -> {
+                v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 v.animate().scaleX(1.3f).scaleY(1.3f).setDuration(150).withEndAction(() -> v.animate().scaleX(1f).scaleY(1f).setDuration(300).setInterpolator(new OvershootInterpolator()).start()).start();
                 new Thread(() -> {
                     todayRecord.setMoodScore(score);

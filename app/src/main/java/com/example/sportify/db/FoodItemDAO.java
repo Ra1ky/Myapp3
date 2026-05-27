@@ -21,6 +21,11 @@ public interface FoodItemDAO {
     @Query("SELECT SUM(calories) FROM food_items WHERE date = :date")
     int getTotalCaloriesForDate(String date);
 
-    @Query("SELECT * FROM food_items GROUP BY name ORDER BY id DESC LIMIT 10")
+    /**
+     * Gets the most recent unique food items added by the user.
+     * Updated to ensure the latest entry for each food name is picked (using MAX(id))
+     * and increased the limit to 25 to show more history (covering about a week of typical variety).
+     */
+    @Query("SELECT * FROM food_items WHERE id IN (SELECT MAX(id) FROM food_items GROUP BY name) ORDER BY id DESC LIMIT 25")
     List<FoodItem> getRecentUniqueItems();
 }

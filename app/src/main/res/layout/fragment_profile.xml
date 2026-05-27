@@ -1,96 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profileRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/sportify_background"
-    android:fillViewport="true">
+    android:background="@color/sportify_background">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
+        android:id="@+id/profileScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp"
-            app:layout_constraintWidth_max="480dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profileContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <!-- Title -->
-            <TextView
-                android:id="@+id/tvProfileTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_title"
-                style="@style/Sportify.Text.Title"
-                android:layout_marginBottom="@dimen/spacing_lg" />
-
-            <!-- Personal Data -->
             <LinearLayout
-                android:id="@+id/layoutPersonalDataSection"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="20dp"
+                app:layout_constraintWidth_max="480dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
+                <!-- Title -->
                 <TextView
+                    android:id="@+id/tvProfileTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/profile_data"
-                    style="@style/Sportify.Text.Subtitle"
-                    android:layout_marginBottom="12dp" />
+                    android:text="@string/profile_title"
+                    style="@style/Sportify.Text.Title"
+                    android:layout_marginBottom="@dimen/spacing_lg" />
 
+                <!-- Personal Data -->
                 <LinearLayout
+                    android:id="@+id/layoutPersonalDataSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Sportify.TextInput"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/profile_age">
+                        android:text="@string/profile_data"
+                        style="@style/Sportify.Text.Subtitle"
+                        android:layout_marginBottom="12dp" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etAge"
-                            android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Sportify.TextInput"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:inputType="number"
-                            tools:ignore="TextContrastCheck" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_weight="1"
+                            android:hint="@string/profile_age">
 
-                    <ImageView
-                        android:id="@+id/arrowAge"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginStart="@dimen/spacing_sm"
-                        android:contentDescription="@string/onboarding_arrow_desc"
-                        android:scaleX="-1"
-                        android:src="@drawable/ic_arrow_right"
-                        android:visibility="gone" />
-                </LinearLayout>
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etAge"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                tools:ignore="TextContrastCheck" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                        <ImageView
+                            android:id="@+id/arrowAge"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginStart="@dimen/spacing_sm"
+                            android:contentDescription="@string/onboarding_arrow_desc"
+                            android:scaleX="-1"
+                            android:src="@drawable/ic_arrow_right"
+                            android:visibility="gone" />
+                    </LinearLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Sportify.TextInput"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/profile_weight">
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Sportify.TextInput"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="@string/profile_weight">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etWeight"
@@ -98,414 +104,415 @@
                             android:layout_height="wrap_content"
                             android:inputType="numberDecimal"
                             tools:ignore="TextContrastCheck" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                    <ImageView
-                        android:id="@+id/arrowWeight"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginStart="@dimen/spacing_sm"
-                        android:contentDescription="@string/onboarding_arrow_desc"
-                        android:scaleX="-1"
-                        android:src="@drawable/ic_arrow_right"
-                        android:visibility="gone" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Sportify.TextInput"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/profile_height">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etHeight"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            tools:ignore="TextContrastCheck" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <ImageView
-                        android:id="@+id/arrowHeight"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginStart="@dimen/spacing_sm"
-                        android:contentDescription="@string/onboarding_arrow_desc"
-                        android:scaleX="-1"
-                        android:src="@drawable/ic_arrow_right"
-                        android:visibility="gone" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Daily Goals -->
-            <LinearLayout
-                android:id="@+id/layoutDailyGoalsSection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvOnboardingGoalsHint"
-                    style="@style/Sportify.Text.Body"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_md"
-                    android:text="@string/onboarding_goals_hint"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/profile_goals"
-                    style="@style/Sportify.Text.Subtitle"
-                    android:layout_marginBottom="12dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Sportify.TextInput"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/profile_step_goal">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etStepGoal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="number"
-                            tools:ignore="TextContrastCheck" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <ImageView
-                        android:id="@+id/arrowStepGoal"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginStart="@dimen/spacing_sm"
-                        android:contentDescription="@string/onboarding_arrow_desc"
-                        android:scaleX="-1"
-                        android:src="@drawable/ic_arrow_right"
-                        android:visibility="gone" />
-                </LinearLayout>
-
-                <!-- Auto recommended daily steps -->
-                <TextView
-                    android:id="@+id/tvStepsAutoHint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    style="@style/Sportify.Text.Caption"
-                    android:layout_marginBottom="@dimen/spacing_sm"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp" />
-
-                <!-- Spinner -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    style="@style/Sportify.TextInput.Dropdown" >
-
-                    <AutoCompleteTextView
-                        android:id="@+id/spinnerDietMode"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:hint="@string/profile_diet_mode"
-                        android:inputType="none"
-                        tools:ignore="SpeakableTextPresentCheck" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Slider -->
-                <LinearLayout
-                    android:id="@+id/layoutMultiplier"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="12dp"
-                    android:visibility="gone">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/profile_calorie_adjustment"
-                            style="@style/Sportify.Text.Caption" />
-
-                        <TextView
-                            android:id="@+id/tvMultiplierValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/_1_00"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/sportify_text_primary" />
+                        <ImageView
+                            android:id="@+id/arrowWeight"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginStart="@dimen/spacing_sm"
+                            android:contentDescription="@string/onboarding_arrow_desc"
+                            android:scaleX="-1"
+                            android:src="@drawable/ic_arrow_right"
+                            android:visibility="gone" />
                     </LinearLayout>
 
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/sliderMultiplier"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:valueFrom="0.75"
-                        android:valueTo="0.95"
-                        android:stepSize="0.01"
-                        android:value="0.80"
-                        app:trackColorActive="@color/sportify_green"
-                        app:trackColorInactive="@color/sportify_progress_track"
-                        app:thumbColor="@color/sportify_green"
-                        app:tickVisible="true"
-                        app:tickColor="@color/sportify_green_dark" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/tvMultiplierMin"
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Sportify.TextInput"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/_0_75"
-                            style="@style/Sportify.Text.Caption" />
+                            android:hint="@string/profile_height">
 
-                        <TextView
-                            android:id="@+id/tvMultiplierMax"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/_0_95"
-                            style="@style/Sportify.Text.Caption" />
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etHeight"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                tools:ignore="TextContrastCheck" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <ImageView
+                            android:id="@+id/arrowHeight"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginStart="@dimen/spacing_sm"
+                            android:contentDescription="@string/onboarding_arrow_desc"
+                            android:scaleX="-1"
+                            android:src="@drawable/ic_arrow_right"
+                            android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
 
+                <!-- Daily Goals -->
                 <LinearLayout
+                    android:id="@+id/layoutDailyGoalsSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Sportify.TextInput"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/tvOnboardingGoalsHint"
+                        style="@style/Sportify.Text.Body"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/profile_calorie_goal">
+                        android:layout_marginBottom="@dimen/spacing_md"
+                        android:text="@string/onboarding_goals_hint"
+                        android:visibility="gone" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etCalorieGoal"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_goals"
+                        style="@style/Sportify.Text.Subtitle"
+                        android:layout_marginBottom="12dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Sportify.TextInput"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="@string/profile_step_goal">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etStepGoal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                tools:ignore="TextContrastCheck" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <ImageView
+                            android:id="@+id/arrowStepGoal"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginStart="@dimen/spacing_sm"
+                            android:contentDescription="@string/onboarding_arrow_desc"
+                            android:scaleX="-1"
+                            android:src="@drawable/ic_arrow_right"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <!-- Auto recommended daily steps -->
+                    <TextView
+                        android:id="@+id/tvStepsAutoHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        style="@style/Sportify.Text.Caption"
+                        android:layout_marginBottom="@dimen/spacing_sm"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp" />
+
+                    <!-- Spinner -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        style="@style/Sportify.TextInput.Dropdown" >
+
+                        <AutoCompleteTextView
+                            android:id="@+id/spinnerDietMode"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="number"
-                            tools:ignore="TextContrastCheck" />
+                            android:clickable="true"
+                            android:focusable="false"
+                            android:hint="@string/profile_diet_mode"
+                            android:inputType="none"
+                            tools:ignore="SpeakableTextPresentCheck" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <ImageView
-                        android:id="@+id/arrowCalorieGoal"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginStart="@dimen/spacing_sm"
-                        android:contentDescription="@string/onboarding_arrow_desc"
-                        android:scaleX="-1"
-                        android:src="@drawable/ic_arrow_right"
-                        android:visibility="gone" />
+                    <!-- Slider -->
+                    <LinearLayout
+                        android:id="@+id/layoutMultiplier"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="12dp"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/profile_calorie_adjustment"
+                                style="@style/Sportify.Text.Caption" />
+
+                            <TextView
+                                android:id="@+id/tvMultiplierValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/_1_00"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/sportify_text_primary" />
+                        </LinearLayout>
+
+                        <com.google.android.material.slider.Slider
+                            android:id="@+id/sliderMultiplier"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:valueFrom="0.75"
+                            android:valueTo="0.95"
+                            android:stepSize="0.01"
+                            android:value="0.80"
+                            app:trackColorActive="@color/sportify_green"
+                            app:trackColorInactive="@color/sportify_progress_track"
+                            app:thumbColor="@color/sportify_green"
+                            app:tickVisible="true"
+                            app:tickColor="@color/sportify_green_dark" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvMultiplierMin"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/_0_75"
+                                style="@style/Sportify.Text.Caption" />
+
+                            <TextView
+                                android:id="@+id/tvMultiplierMax"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/_0_95"
+                                style="@style/Sportify.Text.Caption" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Sportify.TextInput"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="@string/profile_calorie_goal">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etCalorieGoal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                tools:ignore="TextContrastCheck" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <ImageView
+                            android:id="@+id/arrowCalorieGoal"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginStart="@dimen/spacing_sm"
+                            android:contentDescription="@string/onboarding_arrow_desc"
+                            android:scaleX="-1"
+                            android:src="@drawable/ic_arrow_right"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <!-- Auto recommended calories intake -->
+                    <TextView
+                        android:id="@+id/tvCalorieAutoHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        style="@style/Sportify.Text.Caption"
+                        android:layout_marginBottom="@dimen/spacing_sm"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Sportify.TextInput"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="@string/profile_water_goal">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etWaterGoal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                tools:ignore="TextContrastCheck" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <ImageView
+                            android:id="@+id/arrowWaterGoal"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginStart="@dimen/spacing_sm"
+                            android:contentDescription="@string/onboarding_arrow_desc"
+                            android:scaleX="-1"
+                            android:src="@drawable/ic_arrow_right"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <!-- Auto recommended water intake -->
+                    <TextView
+                        android:id="@+id/tvWaterAutoHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        style="@style/Sportify.Text.Caption"
+                        android:layout_marginBottom="@dimen/spacing_lg"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp" />
+
                 </LinearLayout>
 
-                <!-- Auto recommended calories intake -->
-                <TextView
-                    android:id="@+id/tvCalorieAutoHint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    style="@style/Sportify.Text.Caption"
-                    android:layout_marginBottom="@dimen/spacing_sm"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp" />
-
+                <!-- Onboarding navigation row. btnBack is only revealed on step 2. -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/layoutOnboardingNav"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Sportify.TextInput"
-                        android:layout_width="0dp"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnBack"
+                        style="@style/Sportify.Button.Secondary"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/profile_water_goal">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etWaterGoal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="number"
-                            tools:ignore="TextContrastCheck" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <ImageView
-                        android:id="@+id/arrowWaterGoal"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginStart="@dimen/spacing_sm"
-                        android:contentDescription="@string/onboarding_arrow_desc"
-                        android:scaleX="-1"
-                        android:src="@drawable/ic_arrow_right"
+                        android:layout_marginEnd="@dimen/spacing_sm"
+                        android:minWidth="120dp"
+                        android:text="@string/onboarding_back"
                         android:visibility="gone" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDone"
+                        style="@style/Sportify.Button.Primary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="200dp"
+                        android:text="@string/onboarding_done" />
                 </LinearLayout>
 
-                <!-- Auto recommended water intake -->
-                <TextView
-                    android:id="@+id/tvWaterAutoHint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    style="@style/Sportify.Text.Caption"
-                    android:layout_marginBottom="@dimen/spacing_lg"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp" />
-
-            </LinearLayout>
-
-            <!-- Onboarding navigation row. btnBack is only revealed on step 2. -->
-            <LinearLayout
-                android:id="@+id/layoutOnboardingNav"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
+                <!-- Save -->
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnBack"
-                    style="@style/Sportify.Button.Secondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/spacing_sm"
-                    android:minWidth="120dp"
-                    android:text="@string/onboarding_back"
-                    android:visibility="gone" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnDone"
+                    android:id="@+id/btnSave"
                     style="@style/Sportify.Button.Primary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="200dp"
-                    android:text="@string/onboarding_done" />
-            </LinearLayout>
+                    android:layout_gravity="center"
+                    android:minWidth="320dp"
+                    android:text="@string/profile_save" />
 
-            <!-- Save -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSave"
-                style="@style/Sportify.Button.Primary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:minWidth="320dp"
-                android:text="@string/profile_save" />
-
-            <!-- Shown only while the 7-day edit lock is active -->
-            <TextView
-                android:id="@+id/tvLockNotice"
-                style="@style/Sportify.Text.Caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/spacing_sm"
-                android:textAlignment="center"
-                android:visibility="gone" />
-
-            <!-- Phone Information Toggle Button (Moved under Save Goal) -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnShowPhoneInfo"
-                style="@style/Sportify.Button.Secondary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/spacing_lg"
-                android:text="@string/profile_phone_info"
-                android:layout_marginBottom="@dimen/spacing_md" />
-
-            <!-- Phone Information (Initially Hidden) -->
-            <LinearLayout
-                android:id="@+id/layoutPhoneInfoSection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="@dimen/spacing_lg"
-                android:visibility="gone">
-
+                <!-- Shown only while the 7-day edit lock is active -->
                 <TextView
+                    android:id="@+id/tvLockNotice"
+                    style="@style/Sportify.Text.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/spacing_sm"
+                    android:textAlignment="center"
+                    android:visibility="gone" />
+
+                <!-- Phone Information Toggle Button (Moved under Save Goal) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnShowPhoneInfo"
+                    style="@style/Sportify.Button.Secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/spacing_lg"
                     android:text="@string/profile_phone_info"
-                    style="@style/Sportify.Text.Subtitle"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="@dimen/spacing_md" />
 
-                <TextView
-                    android:id="@+id/tvPhoneModel"
-                    android:layout_width="wrap_content"
+                <!-- Phone Information (Initially Hidden) -->
+                <LinearLayout
+                    android:id="@+id/layoutPhoneInfoSection"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/Sportify.Text.Body"
-                    android:layout_marginBottom="4dp" />
+                    android:orientation="vertical"
+                    android:layout_marginBottom="@dimen/spacing_lg"
+                    android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/tvPhoneVersion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Sportify.Text.Body"
-                    android:layout_marginBottom="4dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_phone_info"
+                        style="@style/Sportify.Text.Subtitle"
+                        android:layout_marginBottom="8dp" />
 
-                <TextView
-                    android:id="@+id/tvPhoneManufacturer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Sportify.Text.Body"
-                    android:layout_marginBottom="4dp" />
+                    <TextView
+                        android:id="@+id/tvPhoneModel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Sportify.Text.Body"
+                        android:layout_marginBottom="4dp" />
 
-                <TextView
-                    android:id="@+id/tvPhoneBrand"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Sportify.Text.Body"
-                    android:layout_marginBottom="4dp" />
+                    <TextView
+                        android:id="@+id/tvPhoneVersion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Sportify.Text.Body"
+                        android:layout_marginBottom="4dp" />
 
-                <TextView
-                    android:id="@+id/tvPhoneBoard"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Sportify.Text.Body"
-                    android:layout_marginBottom="4dp" />
+                    <TextView
+                        android:id="@+id/tvPhoneManufacturer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Sportify.Text.Body"
+                        android:layout_marginBottom="4dp" />
 
-                <TextView
-                    android:id="@+id/tvPhoneHardware"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Sportify.Text.Body" />
+                    <TextView
+                        android:id="@+id/tvPhoneBrand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Sportify.Text.Body"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvPhoneBoard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Sportify.Text.Body"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvPhoneHardware"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Sportify.Text.Body" />
+                </LinearLayout>
+
             </LinearLayout>
-
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</FrameLayout>
