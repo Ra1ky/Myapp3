@@ -1,9 +1,11 @@
 package com.example.sportify;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +38,11 @@ import com.example.sportify.db.AppDatabase;
 import com.example.sportify.db.DailyRecord;
 import com.example.sportify.db.FoodItem;
 import com.example.sportify.db.Product;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
@@ -83,6 +91,7 @@ public class CaloriesDetailActivity extends AppCompatActivity {
     private EditText activeEtProtein, activeEtCarbs, activeEtFat, activeEtGrams;
 
     private final List<ObjectAnimator> decorAnimators = new ArrayList<>();
+    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +100,7 @@ public class CaloriesDetailActivity extends AppCompatActivity {
 
         db = SportifyApp.getDatabase();
         todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://world.openfoodfacts.org/")
@@ -142,6 +152,34 @@ public class CaloriesDetailActivity extends AppCompatActivity {
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         findViewById(R.id.fabAddFood).setOnClickListener(v -> showAddFoodDialog());
+        findViewById(R.id.btnMap).setOnClickListener(v -> showMapDialog());
+    }
+
+    private void showMapDialog() {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_location_map, null);
+        MapView mapView = view.findViewById(R.id.mapView);
+        mapView.onCreate(null);
+        mapView.onResume();
+
+        mapView.getMapAsync(googleMap -> {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                googleMap.setMyLocationEnabled(true);
+                fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+                    if (location != null) {
+                        LatLng current = new LatLng(location.getLatitude(), location.getLongitude());
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15f));
+                    }
+                });
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1001);
+            }
+        });
+
+        new AlertDialog.Builder(this)
+                .setTitle("Your Location")
+                .setView(view)
+                .setPositiveButton("Close", null)
+                .show();
     }
 
     private void animateEntrance() {
