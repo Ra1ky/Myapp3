@@ -25,12 +25,18 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+
 import com.example.sportify.api.OpenFoodFactsService;
 import com.example.sportify.db.AppDatabase;
 import com.example.sportify.db.DailyRecord;
 import com.example.sportify.db.FoodItem;
+import com.example.sportify.db.Product;
 import com.example.sportify.fragments.DashboardFragment;
 import com.example.sportify.fragments.ProfileFragment;
+
+import java.util.List;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;
@@ -181,13 +187,124 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showScannedProductDialog(OpenFoodFactsService.ProductData productData) {
+        String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_add_food, null);
-        // ... (UI setup same as before)
+        Spinner spinnerMeal = view.findViewById(R.id.spinnerMealType);
+        AutoCompleteTextView etName = view.findViewById(R.id.etFoodName);
+        EditText etGrams = view.findViewById(R.id.etFoodGrams);
+        EditText etKcal = view.findViewById(R.id.etFoodCalories);
+        EditText etProtein = view.findViewById(R.id.etFoodProtein);
+        EditText etCarbs = view.findViewById(R.id.etFoodCarbs);
+        EditText etFat = view.findViewById(R.id.etFoodFat);
+
+        // Hide scan button — scan already happened
+        view.findViewById(R.id.btnScanBarcode).setVisibility(View.GONE);
+
+        String[] mealTypes = {"Breakfast", "Lunch", "Dinner", "Snack"};
+        ArrayAdapter<String> mealAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mealTypes);
+        mealAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMeal.setAdapter(mealAdapter);
+
+        List<Product> allProducts = db.productDAO().getAllProducts();
+        String[] productNames = new String[allProducts.size()];
+        for (int i = 0; i < allProducts.size(); i++) productNames[i] = allProducts.get(i).getName();
+        ArrayAdapter<String> productAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, productNames);
+        etName.setAdapter(productAdapter);
+
+        Product[] selected = {null};
+
+        Runnable updateMacros = () -> {
+            if (selected[0] == null) return;
+            try {
+                int g = etGrams.getText().toString().isEmpty() ? 0 : Integer.parseInt(etGrams.getText().toString());
+                etProtein.setText(String.valueOf((selected[0].getProtein() * g) / 100));
+                etCarbs.setText(String.valueOf((selected[0].getCarbs() * g) / 100));
+                etFat.setText(String.valueOf((selected[0].getFat() * g) / 100));
+            } catch (Exception ignored) {}
+        };
+
+        etName.setOnItemClickListener((parent, v, position, id) -> {
+            String s = (String) parent.getItemAtPosition(position);
+            selected[0] = db.productDAO().getByName(s);
+            updateMacros.run();
+        });
+
+        etGrams.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) { updateMacros.run(); }
+        });
+
+        TextWatcher macroWatcher = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                try {
+                    int p = etProtein.getText().toString().isEmpty() ? 0 : Integer.parseInt(etProtein.getText().toString());
+                    int c = etCarbs.getText().toString().isEmpty() ? 0 : Integer.parseInt(etCarbs.getText().toString());
+                    int f = etFat.getText().toString().isEmpty() ? 0 : Integer.parseInt(etFat.getText().toString());
+                    etKcal.setText(String.valueOf((p * 4) + (c * 4) + (f * 9)));
+                } catch (NumberFormatException e) { etKcal.setText("0"); }
+            }
+        };
+
+        etProtein.addTextChangedListener(macroWatcher);
+        etCarbs.addTextChangedListener(macroWatcher);
+        etFat.addTextChangedListener(macroWatcher);
+
+        etGrams.setText("100");
+
+        if (productData != null) {
+            String pName = productData.productName != null ? productData.productName.trim() : "";
+            selected[0] = new Product(
+                    pName,
+                    (int) productData.nutriments.calories100g,
+                    (int) productData.nutriments.proteins100g,
+                    (int) productData.nutriments.fat100g,
+                    (int) productData.nutriments.carbohydrates100g
+            );
+            etName.setText(pName);
+            updateMacros.run();
+            new Thread(() -> db.productDAO().insert(selected[0])).start();
+        }
+
         new AlertDialog.Builder(this)
                 .setTitle("Add Food")
                 .setView(view)
                 .setPositiveButton("Add", (dialog, which) -> {
-                    // ... (Save logic same as before)
+                    String name = etName.getText().toString().trim();
+                    if (name.isEmpty()) return;
+                    try {
+                        int grams = Integer.parseInt(etGrams.getText().toString().isEmpty() ? "100" : etGrams.getText().toString());
+                        int kcal = Integer.parseInt(etKcal.getText().toString().isEmpty() ? "0" : etKcal.getText().toString());
+                        int p = Integer.parseInt(etProtein.getText().toString().isEmpty() ? "0" : etProtein.getText().toString());
+                        int c = Integer.parseInt(etCarbs.getText().toString().isEmpty() ? "0" : etCarbs.getText().toString());
+                        int f = Integer.parseInt(etFat.getText().toString().isEmpty() ? "0" : etFat.getText().toString());
+                        String mealType = spinnerMeal.getSelectedItem() != null ? spinnerMeal.getSelectedItem().toString() : "Breakfast";
+                        db.foodItemDAO().insert(new FoodItem(name, kcal, p, f, c, grams, mealType, todayDate));
+                        int per100kcal, per100p, per100c, per100f;
+                        if (selected[0] != null) {
+                            per100kcal = selected[0].getCalories();
+                            per100p = selected[0].getProtein();
+                            per100c = selected[0].getCarbs();
+                            per100f = selected[0].getFat();
+                        } else {
+                            int g = grams > 0 ? grams : 100;
+                            per100kcal = kcal * 100 / g;
+                            per100p = p * 100 / g;
+                            per100c = c * 100 / g;
+                            per100f = f * 100 / g;
+                        }
+                        db.productDAO().insert(new Product(name, per100kcal, per100p, per100f, per100c));
+                        DailyRecord record = db.dailyRecordDAO().getByDate(todayDate);
+                        if (record == null) record = new DailyRecord(todayDate);
+                        record.setCaloriesConsumed(record.getCaloriesConsumed() + kcal);
+                        db.dailyRecordDAO().insertOrUpdate(record);
+                        Toast.makeText(this, name + " added", Toast.LENGTH_SHORT).show();
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(this, "Please check the entered values", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();

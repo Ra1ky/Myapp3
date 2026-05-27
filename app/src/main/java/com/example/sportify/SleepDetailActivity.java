@@ -2,8 +2,12 @@ package com.example.sportify;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -13,10 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.health.connect.client.HealthConnectClient;
+import androidx.health.connect.client.PermissionController;
 
 import com.example.sportify.db.AppDatabase;
 import com.example.sportify.db.DailyRecord;
@@ -26,24 +34,34 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class SleepDetailActivity extends AppCompatActivity {
+
+    private static final Set<String> HC_PERMISSIONS =
+            Collections.singleton("android.permission.health.READ_SLEEP");
 
     private TextView tvSleepDurationDisplay, tvTotalSleepDisplay;
     private MaterialButton btnToggleSleep;
     private TextInputEditText etSleepHours, etSleepMinutes;
     private MaterialButton btnSaveManualSleep;
     private TextView[] moodButtons;
-    private View cardTotalSleep, cardTracking, cardManual, cardMood;
+    private View cardTotalSleep, cardTracking, cardManual, cardMood, cardHealthConnect;
+    private TextView tvHcStatus;
+    private MaterialButton btnSyncHc;
+
+    private ActivityResultLauncher<Set<String>> healthPermLauncher;
+    private ActivityResultLauncher<Intent> hcSettingsLauncher;
 
     private AppDatabase db;
     private DailyRecordDAO recordDao;
     private String todayDate;
     private DailyRecord todayRecord;
-    
+
     private final List<ObjectAnimator> decorAnimators = new ArrayList<>();
     private ObjectAnimator moodWobbleAnimator;
     private int lastSleepMinutes = 0;
@@ -60,7 +78,6 @@ public class SleepDetailActivity extends AppCompatActivity {
             int hours = minutes / 60;
             seconds = seconds % 60;
             minutes = minutes % 60;
-
             tvSleepDurationDisplay.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds));
             timerHandler.postDelayed(this, 500);
         }
@@ -72,13 +89,34 @@ public class SleepDetailActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sleep_detail);
 
+        healthPermLauncher = registerForActivityResult(
+                PermissionController.createRequestPermissionResultContract(),
+                grantedPerms -> {
+                    if (grantedPerms.containsAll(HC_PERMISSIONS)) {
+                        syncFromHealthConnect();
+                    } else {
+                        refreshHcStatus();
+                    }
+                }
+        );
+
+        hcSettingsLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (checkSelfPermission("android.permission.health.READ_SLEEP") == PackageManager.PERMISSION_GRANTED) {
+                        syncFromHealthConnect();
+                    } else {
+                        refreshHcStatus();
+                    }
+                }
+        );
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.sleepRoot), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
-        // UI Initialization
         ImageButton btnBack = findViewById(R.id.btnBack);
         tvSleepDurationDisplay = findViewById(R.id.tvSleepDurationDisplay);
         tvTotalSleepDisplay = findViewById(R.id.tvTotalSleepDisplay);
@@ -86,11 +124,13 @@ public class SleepDetailActivity extends AppCompatActivity {
         etSleepHours = findViewById(R.id.etSleepHours);
         etSleepMinutes = findViewById(R.id.etSleepMinutes);
         btnSaveManualSleep = findViewById(R.id.btnSaveManualSleep);
-        
         cardTotalSleep = findViewById(R.id.cardTotalSleep);
         cardTracking = findViewById(R.id.cardTracking);
         cardManual = findViewById(R.id.cardManual);
         cardMood = findViewById(R.id.cardMood);
+        cardHealthConnect = findViewById(R.id.cardHealthConnect);
+        tvHcStatus = findViewById(R.id.tvHcStatus);
+        btnSyncHc = findViewById(R.id.btnSyncHc);
 
         moodButtons = new TextView[]{
                 findViewById(R.id.sleepMood1),
@@ -102,15 +142,16 @@ public class SleepDetailActivity extends AppCompatActivity {
 
         btnBack.setOnClickListener(v -> finish());
 
-        // Database
         db = SportifyApp.getDatabase();
         recordDao = db.dailyRecordDAO();
         todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         loadData();
+        setupHealthConnectCard();
 
         btnToggleSleep.setOnClickListener(v -> toggleSleepTracking());
         btnSaveManualSleep.setOnClickListener(v -> saveManualSleep());
+        btnSyncHc.setOnClickListener(v -> checkAndSync());
 
         for (int i = 0; i < moodButtons.length; i++) {
             final int score = i + 1;
@@ -119,7 +160,7 @@ public class SleepDetailActivity extends AppCompatActivity {
                 selectSleepMood(score);
             });
         }
-        
+
         animateEntrance();
         startDecorAnimations();
     }
@@ -145,13 +186,8 @@ public class SleepDetailActivity extends AppCompatActivity {
     private void startDecorAnimations() {
         View decor1 = findViewById(R.id.decorIcon1);
         View decor2 = findViewById(R.id.decorIcon2);
-
-        if (decor1 != null) {
-            applyFloatingAnimation(decor1, 3000, 0, 20f, 15f);
-        }
-        if (decor2 != null) {
-            applyFloatingAnimation(decor2, 3500, 500, -25f, 10f);
-        }
+        if (decor1 != null) applyFloatingAnimation(decor1, 3000, 0, 20f, 15f);
+        if (decor2 != null) applyFloatingAnimation(decor2, 3500, 500, -25f, 10f);
     }
 
     private void applyFloatingAnimation(View v, long duration, long delay, float translationY, float rotation) {
@@ -185,7 +221,6 @@ public class SleepDetailActivity extends AppCompatActivity {
         wobble.start();
     }
 
-    // Shared with the dashboard pattern: continuous gentle rotation wobble.
     private ObjectAnimator startContinuousWobble(View v, float degrees) {
         ObjectAnimator anim = ObjectAnimator.ofFloat(v, "rotation", -degrees, degrees);
         anim.setDuration(1200);
@@ -219,43 +254,32 @@ public class SleepDetailActivity extends AppCompatActivity {
 
     private void updateTotalSleepUI() {
         int totalMinutes = todayRecord.getSleepMinutes();
-        
-        // Count-up animation for the sleep text
         ValueAnimator textAnim = ValueAnimator.ofInt(lastSleepMinutes, totalMinutes);
         textAnim.setDuration(1000);
         textAnim.addUpdateListener(animation -> {
             int val = (int) animation.getAnimatedValue();
-            int h = val / 60;
-            int m = val % 60;
-            tvTotalSleepDisplay.setText(String.format(Locale.getDefault(), "%d h %d min", h, m));
+            tvTotalSleepDisplay.setText(String.format(Locale.getDefault(), "%d h %d min", val / 60, val % 60));
         });
         textAnim.start();
-        
         lastSleepMinutes = totalMinutes;
     }
 
     private void toggleSleepTracking() {
         if (!isTracking) {
-            // Start
             isTracking = true;
             startTime = System.currentTimeMillis();
             timerHandler.postDelayed(timerRunnable, 0);
             btnToggleSleep.setText("Stop Sleep");
             btnToggleSleep.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.sportify_progress_calories)));
         } else {
-            // Stop
             isTracking = false;
             timerHandler.removeCallbacks(timerRunnable);
-            long millis = System.currentTimeMillis() - startTime;
-            int sessionMinutes = (int) (millis / (1000 * 60));
-
+            int sessionMinutes = (int) ((System.currentTimeMillis() - startTime) / (1000 * 60));
             todayRecord.setSleepMinutes(todayRecord.getSleepMinutes() + sessionMinutes);
             recordDao.insertOrUpdate(todayRecord);
-
             btnToggleSleep.setText("Start Sleep");
             btnToggleSleep.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.sportify_green)));
             tvSleepDurationDisplay.setText("00:00:00");
-            
             updateTotalSleepUI();
             Toast.makeText(this, "Sleep record updated!", Toast.LENGTH_SHORT).show();
         }
@@ -264,19 +288,14 @@ public class SleepDetailActivity extends AppCompatActivity {
     private void saveManualSleep() {
         String hStr = etSleepHours.getText().toString();
         String mStr = etSleepMinutes.getText().toString();
-
         if (hStr.isEmpty() && mStr.isEmpty()) {
             Toast.makeText(this, "Please enter sleep duration", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        int h = hStr.isEmpty() ? 0 : Integer.parseInt(hStr);
-        int m = mStr.isEmpty() ? 0 : Integer.parseInt(mStr);
-        int totalMinutes = (h * 60) + m;
-
+        int totalMinutes = (hStr.isEmpty() ? 0 : Integer.parseInt(hStr)) * 60
+                + (mStr.isEmpty() ? 0 : Integer.parseInt(mStr));
         todayRecord.setSleepMinutes(totalMinutes);
         recordDao.insertOrUpdate(todayRecord);
-
         etSleepHours.setText("");
         etSleepMinutes.setText("");
         updateTotalSleepUI();
@@ -292,21 +311,114 @@ public class SleepDetailActivity extends AppCompatActivity {
     private void updateMoodUI() {
         int selectedMood = todayRecord.getSleepMood();
         for (int i = 0; i < moodButtons.length; i++) {
-            if (i + 1 == selectedMood) {
-                moodButtons[i].setBackgroundResource(R.drawable.bg_mood_selected);
-            } else {
-                moodButtons[i].setBackgroundResource(R.drawable.bg_mood_circle);
-            }
+            moodButtons[i].setBackgroundResource(i + 1 == selectedMood
+                    ? R.drawable.bg_mood_selected
+                    : R.drawable.bg_mood_circle);
         }
         updateMoodWobble(selectedMood);
+    }
+
+    private void setupHealthConnectCard() {
+        if (HealthConnectClient.getSdkStatus(this) != HealthConnectClient.SDK_AVAILABLE) {
+            tvHcStatus.setText("Health Connect is not installed.");
+            btnSyncHc.setText("Install Health Connect");
+            btnSyncHc.setOnClickListener(v -> {
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=com.google.android.apps.healthdata")));
+                } catch (Exception e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata")));
+                }
+            });
+        } else {
+            refreshHcStatus();
+        }
+    }
+
+    private void refreshHcStatus() {
+        boolean granted = checkSelfPermission("android.permission.health.READ_SLEEP") == PackageManager.PERMISSION_GRANTED;
+        btnSyncHc.setText(granted ? "Sync Sleep" : "Open Health Connect");
+        btnSyncHc.setOnClickListener(v -> checkAndSync());
+        btnSyncHc.setEnabled(true);
+        tvHcStatus.setText(granted ? "Ready to sync last night's sleep." : "Grant sleep access in Health Connect.");
+    }
+
+    private void checkAndSync() {
+        if (HealthConnectClient.getSdkStatus(this) != HealthConnectClient.SDK_AVAILABLE) return;
+        if (checkSelfPermission("android.permission.health.READ_SLEEP") == PackageManager.PERMISSION_GRANTED) {
+            syncFromHealthConnect();
+            return;
+        }
+        btnSyncHc.setEnabled(false);
+        launchHcPermissionScreen();
+    }
+
+    private void launchHcPermissionScreen() {
+        Intent[] candidates = {
+                new Intent("android.health.connect.action.HEALTH_HOME_SETTINGS"),
+                new Intent("androidx.health.ACTION_HEALTH_HOME_SETTINGS"),
+        };
+        for (Intent intent : candidates) {
+            if (getPackageManager().resolveActivity(intent, 0) != null) {
+                hcSettingsLauncher.launch(intent);
+                return;
+            }
+        }
+        String[] hcPackages = {
+                "com.google.android.healthconnect.controller",
+                "com.android.healthconnect.controller",
+                "com.google.android.apps.healthdata"
+        };
+        for (String pkg : hcPackages) {
+            Intent launch = getPackageManager().getLaunchIntentForPackage(pkg);
+            if (launch != null) {
+                hcSettingsLauncher.launch(launch);
+                return;
+            }
+        }
+        hcSettingsLauncher.launch(new Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:" + getPackageName())));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (HealthConnectClient.getSdkStatus(this) == HealthConnectClient.SDK_AVAILABLE) {
+            refreshHcStatus();
+        }
+    }
+
+    private void syncFromHealthConnect() {
+        tvHcStatus.setText("Syncing…");
+        SleepRepository.syncLastNight(this, db, todayDate, new SleepRepository.SyncCallback() {
+            @Override
+            public void onResult(int sleepMinutes) {
+                btnSyncHc.setEnabled(true);
+                if (sleepMinutes == 0) {
+                    tvHcStatus.setText("No sleep session found for last night.");
+                } else {
+                    int h = sleepMinutes / 60;
+                    int m = sleepMinutes % 60;
+                    tvHcStatus.setText(String.format(Locale.getDefault(), "Synced: %d h %d min.", h, m));
+                }
+                loadData();
+            }
+
+            @Override
+            public void onError(String message) {
+                btnSyncHc.setEnabled(true);
+                tvHcStatus.setText("Sync failed.");
+                Toast.makeText(SleepDetailActivity.this, "Health Connect error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        for (ObjectAnimator anim : decorAnimators) {
-            anim.cancel();
-        }
+        for (ObjectAnimator anim : decorAnimators) anim.cancel();
         if (moodWobbleAnimator != null) moodWobbleAnimator.cancel();
     }
 }

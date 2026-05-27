@@ -1,5 +1,8 @@
 package com.example.sportify.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
@@ -26,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import com.example.sportify.CaloriesDetailActivity;
 import com.example.sportify.R;
 import com.example.sportify.SleepDetailActivity;
+import com.example.sportify.SleepRepository;
 import com.example.sportify.SportifyApp;
 import com.example.sportify.StatisticsActivity;
 import com.example.sportify.StepsDetailActivity;
@@ -53,7 +57,7 @@ public class DashboardFragment extends Fragment {
     private ProgressBar progressSteps, progressSleep, progressCalories, progressWater;
     private ImageView imgAssessment;
     private TextView[] moodButtons;
-    private ImageButton btnStatistics;
+    private View btnStatistics;
     private View layoutHeader, cardSteps, cardCalories, cardWater, cardSleep, cardMood, cardAssessment, cardWeight;
 
     // Data
@@ -66,6 +70,10 @@ public class DashboardFragment extends Fragment {
     private ObjectAnimator moodWobbleAnimator;
     private ObjectAnimator sleepMoodWobbleAnimator;
     private ObjectAnimator assessmentWobbleAnimator;
+    private Runnable assessmentSpinRunnable;
+    private ImageView imgSparkle1, imgSparkle2;
+    private boolean assessmentSpinning = false;
+    private boolean assessmentSparkling = false;
     
     // Values for count-up animations
     private int lastSteps = 0, lastCalories = 0, lastWater = 0;
@@ -163,6 +171,8 @@ public class DashboardFragment extends Fragment {
         tvWeightValue = v.findViewById(R.id.tvWeightValue);
         tvAssessmentText = v.findViewById(R.id.tvAssessmentText);
         imgAssessment = v.findViewById(R.id.imgAssessment);
+        imgSparkle1 = v.findViewById(R.id.imgSparkle1);
+        imgSparkle2 = v.findViewById(R.id.imgSparkle2);
         
         btnStatistics = v.findViewById(R.id.btnStatistics);
         layoutHeader = v.findViewById(R.id.layoutHeader);
@@ -244,15 +254,15 @@ public class DashboardFragment extends Fragment {
         if (score == 0) {
             tvAssessmentText.setText(R.string.assess_no_data);
             imgAssessment.setImageResource(android.R.drawable.ic_menu_info_details);
-            updateAssessmentWobble(false);
+            stopAssessmentAnimation();
         } else if (score >= 80) {
             tvAssessmentText.setText(R.string.assess_excellent);
             imgAssessment.setImageResource(R.drawable.ic_star_shiny);
-            updateAssessmentWobble(true);
+            startAssessmentSpin(true);
         } else {
             tvAssessmentText.setText(score >= 60 ? R.string.assess_good : score >= 40 ? R.string.assess_average : R.string.assess_below);
-            imgAssessment.setImageResource(score >= 60 ? R.drawable.ic_star_filled : score >= 40 ? R.drawable.ic_star_half : R.drawable.ic_star_outline);
-            updateAssessmentWobble(true);
+            imgAssessment.setImageResource(score >= 60 ? R.drawable.ic_star_gold : score >= 40 ? R.drawable.ic_star_silver : R.drawable.ic_star_bronze);
+            startAssessmentSpin(false);
         }
     }
 
@@ -310,6 +320,7 @@ public class DashboardFragment extends Fragment {
     private void setupCardClickListeners(View v) {
         btnStatistics.setOnClickListener(c -> startActivity(new Intent(requireContext(), StatisticsActivity.class)));
         cardWeight.setOnClickListener(c -> showWeightDialog());
+        v.findViewById(R.id.btnLogWeight).setOnClickListener(c -> showWeightDialog());
         cardSteps.setOnClickListener(c -> startActivity(new Intent(requireContext(), StepsDetailActivity.class)));
         cardCalories.setOnClickListener(c -> startActivity(new Intent(requireContext(), CaloriesDetailActivity.class)));
         cardWater.setOnClickListener(c -> startActivity(new Intent(requireContext(), WaterDetailActivity.class)));
@@ -358,9 +369,64 @@ public class DashboardFragment extends Fragment {
         if (mood > 0) sleepMoodWobbleAnimator = startContinuousWobble(tvSleepMood, 8f); else tvSleepMood.setRotation(0f);
     }
 
-    private void updateAssessmentWobble(boolean hasStar) {
-        if (!hasStar) { if (assessmentWobbleAnimator != null) { assessmentWobbleAnimator.cancel(); assessmentWobbleAnimator = null; } imgAssessment.setRotation(0f); return; }
-        if (assessmentWobbleAnimator == null || !assessmentWobbleAnimator.isRunning()) assessmentWobbleAnimator = startContinuousWobble(imgAssessment, 4f);
+    private void startAssessmentSpin(boolean withSparkles) {
+        stopAssessmentAnimation();
+        assessmentSpinning = true;
+        doAssessmentSpin();
+        if (withSparkles) {
+            assessmentSparkling = true;
+            imgSparkle1.setVisibility(View.VISIBLE);
+            imgSparkle2.setVisibility(View.VISIBLE);
+            doSparkle(imgSparkle1, 0);
+            doSparkle(imgSparkle2, 500);
+        }
+    }
+
+    private void stopAssessmentAnimation() {
+        assessmentSpinning = false;
+        assessmentSparkling = false;
+        if (assessmentSpinRunnable != null) { imgAssessment.removeCallbacks(assessmentSpinRunnable); assessmentSpinRunnable = null; }
+        if (assessmentWobbleAnimator != null) { assessmentWobbleAnimator.cancel(); assessmentWobbleAnimator = null; }
+        imgAssessment.setRotationY(0f);
+        if (imgSparkle1 != null) { imgSparkle1.setVisibility(View.GONE); imgSparkle1.setScaleX(1f); imgSparkle1.setScaleY(1f); imgSparkle1.setAlpha(1f); }
+        if (imgSparkle2 != null) { imgSparkle2.setVisibility(View.GONE); imgSparkle2.setScaleX(1f); imgSparkle2.setScaleY(1f); imgSparkle2.setAlpha(1f); }
+    }
+
+    private void doAssessmentSpin() {
+        if (!assessmentSpinning || !isAdded()) return;
+        assessmentWobbleAnimator = ObjectAnimator.ofFloat(imgAssessment, "rotationY", 0f, 360f);
+        assessmentWobbleAnimator.setDuration(1000);
+        assessmentWobbleAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        assessmentWobbleAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (!assessmentSpinning || !isAdded()) return;
+                assessmentSpinRunnable = () -> doAssessmentSpin();
+                imgAssessment.postDelayed(assessmentSpinRunnable, 2000);
+            }
+        });
+        assessmentWobbleAnimator.start();
+    }
+
+    private void doSparkle(ImageView v, long delay) {
+        if (!assessmentSparkling || !isAdded()) return;
+        v.postDelayed(() -> {
+            if (!assessmentSparkling || !isAdded() || v.getWindowToken() == null) return;
+            ObjectAnimator sx = ObjectAnimator.ofFloat(v, "scaleX", 1f, 2f);
+            ObjectAnimator sy = ObjectAnimator.ofFloat(v, "scaleY", 1f, 2f);
+            ObjectAnimator al = ObjectAnimator.ofFloat(v, "alpha", 1f, 0f);
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(sx, sy, al);
+            set.setDuration(600);
+            set.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    v.setScaleX(1f); v.setScaleY(1f); v.setAlpha(1f);
+                    doSparkle(v, 1000);
+                }
+            });
+            set.start();
+        }, delay);
     }
 
     private ObjectAnimator startContinuousWobble(View v, float degrees) {
@@ -370,11 +436,24 @@ public class DashboardFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (SleepRepository.isAvailable(requireContext())) {
+            SleepRepository.syncLastNight(requireContext(), db, todayDate, new SleepRepository.SyncCallback() {
+                @Override public void onResult(int sleepMinutes) { /* LiveData picks up DB change automatically */ }
+                @Override public void onError(String message) { /* silent — don't bother user on dashboard */ }
+            });
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         for (ObjectAnimator a : decorAnimators) a.cancel();
         if (sleepMoodWobbleAnimator != null) sleepMoodWobbleAnimator.cancel();
         if (moodWobbleAnimator != null) moodWobbleAnimator.cancel();
+        assessmentSpinning = false;
+        assessmentSparkling = false;
         if (assessmentWobbleAnimator != null) assessmentWobbleAnimator.cancel();
     }
 }

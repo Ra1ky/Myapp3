@@ -3,6 +3,7 @@ package com.example.sportify;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ public class ScannerActivity extends AppCompatActivity {
 
         previewView = findViewById(R.id.previewView);
         findViewById(R.id.btnCancel).setOnClickListener(v -> finish());
+        findViewById(R.id.btnDebugScan).setOnClickListener(v -> scanDrawable());
 
         cameraExecutor = Executors.newSingleThreadExecutor();
         scanner = BarcodeScanning.getClient();
@@ -111,6 +113,21 @@ public class ScannerActivity extends AppCompatActivity {
         } else {
             imageProxy.close();
         }
+    }
+
+    private void scanDrawable() {
+        InputImage image = InputImage.fromBitmap(
+                BitmapFactory.decodeResource(getResources(), R.drawable.oreos), 0);
+        scanner.process(image)
+                .addOnSuccessListener(barcodes -> {
+                    if (barcodes.isEmpty()) {
+                        Toast.makeText(this, "No barcode found in oreos.png", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    String raw = barcodes.get(0).getRawValue();
+                    if (raw != null) { isScanned = true; handleBarcode(raw); }
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Scan failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void handleBarcode(String barcode) {

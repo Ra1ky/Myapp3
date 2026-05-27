@@ -1,5 +1,6 @@
 [versions]
 agp = "9.0.0"
+healthConnect = "1.1.0-alpha10"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
@@ -12,6 +13,7 @@ cardview = "1.0.0"
 cameraCore = "1.5.3"
 
 [libraries]
+health-connect = { group = "androidx.health.connect", name = "connect-client", version.ref = "healthConnect" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

@@ -61,7 +61,7 @@
             android:layout_height="48dp"
             android:src="@android:drawable/ic_menu_camera"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="@color/sportify_green"
+            app:tint="@color/sportify_text_primary"
             android:contentDescription="Scan Barcode" />
     </LinearLayout>
 

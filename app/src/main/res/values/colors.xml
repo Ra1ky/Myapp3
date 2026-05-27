@@ -38,6 +38,14 @@
     <color name="sportify_warning">#FFFFC107</color>
     <color name="sportify_error">#FFF44336</color>
 
+    <!-- Star tiers -->
+    <color name="star_bronze">#FFCD7F32</color>
+    <color name="star_bronze_dark">#FF8B4513</color>
+    <color name="star_silver">#FFC0C0C0</color>
+    <color name="star_silver_dark">#FF808080</color>
+    <color name="star_gold">#FFFFD700</color>
+    <color name="star_gold_dark">#FFDAA520</color>
+
     <!-- Other -->
     <color name="sportify_divider">#FFE0DCE8</color>
     <color name="sportify_shadow">#1A000000</color>

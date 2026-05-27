@@ -1,10 +1,12 @@
 package com.example.sportify;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -12,6 +14,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,11 +26,13 @@ import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
 import java.util.List;
 
-// Shown the very first time the app starts
 public class WelcomeActivity extends AppCompatActivity {
 
     private AnimatorSet ring1Set, ring2Set;
     private final List<Animator> wobbleAnimators = new ArrayList<>();
+
+    private final ActivityResultLauncher<String[]> permissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(), result -> {});
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +58,8 @@ public class WelcomeActivity extends AppCompatActivity {
         ring1Set = startRipple(pulseRing1, 1550L);
         ring2Set = startRipple(pulseRing2, 1550L + 1100L);
 
+        requestAppPermissions();
+
         btn.setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(MainActivity.EXTRA_START_ONBOARDING, true);
@@ -66,6 +74,17 @@ public class WelcomeActivity extends AppCompatActivity {
         wobble(findViewById(R.id.iconWaterGlass),  1800L, 100L,  5f, 2f);
         wobble(findViewById(R.id.iconSleep),       1600L, 350L,  6f, 1.5f);
         wobble(findViewById(R.id.iconMeasureTape), 1550L, 250L,  7f, 2f);
+    }
+
+    private void requestAppPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionLauncher.launch(new String[]{
+                    Manifest.permission.ACTIVITY_RECOGNITION,
+                    Manifest.permission.POST_NOTIFICATIONS
+            });
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissionLauncher.launch(new String[]{Manifest.permission.ACTIVITY_RECOGNITION});
+        }
     }
 
     // One ripple = scale outward + fade out, looped forever. The two rings share the same animation but start at different times.

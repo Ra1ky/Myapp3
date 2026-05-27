@@ -28,13 +28,24 @@
                 app:tint="@color/sportify_text_primary" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginStart="16dp"
                 android:text="Your Progress"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/sportify_text_primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDebugRandomData"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[DEBUG]"
+                android:textSize="10sp"
+                android:textColor="@color/sportify_text_secondary"
+                app:strokeColor="@color/sportify_text_hint" />
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -77,6 +88,47 @@
                         android:id="@+id/chartWeight"
                         android:layout_width="match_parent"
                         android:layout_height="250dp" />
+
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggleWeight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="12dp"
+                        app:singleSelection="true"
+                        app:selectionRequired="true">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnWeight7d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="This Week"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnWeight30d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="1 Month"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnWeight90d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="3 Months"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -108,6 +160,47 @@
                         android:id="@+id/chartSteps"
                         android:layout_width="match_parent"
                         android:layout_height="250dp" />
+
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggleSteps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="12dp"
+                        app:singleSelection="true"
+                        app:selectionRequired="true">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSteps7d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="This Week"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSteps14d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="2 Weeks"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSteps30d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="1 Month"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -139,6 +232,119 @@
                         android:id="@+id/chartCalories"
                         android:layout_width="match_parent"
                         android:layout_height="250dp" />
+
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggleCalories"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="12dp"
+                        app:singleSelection="true"
+                        app:selectionRequired="true">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCal7d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="This Week"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCal14d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="2 Weeks"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCal30d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="1 Month"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Sleep Quality Chart Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/sportify_surface">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sleep Quality"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/sportify_text_primary"
+                        android:layout_marginBottom="16dp"/>
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/chartSleepQuality"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp" />
+
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggleSleepQuality"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="12dp"
+                        app:singleSelection="true"
+                        app:selectionRequired="true">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSleep7d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="This Week"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSleep14d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="2 Weeks"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSleep30d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="1 Month"
+                            android:textSize="11sp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp" />
+
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

@@ -74,6 +74,10 @@ public class CaloriesDetailActivity extends AppCompatActivity {
     private Product selectedProduct = null;
     private OpenFoodFactsService apiService;
     private ActivityResultLauncher<Intent> scannerLauncher;
+    private android.app.AlertDialog currentAddFoodDialog = null;
+
+    private String pendingScanName = null;
+    private int pendingScanCalories, pendingScanProtein, pendingScanCarbs, pendingScanFat;
 
     private AutoCompleteTextView activeEtName;
     private EditText activeEtProtein, activeEtCarbs, activeEtFat, activeEtGrams;
@@ -99,6 +103,10 @@ public class CaloriesDetailActivity extends AppCompatActivity {
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         String barcode = result.getData().getStringExtra("barcode");
+                        if (currentAddFoodDialog != null && currentAddFoodDialog.isShowing()) {
+                            currentAddFoodDialog.dismiss();
+                        }
+                        Toast.makeText(this, "Looking up product…", Toast.LENGTH_SHORT).show();
                         fetchProductByBarcode(barcode);
                     }
                 }
@@ -407,12 +415,13 @@ public class CaloriesDetailActivity extends AppCompatActivity {
         });
 
         activeEtGrams.setText("100");
+
         String[] mealTypes = {"Breakfast", "Lunch", "Dinner", "Snack"};
         ArrayAdapter<String> mealAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mealTypes);
         mealAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMeal.setAdapter(mealAdapter);
 
-        List<Product> allProducts = db.productDAO().searchProducts("%");
+        List<Product> allProducts = db.productDAO().getAllProducts();
         String[] productNames = new String[allProducts.size()];
         for (int i = 0; i < allProducts.size(); i++) productNames[i] = allProducts.get(i).getName();
         
@@ -450,25 +459,50 @@ public class CaloriesDetailActivity extends AppCompatActivity {
         activeEtCarbs.addTextChangedListener(macroWatcher);
         activeEtFat.addTextChangedListener(macroWatcher);
 
+        if (pendingScanName != null) {
+            selectedProduct = new Product(pendingScanName, pendingScanCalories, pendingScanProtein, pendingScanFat, pendingScanCarbs);
+            activeEtName.setText(pendingScanName);
+            pendingScanName = null;
+            updateMacrosByGrams();
+        }
+
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Add Food")
                 .setView(view)
                 .setPositiveButton("Add", (d, which) -> {
                     String name = activeEtName.getText().toString().trim();
-                    if (!name.isEmpty()) {
+                    if (name.isEmpty()) return;
+                    try {
                         int grams = Integer.parseInt(activeEtGrams.getText().toString().isEmpty() ? "100" : activeEtGrams.getText().toString());
                         int kcal = Integer.parseInt(etKcal.getText().toString().isEmpty() ? "0" : etKcal.getText().toString());
                         int p = Integer.parseInt(activeEtProtein.getText().toString().isEmpty() ? "0" : activeEtProtein.getText().toString());
                         int c = Integer.parseInt(activeEtCarbs.getText().toString().isEmpty() ? "0" : activeEtCarbs.getText().toString());
                         int f = Integer.parseInt(activeEtFat.getText().toString().isEmpty() ? "0" : activeEtFat.getText().toString());
-                        
-                        db.foodItemDAO().insert(new FoodItem(name, kcal, p, f, c, grams, spinnerMeal.getSelectedItem().toString(), todayDate));
+                        String mealType = spinnerMeal.getSelectedItem() != null ? spinnerMeal.getSelectedItem().toString() : "Breakfast";
+                        db.foodItemDAO().insert(new FoodItem(name, kcal, p, f, c, grams, mealType, todayDate));
+                        int per100kcal, per100p, per100c, per100f;
+                        if (selectedProduct != null) {
+                            per100kcal = selectedProduct.getCalories();
+                            per100p    = selectedProduct.getProtein();
+                            per100c    = selectedProduct.getCarbs();
+                            per100f    = selectedProduct.getFat();
+                        } else {
+                            int g = grams > 0 ? grams : 100;
+                            per100kcal = kcal * 100 / g;
+                            per100p    = p * 100 / g;
+                            per100c    = c * 100 / g;
+                            per100f    = f * 100 / g;
+                        }
+                        db.productDAO().insert(new Product(name, per100kcal, per100p, per100f, per100c));
                         refreshFoodList();
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(this, "Please check the entered values", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .create();
 
+        currentAddFoodDialog = dialog;
         dialog.show();
 
         view.post(() -> animateDialogContent((ViewGroup) view));
@@ -564,12 +598,15 @@ public class CaloriesDetailActivity extends AppCompatActivity {
             public void onResponse(Call<OpenFoodFactsService.ProductResponse> call, Response<OpenFoodFactsService.ProductResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().status == 1) {
                     OpenFoodFactsService.ProductData p = response.body().product;
-                    activeEtName.setText(p.productName);
-                    activeEtProtein.setText(String.valueOf((int)p.nutriments.proteins100g));
-                    activeEtCarbs.setText(String.valueOf((int)p.nutriments.carbohydrates100g));
-                    activeEtFat.setText(String.valueOf((int)p.nutriments.fat100g));
-                    activeEtGrams.setText("100");
-                    selectedProduct = new Product(p.productName, (int)p.nutriments.calories100g, (int)p.nutriments.proteins100g, (int)p.nutriments.fat100g, (int)p.nutriments.carbohydrates100g);
+                    pendingScanName = p.productName != null ? p.productName.trim() : "";
+                    pendingScanCalories = (int) p.nutriments.calories100g;
+                    pendingScanProtein = (int) p.nutriments.proteins100g;
+                    pendingScanCarbs = (int) p.nutriments.carbohydrates100g;
+                    pendingScanFat = (int) p.nutriments.fat100g;
+                    // Save to product database for future autocomplete
+                    new Thread(() -> db.productDAO().insert(new Product(
+                            pendingScanName, pendingScanCalories, pendingScanProtein, pendingScanFat, pendingScanCarbs))).start();
+                    showAddFoodDialog();
                 } else {
                     Toast.makeText(CaloriesDetailActivity.this, "Product not found", Toast.LENGTH_SHORT).show();
                 }

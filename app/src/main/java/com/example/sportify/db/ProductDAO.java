@@ -15,6 +15,9 @@ public interface ProductDAO {
     @Query("SELECT * FROM products WHERE name LIKE :query LIMIT 5")
     List<Product> searchProducts(String query);
 
+    @Query("SELECT * FROM products ORDER BY name ASC")
+    List<Product> getAllProducts();
+
     @Query("SELECT * FROM products WHERE name = :name LIMIT 1")
     Product getByName(String name);
 
