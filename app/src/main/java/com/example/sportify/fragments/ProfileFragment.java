@@ -3,6 +3,7 @@ package com.example.sportify.fragments;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.icu.text.SimpleDateFormat;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -67,6 +68,11 @@ public class ProfileFragment extends Fragment {
     private com.google.android.material.slider.Slider sliderMultiplier;
     private TextView tvMultiplierValue, tvMultiplierMin, tvMultiplierMax;
 
+    // Phone Info
+    private TextView tvPhoneModel, tvPhoneVersion, tvPhoneManufacturer, tvPhoneBrand, tvPhoneBoard, tvPhoneHardware;
+    private View layoutPhoneInfoSection;
+    private MaterialButton btnShowPhoneInfo;
+
     // Re-entrancy guards (avoid feedback loops between watchers/listeners)
     private boolean suppressCalorieWatcher = false;
     private boolean suppressSliderListener = false;
@@ -104,6 +110,8 @@ public class ProfileFragment extends Fragment {
         }
 
         bindViews(view);
+        displayPhoneInfo();
+        setupPhoneInfoToggle();
 
         if (onboardingMode) {
             enterOnboardingMode();
@@ -150,12 +158,45 @@ public class ProfileFragment extends Fragment {
         tvMultiplierMin = v.findViewById(R.id.tvMultiplierMin);
         tvMultiplierMax = v.findViewById(R.id.tvMultiplierMax);
 
+        // Phone Info
+        btnShowPhoneInfo = v.findViewById(R.id.btnShowPhoneInfo);
+        layoutPhoneInfoSection = v.findViewById(R.id.layoutPhoneInfoSection);
+        tvPhoneModel = v.findViewById(R.id.tvPhoneModel);
+        tvPhoneVersion = v.findViewById(R.id.tvPhoneVersion);
+        tvPhoneManufacturer = v.findViewById(R.id.tvPhoneManufacturer);
+        tvPhoneBrand = v.findViewById(R.id.tvPhoneBrand);
+        tvPhoneBoard = v.findViewById(R.id.tvPhoneBoard);
+        tvPhoneHardware = v.findViewById(R.id.tvPhoneHardware);
+
         // Save / lock UI
         btnDone = v.findViewById(R.id.btnDone);
         btnBack = v.findViewById(R.id.btnBack);
         btnSave = v.findViewById(R.id.btnSave);
         layoutOnboardingNav = v.findViewById(R.id.layoutOnboardingNav);
         tvLockNotice = v.findViewById(R.id.tvLockNotice);
+    }
+
+    private void displayPhoneInfo() {
+        if (tvPhoneModel != null) tvPhoneModel.setText(getString(R.string.profile_phone_model, Build.MODEL));
+        if (tvPhoneVersion != null) tvPhoneVersion.setText(getString(R.string.profile_phone_version, Build.VERSION.RELEASE, Build.VERSION.SDK_INT));
+        if (tvPhoneManufacturer != null) tvPhoneManufacturer.setText(getString(R.string.profile_phone_manufacturer, Build.MANUFACTURER));
+        if (tvPhoneBrand != null) tvPhoneBrand.setText(getString(R.string.profile_phone_brand, Build.BRAND));
+        if (tvPhoneBoard != null) tvPhoneBoard.setText(getString(R.string.profile_phone_board, Build.BOARD));
+        if (tvPhoneHardware != null) tvPhoneHardware.setText(getString(R.string.profile_phone_hardware, Build.HARDWARE));
+    }
+
+    private void setupPhoneInfoToggle() {
+        if (btnShowPhoneInfo != null) {
+            btnShowPhoneInfo.setOnClickListener(v -> {
+                if (layoutPhoneInfoSection.getVisibility() == View.VISIBLE) {
+                    layoutPhoneInfoSection.setVisibility(View.GONE);
+                } else {
+                    layoutPhoneInfoSection.setVisibility(View.VISIBLE);
+                    layoutPhoneInfoSection.setAlpha(0f);
+                    layoutPhoneInfoSection.animate().alpha(1f).setDuration(300).start();
+                }
+            });
+        }
     }
 
     public static ProfileFragment newOnboardingInstance() {
@@ -609,6 +650,8 @@ public class ProfileFragment extends Fragment {
     private void enterOnboardingMode() {
         onboardingStep = 1;
         dailyGoalsSection.setVisibility(View.GONE);
+        layoutPhoneInfoSection.setVisibility(View.GONE);
+        btnShowPhoneInfo.setVisibility(View.GONE);
         btnSave.setVisibility(View.GONE);
         tvLockNotice.setVisibility(View.GONE);
 
@@ -634,6 +677,8 @@ public class ProfileFragment extends Fragment {
         layoutPersonalDataSection.setVisibility(View.GONE);
         dailyGoalsSection.setVisibility(View.VISIBLE);
         tvOnboardingGoalsHint.setVisibility(View.VISIBLE);
+        layoutPhoneInfoSection.setVisibility(View.GONE);
+        btnShowPhoneInfo.setVisibility(View.GONE);
 
         btnBack.setVisibility(View.VISIBLE);
         btnBack.setOnClickListener(v -> returnToOnboardingStep1());
@@ -688,6 +733,8 @@ public class ProfileFragment extends Fragment {
         layoutPersonalDataSection.setVisibility(View.VISIBLE);
         dailyGoalsSection.setVisibility(View.GONE);
         tvOnboardingGoalsHint.setVisibility(View.GONE);
+        layoutPhoneInfoSection.setVisibility(View.GONE);
+        btnShowPhoneInfo.setVisibility(View.GONE);
 
         btnBack.setVisibility(View.GONE);
         btnDone.setText(R.string.onboarding_next);
@@ -774,6 +821,8 @@ public class ProfileFragment extends Fragment {
         addIfVisible(visible, tvProfileTitle);
         addVisibleChildren(visible, layoutPersonalDataSection);
         addVisibleChildren(visible, dailyGoalsSection);
+        addIfVisible(visible, btnShowPhoneInfo);
+        addIfVisible(visible, layoutPhoneInfoSection);
         addIfVisible(visible, layoutOnboardingNav);
         addIfVisible(visible, btnSave);
         addIfVisible(visible, tvLockNotice);

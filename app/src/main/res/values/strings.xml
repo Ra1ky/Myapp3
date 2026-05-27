@@ -63,6 +63,13 @@
     <string name="profile_diet_gain">Gain weight</string>
     <string name="profile_diet_mode">Diet mode</string>
     <string name="profile_calorie_adjustment">Calorie adjustment</string>
+    <string name="profile_phone_info">Phone Information</string>
+    <string name="profile_phone_model">Model: %1$s</string>
+    <string name="profile_phone_version">Android Version: %1$s (API %2$d)</string>
+    <string name="profile_phone_manufacturer">Manufacturer: %1$s</string>
+    <string name="profile_phone_brand">Brand: %1$s</string>
+    <string name="profile_phone_board">Board: %1$s</string>
+    <string name="profile_phone_hardware">Hardware: %1$s</string>
     <string name="_1_00">×1.00</string>
     <string name="_0_75">×0.75</string>
     <string name="_0_95">×0.95</string>
