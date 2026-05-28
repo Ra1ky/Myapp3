@@ -405,6 +405,45 @@
 
             </GridLayout>
 
+            <!-- Take a Photo Section -->
+            <LinearLayout
+                android:id="@+id/layoutTakePhoto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/bg_mood_circle"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_water_glass"
+                    app:tint="@color/sportify_green" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/take_photo_of_drink"
+                    android:textAllCaps="true"
+                    style="@style/Sportify.Text.Subtitle"
+                    android:textColor="@color/sportify_text_primary" />
+            </LinearLayout>
+
+            <!-- Mini Gallery Section -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvWaterGallery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_gallery_photo" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="100dp" />

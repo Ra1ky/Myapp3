@@ -146,4 +146,7 @@
     <string name="step_screen_title">Steps</string>
     <string name="step_screen_desc">Steps</string>
 
+    <string name="take_photo_of_drink">take a photo of your drink!</string>
+    <string name="take_photo">take a photo</string>
+
 </resources>

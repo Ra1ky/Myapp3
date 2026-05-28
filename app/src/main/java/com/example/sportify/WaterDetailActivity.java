@@ -4,7 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.CycleInterpolator;
@@ -16,17 +19,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sportify.db.AppDatabase;
 import com.example.sportify.db.DailyRecord;
 import com.example.sportify.db.DailyRecordDAO;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -36,7 +46,11 @@ public class WaterDetailActivity extends AppCompatActivity {
     private TextView tvTotalWaterDisplay, tvWaterProgressLabel;
     private ProgressBar pbWater;
     private View vWaterWave;
-    private View summaryCard, glQuickLog, tvQuickLogTitle;
+    private View summaryCard, glQuickLog, tvQuickLogTitle, layoutTakePhoto;
+
+    private RecyclerView rvWaterGallery;
+    private DrinkPhotoAdapter photoAdapter;
+    private List<File> photoFiles = new ArrayList<>();
 
     private AppDatabase db;
     private DailyRecordDAO recordDao;
@@ -45,6 +59,16 @@ public class WaterDetailActivity extends AppCompatActivity {
     
     private final List<ObjectAnimator> decorAnimators = new ArrayList<>();
     private int lastWaterValue = 0;
+
+    private File photoFile;
+    private final ActivityResultLauncher<Uri> takePictureLauncher = registerForActivityResult(
+            new ActivityResultContracts.TakePicture(),
+            result -> {
+                if (result) {
+                    loadGallery();
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +92,13 @@ public class WaterDetailActivity extends AppCompatActivity {
         summaryCard = findViewById(R.id.summaryCard);
         glQuickLog = findViewById(R.id.glQuickLog);
         tvQuickLogTitle = findViewById(R.id.tvQuickLogTitle);
+        layoutTakePhoto = findViewById(R.id.layoutTakePhoto);
+
+        // Setup Gallery
+        rvWaterGallery = findViewById(R.id.rvWaterGallery);
+        rvWaterGallery.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        photoAdapter = new DrinkPhotoAdapter(photoFiles);
+        rvWaterGallery.setAdapter(photoAdapter);
 
         btnBack.setOnClickListener(v -> finish());
 
@@ -77,14 +108,51 @@ public class WaterDetailActivity extends AppCompatActivity {
         todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         loadData();
+        loadGallery();
 
         setupWaterContainer(R.id.container250, R.id.btnPlus250, R.id.btnMinus250, 250);
         setupWaterContainer(R.id.container500, R.id.btnPlus500, R.id.btnMinus500, 500);
         setupWaterContainer(R.id.container750, R.id.btnPlus750, R.id.btnMinus750, 750);
         setupWaterContainer(R.id.container1000, R.id.btnPlus1000, R.id.btnMinus1000, 1000);
+
+        if (layoutTakePhoto != null) {
+            layoutTakePhoto.setOnClickListener(v -> {
+                takePhoto();
+            });
+        }
         
         animateEntrance();
         startDecorAnimations();
+    }
+
+    private void takePhoto() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "DRINK_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        try {
+            photoFile = File.createTempFile(imageFileName, ".jpg", storageDir);
+            Uri photoURI = FileProvider.getUriForFile(this,
+                    "com.example.sportify.fileprovider",
+                    photoFile);
+            takePictureLauncher.launch(photoURI);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error creating file", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadGallery() {
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (storageDir != null && storageDir.exists()) {
+            File[] files = storageDir.listFiles((dir, name) -> name.startsWith("DRINK_") && name.endsWith(".jpg"));
+            if (files != null) {
+                photoFiles.clear();
+                Collections.addAll(photoFiles, files);
+                // Sort by last modified (newest first)
+                Collections.sort(photoFiles, (f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
+                photoAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     private void animateEntrance() {
@@ -99,7 +167,7 @@ public class WaterDetailActivity extends AppCompatActivity {
                     .start();
         }
 
-        View[] views = {tvQuickLogTitle, glQuickLog};
+        View[] views = {tvQuickLogTitle, glQuickLog, layoutTakePhoto, rvWaterGallery};
         for (int i = 0; i < views.length; i++) {
             View v = views[i];
             if (v != null) {
