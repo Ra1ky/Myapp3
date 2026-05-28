@@ -1,9 +1,28 @@
 package com.example.sportify.fragments;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.ContentValues;
+import android.content.Context;
+import android.os.Environment;
+import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.icu.text.SimpleDateFormat;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
+
+import androidx.core.content.FileProvider;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,9 +39,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.sportify.MainActivity;
@@ -87,9 +109,34 @@ public class ProfileFragment extends Fragment {
     // Animation
     private ObjectAnimator arrowAnimator;
 
+    // Debug buttons
+    private MaterialButton btnDebugSensor, btnDebugCamera, btnDebugMaps;
+    private View layoutDebugSection;
+    private ActivityResultLauncher<Uri> cameraLauncher;
+    private ActivityResultLauncher<String> cameraPermissionLauncher;
+    private File pendingPhotoFile;
+
     // Data
     private AppDatabase db;
     private UserProfile loadedProfile;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        cameraLauncher = registerForActivityResult(new ActivityResultContracts.TakePicture(), saved -> {
+            if (saved && isAdded() && pendingPhotoFile != null) {
+                copyPhotoToGallery(pendingPhotoFile);
+            }
+            pendingPhotoFile = null;
+        });
+        cameraPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+            if (granted) {
+                launchCameraToGallery();
+            } else {
+                Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Nullable
     @Override
@@ -120,6 +167,7 @@ public class ProfileFragment extends Fragment {
             setupMultiplierSlider();
             setupAutoHints();
             setupSaveButton();
+            setupDebugButtons();
             loadProfile();
             refreshSaveButtonState();
         }
@@ -174,6 +222,12 @@ public class ProfileFragment extends Fragment {
         btnSave = v.findViewById(R.id.btnSave);
         layoutOnboardingNav = v.findViewById(R.id.layoutOnboardingNav);
         tvLockNotice = v.findViewById(R.id.tvLockNotice);
+
+        // Debug buttons
+        layoutDebugSection = v.findViewById(R.id.layoutDebugSection);
+        btnDebugSensor = v.findViewById(R.id.btnDebugSensor);
+        btnDebugCamera = v.findViewById(R.id.btnDebugCamera);
+        btnDebugMaps = v.findViewById(R.id.btnDebugMaps);
     }
 
     private void displayPhoneInfo() {
@@ -621,6 +675,116 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    private void setupDebugButtons() {
+        btnDebugSensor.setOnClickListener(v -> readAccelerometer());
+        btnDebugCamera.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_GRANTED) {
+                launchCameraToGallery();
+            } else {
+                cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+            }
+        });
+        btnDebugMaps.setOnClickListener(v -> openMapsForParks());
+    }
+
+    private void readAccelerometer() {
+        SensorManager sensorManager = (SensorManager) requireContext().getSystemService(Context.SENSOR_SERVICE);
+        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (accelerometer == null) {
+            Toast.makeText(requireContext(), "No accelerometer found on this device", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        TextView tvValues = new TextView(requireContext());
+        tvValues.setPadding(64, 48, 64, 8);
+        tvValues.setTextSize(18);
+        tvValues.setText("Reading…");
+
+        TextView tvHint = new TextView(requireContext());
+        tvHint.setPadding(64, 8, 64, 48);
+        tvHint.setTextSize(13);
+        tvHint.setText("Tilt the device to see values update in real time.");
+
+        LinearLayout layout = new LinearLayout(requireContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(tvValues);
+        layout.addView(tvHint);
+
+        SensorEventListener[] holder = new SensorEventListener[1];
+        holder[0] = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                if (!isAdded()) return;
+                float x = event.values[0];
+                float y = event.values[1];
+                float z = event.values[2];
+                requireActivity().runOnUiThread(() ->
+                        tvValues.setText(String.format(Locale.US,
+                                "X: %+.2f m/s²\nY: %+.2f m/s²\nZ: %+.2f m/s²", x, y, z)));
+            }
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+        };
+
+        sensorManager.registerListener(holder[0], accelerometer, SensorManager.SENSOR_DELAY_UI);
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Accelerometer (Live)")
+                .setView(layout)
+                .setPositiveButton("Done", (d, w) -> sensorManager.unregisterListener(holder[0]))
+                .setOnDismissListener(d -> sensorManager.unregisterListener(holder[0]))
+                .show();
+    }
+
+    private void launchCameraToGallery() {
+        File dir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (dir == null) return;
+        pendingPhotoFile = new File(dir, "Sportify_" + System.currentTimeMillis() + ".jpg");
+        Uri fileUri = FileProvider.getUriForFile(requireContext(),
+                requireContext().getPackageName() + ".fileprovider", pendingPhotoFile);
+        cameraLauncher.launch(fileUri);
+    }
+
+    private void copyPhotoToGallery(File photoFile) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, photoFile.getName());
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Sportify");
+            values.put(MediaStore.Images.Media.IS_PENDING, 1);
+        }
+        Uri uri = requireContext().getContentResolver()
+                .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        if (uri == null) return;
+        try (InputStream in = new FileInputStream(photoFile);
+             OutputStream out = requireContext().getContentResolver().openOutputStream(uri)) {
+            if (out == null) throw new IOException("null output stream");
+            byte[] buf = new byte[8192];
+            int len;
+            while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.clear();
+                values.put(MediaStore.Images.Media.IS_PENDING, 0);
+                requireContext().getContentResolver().update(uri, values, null, null);
+            }
+            Toast.makeText(requireContext(), "Photo saved to gallery!", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            requireContext().getContentResolver().delete(uri, null, null);
+            Toast.makeText(requireContext(), "Failed to save photo", Toast.LENGTH_SHORT).show();
+        } finally {
+            photoFile.delete();
+        }
+    }
+
+    private void openMapsForParks() {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new DebugMapFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
     private int parseIntSafe(TextInputEditText field, int defaultVal) {
         try {
             String text = field.getText() != null ? field.getText().toString().trim() : "";
@@ -652,6 +816,7 @@ public class ProfileFragment extends Fragment {
         dailyGoalsSection.setVisibility(View.GONE);
         layoutPhoneInfoSection.setVisibility(View.GONE);
         btnShowPhoneInfo.setVisibility(View.GONE);
+        layoutDebugSection.setVisibility(View.GONE);
         btnSave.setVisibility(View.GONE);
         tvLockNotice.setVisibility(View.GONE);
 

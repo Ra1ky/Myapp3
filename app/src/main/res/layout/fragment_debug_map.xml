@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/sportify_background">
+
+    <!-- Header bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="16dp"
+        android:background="@color/sportify_surface"
+        android:elevation="4dp">
+
+        <ImageButton
+            android:id="@+id/btnDebugMapBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_right"
+            android:scaleX="-1"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Nearby Parks"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/sportify_text_primary"
+            android:layout_marginStart="4dp" />
+
+        <TextView
+            android:id="@+id/tvDebugMapStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Locating…"
+            android:textSize="12sp"
+            android:textColor="@color/sportify_text_secondary" />
+
+    </LinearLayout>
+
+    <!-- Map fills the rest -->
+    <fragment
+        android:id="@+id/debugMapFragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

@@ -64,6 +64,10 @@
     <string name="profile_diet_mode">Diet mode</string>
     <string name="profile_calorie_adjustment">Calorie adjustment</string>
     <string name="profile_phone_info">Phone Information</string>
+    <string name="profile_debug_section_title">Debug Features</string>
+    <string name="profile_debug_sensor">Read Accelerometer</string>
+    <string name="profile_debug_camera">Take a Photo</string>
+    <string name="profile_debug_maps">Find Nearby Parks</string>
     <string name="profile_phone_model">Model: %1$s</string>
     <string name="profile_phone_version">Android Version: %1$s (API %2$d)</string>
     <string name="profile_phone_manufacturer">Manufacturer: %1$s</string>
