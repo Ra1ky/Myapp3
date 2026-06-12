@@ -90,6 +90,14 @@ public class StepCounterService extends Service implements SensorEventListener {
     }
 
     @Override
+    public void onDestroy() {
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(this);
+        }
+        super.onDestroy();
+    }
+
+    @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     @Override
