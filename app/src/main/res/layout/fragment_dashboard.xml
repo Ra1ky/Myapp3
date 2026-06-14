@@ -67,14 +67,27 @@
                 android:paddingTop="@dimen/spacing_md"
                 android:paddingBottom="@dimen/spacing_sm">
 
-                <TextView
-                    android:id="@+id/tvAppTitle"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:text="@string/app_name"
-                    style="@style/Sportify.Text.Title" />
+                    android:layout_centerVertical="true">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/icon"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/tvAppTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_name"
+                        style="@style/Sportify.Text.Title" />
+                </LinearLayout>
 
             </RelativeLayout>
 

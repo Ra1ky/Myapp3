@@ -10,10 +10,7 @@
     android:clipToPadding="false"
     android:padding="32dp">
 
-    <!-- Decorative health-themed icons that wobble in the background.
-     Listed first so they sit beneath the pulse layer + content.
-     Each is constrained to all four parent edges so the bias values
-     control its scattered position. Low alpha keeps them subtle. -->
+    <!-- Decorative health-themed icons -->
     <ImageView
         android:id="@+id/iconDumbbell"
         android:layout_width="84dp"
@@ -98,9 +95,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.86" />
 
-    <!-- Pulse rings sit behind the Get Started button. Anchored to the button's
-     bounds so the rectangles match its size; clipChildren=false (also on the
-     root) lets the rings expand outside this layer without being clipped. -->
     <FrameLayout
         android:id="@+id/pulseLayer"
         android:layout_width="0dp"
@@ -124,10 +118,19 @@
             android:background="@drawable/rect_pulse_ring" />
     </FrameLayout>
 
-    <!-- FRONT LAYER: title → subtitle → button as a packed vertical chain.
-    "packed" groups them together; bias 0.5 (default) centers the group
-    vertically on screen. They draw after the pulse, so the title sits
-    on top of the disc. -->
+    <!-- App Logo -->
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/icon"
+        app:layout_constraintBottom_toTopOf="@+id/tvWelcomeTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
     <TextView
         android:id="@+id/tvWelcomeTitle"
         android:layout_width="wrap_content"
@@ -142,8 +145,7 @@
         app:layout_constraintBottom_toTopOf="@+id/tvWelcomeSubtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toBottomOf="@+id/imgLogo" />
 
     <TextView
         android:id="@+id/tvWelcomeSubtitle"
