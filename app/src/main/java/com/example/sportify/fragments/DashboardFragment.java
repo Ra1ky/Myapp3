@@ -17,7 +17,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -100,6 +99,7 @@ public class DashboardFragment extends Fragment {
         setupMoodButtons();
         startDecorAnimations(view);
         setupBackgroundClick(view);
+        animateEntrance();
 
         // SETUP REAL-TIME OBSERVING
         setupObservers();
@@ -368,7 +368,6 @@ public class DashboardFragment extends Fragment {
                 float x = event.getRawX() - rootLoc[0];
                 float y = event.getRawY() - rootLoc[1];
                 
-                spawnTapEffect(x, y);
                 reactToTap();
             }
             return false; // Return false so we don't block scroll or child clicks
@@ -376,33 +375,6 @@ public class DashboardFragment extends Fragment {
         
         if (mainContent != null) mainContent.setOnTouchListener(bgTouchListener);
         if (root != null) root.setOnTouchListener(bgTouchListener);
-    }
-
-    private void spawnTapEffect(float x, float y) {
-        ImageView sparkle = new ImageView(requireContext());
-        sparkle.setImageResource(R.drawable.ic_star_sparkle1);
-        sparkle.setColorFilter(ContextCompat.getColor(requireContext(), R.color.sportify_green));
-        int size = (int) (60 * getResources().getDisplayMetrics().density); 
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
-        sparkle.setLayoutParams(params);
-        
-        View root = getView() != null ? getView().findViewById(R.id.dashboardRoot) : null;
-        if (root instanceof ViewGroup) {
-            ((ViewGroup) root).addView(sparkle);
-            sparkle.setX(x - size / 2f);
-            sparkle.setY(y - size / 2f);
-            
-            sparkle.setAlpha(0.9f);
-            sparkle.animate()
-                .scaleX(2.5f)
-                .scaleY(2.5f)
-                .alpha(0f)
-                .rotation(120)
-                .setDuration(600)
-                .setInterpolator(new DecelerateInterpolator())
-                .withEndAction(() -> ((ViewGroup) root).removeView(sparkle))
-                .start();
-        }
     }
 
     private void reactToTap() {
